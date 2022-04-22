@@ -33,8 +33,8 @@ public:
 	}
 
 	virtual void onQuit() override {
-		Base::onQuit();
 		_render->CleanD3D();
+		Base::onQuit();
 	}
 
 private:

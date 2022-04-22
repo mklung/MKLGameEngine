@@ -64,12 +64,14 @@ namespace sge {
 		viewport.Height = 600;
 
 		devcon->RSSetViewports(1, &viewport);
-		//InitPipeline();
+		InitPipeline();
 		InitGraphics();
 	}
 
 	void Render::CleanD3D(void)
 	{
+		swapchain->SetFullscreenState(FALSE, NULL);
+
 		pLayout->Release();
 		pVS->Release();
 		pPS->Release();
@@ -78,6 +80,7 @@ namespace sge {
 		backbuffer->Release();
 		dev->Release();
 		devcon->Release();
+
 	}
 
 	void Render::RenderFrame(void)
@@ -132,19 +135,17 @@ namespace sge {
 		devcon->Unmap(pVBuffer, NULL);                                      // unmap the buffer
 	}
 
-	const wchar_t* shaderFile = L"Assets/Shaders/Triangle.hlsl";
 	void Render::InitPipeline(void)
 	{
 		// load and compile the two shaders
 		ID3D10Blob* VS, * PS;
 		//D3DReadFileToBlob(L"PixelShader.cso", &PS);
 		//D3DReadFileToBlob(L"VertexShader.cso", &VS);
-
-		D3DCompileFromFile(shaderFile, 0, 0, "VShader", "vs_4_0", 0, 0, 0, &VS);
-		D3DCompileFromFile(shaderFile, 0, 0, "PShader", "ps_4_0", 0, 0, 0, &PS);
+		D3DCompileFromFile(L"Triangle.hlsl", 0, 0, "vs_main", "vs_4_0", 0, 0, &VS, 0);
+		D3DCompileFromFile(L"Triangle.hlsl", 0, 0, "ps_main", "ps_4_0", 0, 0,  &PS, 0);
 		// encapsulate both shaders into shader objects
-		dev->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), NULL, &pVS);
-		dev->CreatePixelShader(PS->GetBufferPointer(), PS->GetBufferSize(), NULL, &pPS);
+		dev->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), nullptr, &pVS);
+		dev->CreatePixelShader(PS->GetBufferPointer(), PS->GetBufferSize(), nullptr, &pPS);
 
 		// set the shader objects
 		devcon->VSSetShader(pVS, 0, 0);
