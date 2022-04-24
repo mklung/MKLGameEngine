@@ -14,6 +14,15 @@ class EditorApp : public NativeUIApp {
 	using Base = NativeUIApp;
 public:
 	virtual void onCreate(CreateDesc& desc) override {
+		{
+			String file = getExecutableFilename();
+			String path = FilePath::getDir(file);
+			path.append("/../../../../../../Assets");
+			setCurrentDir(path);
+
+			auto dir = getCurrentDir();
+			SGE_LOG("dir = {}", dir);
+		}
 		Base::onCreate(desc);
 
 		NativeUIWindow::CreateDesc winDesc;

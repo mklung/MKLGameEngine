@@ -141,8 +141,8 @@ namespace sge {
 		ID3D10Blob* VS, * PS;
 		//D3DReadFileToBlob(L"PixelShader.cso", &PS);
 		//D3DReadFileToBlob(L"VertexShader.cso", &VS);
-		D3DCompileFromFile(L"Triangle.hlsl", 0, 0, "vs_main", "vs_4_0", 0, 0, &VS, 0);
-		D3DCompileFromFile(L"Triangle.hlsl", 0, 0, "ps_main", "ps_4_0", 0, 0,  &PS, 0);
+		D3DCompileFromFile(L"Shader/Triangle.hlsl", 0, 0, "vs_main", "vs_4_0", 0, 0, &VS, 0);
+		D3DCompileFromFile(L"Shader/Triangle.hlsl", 0, 0, "ps_main", "ps_4_0", 0, 0,  &PS, 0);
 		// encapsulate both shaders into shader objects
 		dev->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), nullptr, &pVS);
 		dev->CreatePixelShader(PS->GetBufferPointer(), PS->GetBufferSize(), nullptr, &pPS);
