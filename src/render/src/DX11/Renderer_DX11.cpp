@@ -1,5 +1,5 @@
 
-#include "sge_render.h"
+#include "Renderer_DX11.h"
 #include <d3dcompiler.h>
 
 #pragma comment (lib, "d3d11.lib")
@@ -7,15 +7,15 @@
 
 namespace sge {
 
-	Render::Render()
+	Renderer_DX11::Renderer_DX11()
 	{
 	}
 
-	Render::~Render()
+	Renderer_DX11::~Renderer_DX11()
 	{
 	}
 
-	void Render::InitD3D(HWND hwnd)
+	void Renderer_DX11::InitD3D(HWND hwnd)
 	{
 		// create a struct to hold information about the swap chain
 		DXGI_SWAP_CHAIN_DESC scd;
@@ -68,7 +68,7 @@ namespace sge {
 		InitGraphics();
 	}
 
-	void Render::CleanD3D(void)
+	void Renderer_DX11::CleanD3D(void)
 	{
 		swapchain->SetFullscreenState(FALSE, NULL);
 
@@ -83,7 +83,7 @@ namespace sge {
 
 	}
 
-	void Render::RenderFrame(void)
+	void Renderer_DX11::RenderFrame(void)
 	{
 		float color[] = { 0.0f, 0.2f, 0.4f, 1.0f };
 		// clear the back buffer to a deep blue
@@ -106,7 +106,7 @@ namespace sge {
 		swapchain->Present(0, 0);
 	}
 
-	void Render::InitGraphics(void)
+	void Renderer_DX11::InitGraphics(void)
 	{
 		VERTEX OurVertices[] =
 		{
@@ -135,14 +135,14 @@ namespace sge {
 		devcon->Unmap(pVBuffer, NULL);                                      // unmap the buffer
 	}
 
-	void Render::InitPipeline(void)
+	void Renderer_DX11::InitPipeline(void)
 	{
 		// load and compile the two shaders
 		ID3D10Blob* VS, * PS;
 		//D3DReadFileToBlob(L"PixelShader.cso", &PS);
 		//D3DReadFileToBlob(L"VertexShader.cso", &VS);
 		D3DCompileFromFile(L"Shader/Triangle.hlsl", 0, 0, "vs_main", "vs_4_0", 0, 0, &VS, 0);
-		D3DCompileFromFile(L"Shader/Triangle.hlsl", 0, 0, "ps_main", "ps_4_0", 0, 0,  &PS, 0);
+		D3DCompileFromFile(L"Shader/Triangle.hlsl", 0, 0, "ps_main", "ps_4_0", 0, 0, &PS, 0);
 		// encapsulate both shaders into shader objects
 		dev->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), nullptr, &pVS);
 		dev->CreatePixelShader(PS->GetBufferPointer(), PS->GetBufferSize(), nullptr, &pPS);

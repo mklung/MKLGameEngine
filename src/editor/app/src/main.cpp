@@ -29,7 +29,7 @@ public:
 		winDesc.isMainWindow = true;
 		_mainWin.create(winDesc);
 		_mainWin.setWindowTitle("SGE Editor");
-		_render = new Render();
+		_render = new Renderer_DX11();
 		_render->InitD3D(_mainWin._hwnd);
 		SGE_LOG("Hello {}", 10);
 
@@ -48,7 +48,7 @@ public:
 
 private:
 	MainWin		_mainWin;
-	Render*		_render;
+	Renderer_DX11*		_render;
 //	Renderer	_renderer;
 };
 
