@@ -15,6 +15,7 @@ public:
 			renderContextDesc.window = this;
 			_renderContext = renderer->createContext(renderContextDesc);
 		}
+
 		_renderContext->beginRender();
 	}
 
@@ -24,9 +25,8 @@ public:
 	}
 
 	virtual void onDraw() {
-		Base::onDraw();
+		//Base::onDraw();
 		if (!_renderContext) return;
-		
 		_renderContext->render();
 		_renderContext->endRender();
 		drawNeeded();

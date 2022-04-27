@@ -59,7 +59,7 @@ namespace sge
 		viewport.Height = 600;
 
 		ctx->RSSetViewports(1, &viewport);
-
+		_setTestShaders();
 	}
 
 	void RenderContext_DX11::onEndRender()
@@ -69,7 +69,7 @@ namespace sge
 	
 	void RenderContext_DX11::onRender()
 	{
-		_setTestShaders();
+		
 
 		auto* ctx = _renderer->d3dDeviceContext();
 
@@ -164,9 +164,9 @@ namespace sge
 
 		VERTEX OurVertices[] =
 		{
-			{0.0f, 0.5f, 0.0f, (1.0f, 0.0f, 0.0f, 1.0f)},
-			{0.45f, -0.5, 0.0f, (0.0f, 1.0f, 0.0f, 1.0f)},
-			{-0.45f, -0.5f, 0.0f, (0.0f, 0.0f, 1.0f, 1.0f)}
+			{0.0f, 0.5f, 0.0f, {1.0f, 0.0f, 0.0f, 1.0f}},
+			{0.45f, -0.5, 0.0f, {0.0f, 1.0f, 0.0f, 1.0f}},
+			{-0.45f, -0.5f, 0.0f, {0.0f, 0.0f, 1.0f, 1.0f}}
 		};
 
 
