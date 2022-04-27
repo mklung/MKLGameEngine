@@ -1,7 +1,6 @@
 #include "NativeUIApp_Win32.h"
 #include "../NativeUI.h"
 #include "../../string/UtfUtil.h"
-#include <sge_editor.h>
 
 #if SGE_OS_WINDOWS
 

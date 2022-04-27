@@ -28,7 +28,7 @@ public:
 		};
 
 		Type		type = Type::NormalWindow;
-		Rect2f		rect {10, 10, 640, 480};
+		Rect2f		rect {10, 10, 800, 600};
 
 		bool		titleBar		: 1;
 		bool		isMainWindow	: 1;
@@ -43,13 +43,16 @@ public:
 
 	void create			(CreateDesc& desc)	{ onCreate(desc); }
 	void setWindowTitle	(StrView title)		{ onSetWindowTitle(title); }
+	void drawNeeded() { onDrawNeeded(); }
 
 	virtual void onCloseButton() {}
 	virtual void onActive(bool isActive) {}
+	virtual void onDraw() {}
 
 protected:
 	virtual void onCreate(CreateDesc& desc) {}
 	virtual void onSetWindowTitle(StrView title) {}
+	virtual void onDrawNeeded() {}
 };
 
 }

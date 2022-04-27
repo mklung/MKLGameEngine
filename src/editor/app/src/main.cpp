@@ -3,17 +3,42 @@
 namespace sge {
 
 class MainWin : public NativeUIWindow {
+	using Base = NativeUIWindow;
 public:
-	
+	void onCreate(CreateDesc& desc) {
+
+		Base::onCreate(desc);
+		auto* renderer = Renderer::current();
+
+		{
+			RenderContext::CreateDesc renderContextDesc;
+			renderContextDesc.window = this;
+			_renderContext = renderer->createContext(renderContextDesc);
+		}
+		_renderContext->beginRender();
+	}
+
 	virtual void onCloseButton() override {
 		NativeUIApp::current()->quit(0);
+
 	}
+
+	virtual void onDraw() {
+		Base::onDraw();
+		if (!_renderContext) return;
+		
+		_renderContext->render();
+		_renderContext->endRender();
+		drawNeeded();
+	}
+	RenderContext* _renderContext;
 };
 
 class EditorApp : public NativeUIApp {
 	using Base = NativeUIApp;
 public:
-	virtual void onCreate(CreateDesc& desc) override {
+	virtual void onCreate(CreateDesc& desc) override 
+	{
 		{
 			String file = getExecutableFilename();
 			String path = FilePath::getDir(file);
@@ -25,31 +50,22 @@ public:
 		}
 		Base::onCreate(desc);
 
+
+		Renderer::CreateDesc renderDesc;
+		renderDesc.apiType = Renderer::ApiType::DX11;
+		Renderer::create(renderDesc);
+
+
 		NativeUIWindow::CreateDesc winDesc;
 		winDesc.isMainWindow = true;
 		_mainWin.create(winDesc);
 		_mainWin.setWindowTitle("SGE Editor");
-		_render = new Renderer_DX11();
-		_render->InitD3D(_mainWin._hwnd);
-		SGE_LOG("Hello {}", 10);
-
-//		_renderer.create(_mainWin);
 	}
 
-	virtual void onRun() override {
-		_render->RenderFrame();
-		Base::onRun();
-	}
 
-	virtual void onQuit() override {
-		_render->CleanD3D();
-		Base::onQuit();
-	}
 
 private:
 	MainWin		_mainWin;
-	Renderer_DX11*		_render;
-//	Renderer	_renderer;
 };
 
 }
