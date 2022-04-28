@@ -16,6 +16,18 @@ public:
 			_renderContext = renderer->createContext(renderContextDesc);
 		}
 
+		EditMesh editMesh;
+
+		editMesh.pos.emplace_back(0.0f, 0.5f, 0.0f);
+		editMesh.pos.emplace_back(0.5f, -0.5f, 0.0f);
+		editMesh.pos.emplace_back(-0.5f, -0.5f, 0.0f);
+
+		editMesh.color.emplace_back(255, 0, 0, 255);
+		editMesh.color.emplace_back(0, 255, 0, 255);
+		editMesh.color.emplace_back(0, 0, 255, 255);
+		_renderMesh.create(editMesh);
+
+
 		_renderContext->beginRender();
 	}
 
@@ -32,6 +44,7 @@ public:
 		drawNeeded();
 	}
 	RenderContext* _renderContext;
+	RenderMesh	_renderMesh;
 };
 
 class EditorApp : public NativeUIApp {

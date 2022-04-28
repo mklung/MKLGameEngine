@@ -1,6 +1,7 @@
 #pragma once
 
 #include "sge_core.h"
+#include "mesh/RenderMesh.h"
 
 
 namespace sge
@@ -31,6 +32,7 @@ namespace sge
 		static Renderer* create(CreateDesc& desc);
 		bool vsync() const { return _vsync; }
 
+		Vector_<u8, 1024> vertexData;
 		RenderContext* createContext(RenderContext_CreateDesc& desc) { return onCreateContext(desc); }
 	protected:
 

@@ -11,6 +11,8 @@
 #include "sge_core/math/Tuple3.h"
 #include "sge_core/math/Tuple4.h"
 
+#include "sge_core/color/Color.h"
+
 #include "sge_core/string/UtfUtil.h"
 
 #include "sge_core/file/FilePath.h"

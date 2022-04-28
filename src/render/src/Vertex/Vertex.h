@@ -1,101 +1,62 @@
 #pragma once
 
+#include "RenderDataType.h"
+#include "VertexLayout.h"
 namespace sge {
 
 	enum class VertexType : u64 { None };
 
-	enum class RenderDataType : u8 {
-		None,
+	struct VertexTypeUtil {
 
-		Int8,	Int8x2,		Int8x3,		Int8x4,
-		Int16,	Int16x2,	Int16x3,	Int16x4,
-		Int32,	Int32x2,	Int32x3,	Int32x4,
-		Int64,	Int64x2,	Int64x3,	Int64x4,
+		static constexpr VertexType addPos(VertexType t, RenderDataType posType) {
+			return static_cast<VertexType>(static_cast<u64>(t)
+				| static_cast<u64>(posType));
+		}
 
-		UInt8,	UInt8x2,	UInt8x3,	UInt8x4,
-		UInt16, UInt16x2,	UInt16x3,	UInt16x4,
-		UInt32, UInt32x2,	UInt32x3,	UInt32x4,
-		UInt64, UInt64x2,	UInt64x3,	UInt64x4,
+		static constexpr VertexType addColor(VertexType t, RenderDataType colorType, u8 colorCount) {
+			return static_cast<VertexType>(static_cast<u64>(t)
+				| (static_cast<u64>(colorType) << 8)
+				| (static_cast<u64>(colorCount) << 16));
+		}
 
-		Float16, Float16x2, Float16x3, Float16x4,
-		Float32, Float32x2, Float32x3, Float32x4,
-		Float64, Float64x2, Float64x3, Float64x4,
+		static constexpr VertexType addUv(VertexType t, RenderDataType uvType, u8 uvCount) {
+			return static_cast<VertexType>(static_cast<u64>(t)
+				| (static_cast<u64>(uvType) << 18)
+				| (static_cast<u64>(uvCount) << 26));
+		}
 
-		UNorm8, UNorm8x2, UNorm8x3, UNorm8x4,
+		static constexpr VertexType addNormal(VertexType t, RenderDataType normalType, u8 normalCount) {
+			return static_cast<VertexType>(static_cast<u64>(t)
+				| (static_cast<u64>(normalType) << 32)
+				| (static_cast<u64>(normalCount) << 40));
+		}
 
-	};
+		static constexpr VertexType addTangent(VertexType t, u8 tangentCount) {
+			return static_cast<VertexType>(static_cast<u64>(t)
+				| (static_cast<u64>(tangentCount) << 42));
+		}
+		static constexpr VertexType addBinormal(VertexType t, u8 binormalCount) {
+			return static_cast<VertexType>(static_cast<u64>(t)
+				| (static_cast<u64>(binormalCount) << 44));
+		}
 
-
-	enum class Vertex_SemanticType : u8 {
-		None,
-		Pos,
-		Color,
-		TexCoord,
-		Normal,
-		Tangent,
-		Binormal,
-	};
-
-	enum class Vertex_Semantic : u16
-	{
-		None	= 0,
-		Pos		= (enumInt(Vertex_SemanticType::Pos) << 8) | 0,
-		Color0	= (enumInt(Vertex_SemanticType::Color) << 8) | 0,
-		Color1	= (enumInt(Vertex_SemanticType::Color) << 8) | 1,
-		Color2	= (enumInt(Vertex_SemanticType::Color) << 8) | 2,
-		Color3	= (enumInt(Vertex_SemanticType::Color) << 8) | 3,
-
-		TexCoord0 = (enumInt(Vertex_SemanticType::TexCoord) << 8) | 0,
-		TexCoord1 = (enumInt(Vertex_SemanticType::TexCoord) << 8) | 1,
-		TexCoord2 = (enumInt(Vertex_SemanticType::TexCoord) << 8) | 2,
-		TexCoord3 = (enumInt(Vertex_SemanticType::TexCoord) << 8) | 3,
-		TexCoord4 = (enumInt(Vertex_SemanticType::TexCoord) << 8) | 4,
-		TexCoord5 = (enumInt(Vertex_SemanticType::TexCoord) << 8) | 5,
-		TexCoord6 = (enumInt(Vertex_SemanticType::TexCoord) << 8) | 6,
-		TexCoord7 = (enumInt(Vertex_SemanticType::TexCoord) << 8) | 7,
-
-		Normal = (enumInt(Vertex_SemanticType::Normal) << 8) | 0,
-		Tangent = (enumInt(Vertex_SemanticType::Tangent) << 8) | 0,
-		Binormal = (enumInt(Vertex_SemanticType::Binormal) << 8) | 0,
-	};
-
-	struct VertexLayout : public NonCopyable
-	{
-		using Semantic = Vertex_Semantic;
-		using DataType = RenderDataType;
-
-		struct Element {
-			Semantic	semantic = Semantic::None;
-			u16			offset = 0;
-			DataType	dataType = DataType::None;
-		};
-
-		VertexType type = VertexType::None;
-		size_t	stride = 0;
-		Vector_<Element, 16>	elements;
-
-		template<class V, class A>
-		void addElement(Semantic semantic, A V::* attr, size_t index = 0)
+		static constexpr VertexType make(
+			RenderDataType posType,
+			RenderDataType colorType, u8 colorCount,
+			RenderDataType uvType, u8 uvCount,
+			RenderDataType normalType, u8 normalCount, u8 tangentCount, u8 binormalCount)
 		{
-			if (std::is_array<A>()) {
-				size_t n = std::extent<A>();
-				for (size_t i = 0; i < n; i++) {
-					_addElement(semantic + static_cast<int>(i), attr, i);
-				}
+			VertexType			t = addPos(VertexType::None, posType);
+			if (colorCount)		t = addColor(t, colorType, colorCount);
+			if (uvCount)		t = addUv(t, uvType, uvCount);
+			if (normalCount)
+			{
+				t = addNormal(t, normalType, normalCount);
+				t = addTangent(t, tangentCount);
+				t = addBinormal(t, binormalCount);
 			}
-			else {
-				_addElement(semantic, attr, 0);
-			}
-		}
-
-	private:
-		template<class V, class A>
-		void _addElement(Semantic semantic, A V::* attr, size_t index) {
-			auto& o = elements.push_back();
-			o.semantic = semantic;
-			using A = std::remove_extent<A>::type;
-			o.dataType = RenderDataTypeUtil::get<A>();
-			o.offset = static_cast<u16>(memberOffset(attr) + sizeof(A) * index);
+			return t;
 		}
 	};
+
 }

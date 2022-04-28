@@ -5,6 +5,8 @@
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
+#include "Mesh/EditMesh.h"
+
 namespace sge
 {
 
