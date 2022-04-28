@@ -3,12 +3,13 @@
 #include "sge_core.h"
 #include "mesh/RenderMesh.h"
 
-
 namespace sge
 {
 	class RenderContext;
 	struct RenderContext_CreateDesc;
 
+	class RenderGpuBuffer;
+	struct RenderGpuBuffer_CreateDesc;
 
 	class Renderer : public NonCopyable
 	{
@@ -34,9 +35,11 @@ namespace sge
 
 		Vector_<u8, 1024> vertexData;
 		RenderContext* createContext(RenderContext_CreateDesc& desc) { return onCreateContext(desc); }
+		RenderGpuBuffer* createGpuBuffer(RenderGpuBuffer_CreateDesc& desc) { return onCreateGpuBuffer(desc); }
 	protected:
 
 		virtual RenderContext* onCreateContext(RenderContext_CreateDesc& desc) = 0;
+		virtual RenderGpuBuffer* onCreateGpuBuffer(RenderGpuBuffer_CreateDesc& desc) = 0;
 		static Renderer* _current;
 
 		bool _vsync : 1;
