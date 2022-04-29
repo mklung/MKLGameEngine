@@ -84,6 +84,13 @@ using f32 = float;
 using f64 = double;
 using f128 = long double;
 
+template< class Obj, class Member > constexpr
+intptr_t memberOffset(Member Obj::* ptrToMember) {
+	Obj* c = nullptr;
+	Member* m = &(c->*ptrToMember);
+	return reinterpret_cast<intptr_t>(m);
+}
+
 template<class T> using UPtr = eastl::unique_ptr<T>;
 template<class T> using SPtr = eastl::shared_ptr<T>;
 template<class T> using WPtr = eastl::weak_ptr<T>;
