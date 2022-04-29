@@ -1,3 +1,6 @@
+
+#pragma once
+
 #include "sge_core.h"
 
 namespace sge
@@ -26,7 +29,7 @@ namespace sge
 	struct RenderDataTypeUtil {
 		using Type = RenderDataType;
 
-		template<class T> constexpr Type get();
+		template<class T> static constexpr Type get();
 
 		template<> static constexpr Type get<void>() { return Type::None; }
 

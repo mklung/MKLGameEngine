@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Vertex/Vertex.h"
+#include "../Vertex/Vertex.h"
 
 namespace sge {
 
-	class EditMesh
+	class EditMesh : public NonCopyable
 	{
 	public:
 		static const u8 kUvCountMax = 4;

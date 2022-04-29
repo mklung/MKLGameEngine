@@ -1,13 +1,21 @@
 #pragma once
 
-#include "RenderDataType.h"
-#include "VertexLayout.h"
+#include "../RenderDataType.h"
+
 namespace sge {
 
+	// posType			: 8 bit
+	// colorType		: 8 bit
+	// colorCount		: 2 bit
+	// uvType			: 8 bit
+	// uvCount			: 8 bit
+	// normalType		: 8 bit
+	// normalCount		: 2 bit
+	// tangentCount		: 2 bit
+	// binormalCount	: 2 bit
 	enum class VertexType : u64 { None };
 
 	struct VertexTypeUtil {
-
 		static constexpr VertexType addPos(VertexType t, RenderDataType posType) {
 			return static_cast<VertexType>(static_cast<u64>(t)
 				| static_cast<u64>(posType));
@@ -46,11 +54,10 @@ namespace sge {
 			RenderDataType uvType, u8 uvCount,
 			RenderDataType normalType, u8 normalCount, u8 tangentCount, u8 binormalCount)
 		{
-			VertexType			t = addPos(VertexType::None, posType);
-			if (colorCount)		t = addColor(t, colorType, colorCount);
-			if (uvCount)		t = addUv(t, uvType, uvCount);
-			if (normalCount)
-			{
+			VertexType t = addPos(VertexType::None, posType);
+			if (colorCount)	 t = addColor(t, colorType, colorCount);
+			if (uvCount)	 t = addUv(t, uvType, uvCount);
+			if (normalCount) {
 				t = addNormal(t, normalType, normalCount);
 				t = addTangent(t, tangentCount);
 				t = addBinormal(t, binormalCount);
@@ -58,5 +65,4 @@ namespace sge {
 			return t;
 		}
 	};
-
 }

@@ -7,6 +7,7 @@ class MainWin : public NativeUIWindow {
 public:
 	void onCreate(CreateDesc& desc) {
 
+
 		Base::onCreate(desc);
 		auto* renderer = Renderer::current();
 
@@ -15,6 +16,8 @@ public:
 			renderContextDesc.window = this;
 			_renderContext = renderer->createContext(renderContextDesc);
 		}
+
+		_renderContext->beginRender();
 
 		EditMesh editMesh;
 
@@ -25,10 +28,13 @@ public:
 		editMesh.color.emplace_back(255, 0, 0, 255);
 		editMesh.color.emplace_back(0, 255, 0, 255);
 		editMesh.color.emplace_back(0, 0, 255, 255);
+
 		_renderMesh.create(editMesh);
 
 
-		_renderContext->beginRender();
+
+
+		
 	}
 
 	virtual void onCloseButton() override {
@@ -44,6 +50,7 @@ public:
 		drawNeeded();
 	}
 	RenderContext* _renderContext;
+
 	RenderMesh	_renderMesh;
 };
 
