@@ -45,6 +45,8 @@ public:
 	void setWindowTitle	(StrView title)		{ onSetWindowTitle(title); }
 	void drawNeeded() { onDrawNeeded(); }
 
+	const Rect2f& clientRect() const { return _clientRect; }
+
 	virtual void onCloseButton() {}
 	virtual void onActive(bool isActive) {}
 	virtual void onDraw() {}
@@ -53,6 +55,8 @@ protected:
 	virtual void onCreate(CreateDesc& desc) {}
 	virtual void onSetWindowTitle(StrView title) {}
 	virtual void onDrawNeeded() {}
+
+	Rect2f	_clientRect{ 0,0,0,0 };
 };
 
 }

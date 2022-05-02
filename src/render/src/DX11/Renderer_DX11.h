@@ -1,9 +1,8 @@
 #pragma once
 
-#include <Renderer.h>
-#include "d3d11.h"
-#include <d3d11_4.h>
-#include <dxgi1_4.h>
+
+#include "RenderCommon_DX11.h"
+#include "Renderer.h"
 
 
 namespace sge {

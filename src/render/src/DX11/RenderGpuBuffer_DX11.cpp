@@ -20,7 +20,6 @@ namespace sge
 		auto* dev = renderer->d3dDevice();
 
 		dev->CreateBuffer(&bd, nullptr, &_d3dBuf);
-
 	}
 
 	void RenderGpuBuffer_DX11::onUploadToGpu(Span<const u8> data, size_t offset)
@@ -30,10 +29,10 @@ namespace sge
 		auto* ctx = renderer->d3dDeviceContext();
 		D3D11_MAPPED_SUBRESOURCE mapped = {};
 		ctx->Map(_d3dBuf, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
-
+		
 		u8* dst = reinterpret_cast<u8*>(mapped.pData);
 		memcpy(dst + offset, data.data(), data.size());
-
+		SGE_LOG("Uploaded to GPU");
 		ctx->Unmap(_d3dBuf, 0);
 	}
 

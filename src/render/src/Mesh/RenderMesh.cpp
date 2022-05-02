@@ -44,6 +44,9 @@ namespace sge
 
 		_vertexCount = src.pos.size();
 
+		_primitive = RenderPrimitiveType::Triangles;
+
+
 		if (_vertexCount <= 0)
 			return;
 
@@ -74,7 +77,7 @@ namespace sge
 		auto* pData = vertexData.data();
 		auto stride = _vertexLayout->stride;
 		auto vc = _vertexCount;
-
+		_vertexLayout->type;
 
 		for (auto& e : _vertexLayout->elements) {
 			using S = Vertex_Semantic;

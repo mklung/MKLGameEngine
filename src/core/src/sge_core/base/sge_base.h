@@ -30,8 +30,11 @@
 #include <EASTL/string_view.h>
 #include <EASTL/span.h>
 
+#include <EASTL/optional.h>
+
 #include <EASTL/map.h>
 #include <EASTL/hash_map.h>
+#include <EASTL/vector_map.h>
 #include <EASTL/string_map.h>
 
 #include <EASTL/unique_ptr.h>
@@ -100,6 +103,7 @@ template<class T, size_t N, bool bEnableOverflow = true> using Vector_ = eastl::
 
 template<class T> using Vector = eastl::vector<T>;
 template<class KEY, class VALUE> using Map = eastl::map<KEY, VALUE>;
+template<class KEY, class VALUE> using VectorMap = eastl::vector_map<KEY, VALUE>;
 
 template<class T> using StrViewT = eastl::basic_string_view<T>;
 using StrViewA = StrViewT<char>;
@@ -115,6 +119,8 @@ public:
 
 	template<class R> void operator=(R&& r) { Base::operator=(SGE_FORWARD(r)); }
 };
+
+template<class T> using Opt = eastl::optional<T>;
 
 using StringA = eastl::basic_string<char>;
 using StringW = eastl::basic_string<wchar_t>;

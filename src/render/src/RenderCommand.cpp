@@ -1,42 +1,23 @@
-#pragma once
-
-#include "Vertex/Vertex.h"
-#include "RenderGpuBuffer.h"
+#include "RenderCommand.h"
 #include "Mesh/RenderMesh.h"
-#include "sge_core.h"
+#include "RenderCommand.h"
 
-namespace sge
-{
-	class RenderMesh;
-	enum class RenderCommandType {
-		None,
-		ClearFrameBuffers,
-		SwapBuffers,
-		DrawCall,
-	};
+namespace sge {
+	void RenderCommandBuffer::drawMesh(const SrcLoc& debugLoc, const RenderMesh& mesh)
+	{
+		auto* cmd = newCommand<RenderCommand_DrawCall>();
 
-	class RenderCommand : NonCopyable {
-	public:
-		using Type = RenderCommandType;
-
-		RenderCommand(Type type) : _type(type) {}
-
-		virtual ~RenderCommand() {}
-
-		Type type() const { return _type; }
-
-	private:
-		Type _type = Type::None;
-	};
-
-	class RenderCommand_DrawCall : public RenderCommand {
-		using Base = RenderCommand;
-	public:
-		RenderCommand_DrawCall() : Base(Type::DrawCall) {}
-
-		//RenderPrimitiveType		primitive = RenderPrimitiveType::None;
-		//const VertexLayout* vertexLayout = nullptr;
-		RenderGpuBuffer*	vertexBuffer;
-		size_t vertexCount = 0;
-	};
+		cmd->primitive = mesh.primitive();
+		cmd->vertexLayout = mesh.vertexLayout();
+		cmd->vertexBuffer = mesh.vertexBuf();
+		cmd->vertexCount = mesh.vertexCount();
+	}
+	void RenderCommandBuffer::reset()
+	{
+		_allocator.clear();
+		for (auto* cmd : _commands) {
+			cmd->~RenderCommand();
+		}
+		_commands.clear();
+	}
 }

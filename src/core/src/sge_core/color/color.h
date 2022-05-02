@@ -60,7 +60,7 @@ namespace sge
 		};
 
 		ColorRGBA(const T& r_, const T& g_, const T& b_, const T& a_)
-			: r(_r), g(g_), b(b_) , a(a_) {}
+			: r(r_), g(g_), b(b_) , a(a_) {}
 
 		ColorRGB<T> rgb() const { return ColorRGB(r, g, b); }
 	};

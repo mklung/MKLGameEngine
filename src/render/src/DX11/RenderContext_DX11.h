@@ -1,9 +1,6 @@
 #pragma once
-#include <d3d11.h>
-#include <d3d11_4.h>
-#include <dxgi1_4.h>
 #include "RenderContext.h"
-#include "Renderer_DX11.h"
+#include "RenderCommon_DX11.h"
 
 namespace sge 
 {
@@ -14,6 +11,13 @@ namespace sge
 	public:
 
 		RenderContext_DX11(CreateDesc& desc);
+
+
+		void onCmd_ClearFrameBuffers(RenderCommand_ClearFrameBuffers& cmd);
+		void onCmd_SwapBuffers(RenderCommand_SwapBuffers& cmd);
+		void onCmd_DrawCall(RenderCommand_DrawCall& cmd);
+
+
 		struct VERTEX { FLOAT X, Y, Z; 
 						FLOAT Color[4]; };
 
@@ -31,6 +35,11 @@ namespace sge
 		ID3D11PixelShader*		_testPixelShader;
 		ID3D11InputLayout*		_pLayout;
 
+		ID3D11InputLayout* _getTestInputLayout(const VertexLayout* src);
+		VectorMap<const VertexLayout*, ID3D11InputLayout*> _testInputLayouts;
+
+
+		virtual void onSetFrameBufferSize(Vec2f newSize);
 
 		virtual void onBeginRender() override;
 		virtual void onEndRender() override;
@@ -39,6 +48,9 @@ namespace sge
 		void _createRenderTarget();
 		void _setTestShaders();
 		void _createVertex();
+
+
+		virtual void onCommit(RenderCommandBuffer& cmdBuf);
 
 	};
 }
