@@ -17,7 +17,7 @@ namespace sge
 		ID3D11Buffer* d3dBuf() { return _d3dBuf; }
 
 	private:
-		ID3D11Buffer* _d3dBuf;
+		ComPtr<ID3D11Buffer>  _d3dBuf;
 	};
 
 }

@@ -60,7 +60,7 @@ namespace sge
 
 		RenderPrimitiveType	primitive = RenderPrimitiveType::None;
 		const VertexLayout* vertexLayout = nullptr;
-		RenderGpuBuffer* vertexBuffer;
+		SPtr<RenderGpuBuffer> vertexBuffer;
 		size_t vertexCount = 0;
 	};
 
@@ -75,7 +75,7 @@ namespace sge
 			return newCommand<RenderCommand_SwapBuffers>();
 		}
 
-		void drawMesh(const SrcLoc& debugLoc, const RenderMesh& mesh);
+		void drawMesh(const SrcLoc& debugLoc, RenderMesh& mesh);
 
 		void reset();
 

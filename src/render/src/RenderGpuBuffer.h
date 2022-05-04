@@ -18,7 +18,7 @@ namespace sge {
 		size_t	stride = 16;
 	};
 
-	class RenderGpuBuffer
+	class RenderGpuBuffer : public Object
 	{
 	public:
 		using CreateDesc = RenderGpuBuffer_CreateDesc;

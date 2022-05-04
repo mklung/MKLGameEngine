@@ -14,6 +14,10 @@
 #include "sge_core/math/Tuple4.h"
 #include "sge_core/math/Math.h"
 
+
+#include "sge_core/pointer/SPtr.h"
+#include "sge_core/pointer/ComPtr.h"
+
 #include "sge_core/color/Color.h"
 
 #include "sge_core/string/UtfUtil.h"

@@ -24,30 +24,28 @@ namespace sge
 	protected:
 		Renderer_DX11* _renderer = nullptr;
 
-		IDXGISwapChain*			_swapChain;
-		ID3D11RenderTargetView*	_renderTargetView;
-		ID3D11Texture2D*		_depthStencil;
-		ID3D11DepthStencilView*	_depthStencilView;
+		ComPtr<IDXGISwapChain>			_swapChain;
+		ComPtr<ID3D11RenderTargetView>	_renderTargetView;
+		ComPtr<ID3D11Texture2D>		_depthStencil;
+		ComPtr<ID3D11DepthStencilView>	_depthStencilView;
 
-		ID3D11Buffer*			_testVertexBuffer;
-		ID3D11VertexShader*		_testVertexShader;
-		ID3DBlob*				_testVertexShaderBytecode;
-		ID3D11PixelShader*		_testPixelShader;
-		ID3D11InputLayout*		_pLayout;
+		ComPtr<ID3D11Buffer>			_testVertexBuffer;
+		ComPtr<ID3D11VertexShader>		_testVertexShader;
+		ComPtr<ID3DBlob>				_testVertexShaderBytecode;
+		ComPtr<ID3D11PixelShader>		_testPixelShader;
+		ComPtr<ID3D11InputLayout>		_pLayout;
 
 		ID3D11InputLayout* _getTestInputLayout(const VertexLayout* src);
-		VectorMap<const VertexLayout*, ID3D11InputLayout*> _testInputLayouts;
+		VectorMap<const VertexLayout*, ComPtr<ID3D11InputLayout>> _testInputLayouts;
 
 
 		virtual void onSetFrameBufferSize(Vec2f newSize);
 
 		virtual void onBeginRender() override;
 		virtual void onEndRender() override;
-		virtual void onRender() override;
 
 		void _createRenderTarget();
 		void _setTestShaders();
-		void _createVertex();
 
 
 		virtual void onCommit(RenderCommandBuffer& cmdBuf);

@@ -27,7 +27,7 @@ namespace sge
 			scd.SampleDesc.Count = 1;
 			scd.Windowed = TRUE;
 
-			dxgiFactory->CreateSwapChain(dev, &scd, &_swapChain);
+			dxgiFactory->CreateSwapChain(dev, &scd, _swapChain.ptrForInit());
 
 		}
 	}
@@ -37,7 +37,7 @@ namespace sge
 
 		auto* ctx = _renderer->d3dDeviceContext();
 		if (_renderTargetView && cmd.color.has_value()) {
-			//float color[] = { 0.0f, 0.2f, 0.4f, 1.0f };
+			float color[] = { 0.0f, 0.2f, 0.4f, 1.0f };
 			ctx->ClearRenderTargetView(_renderTargetView, cmd.color->data);
 		}
 		if (_depthStencilView && cmd.depth.has_value()) {
@@ -53,12 +53,12 @@ namespace sge
 
 	void RenderContext_DX11::onCmd_DrawCall(RenderCommand_DrawCall& cmd)
 	{
-
+			
 		/*
 		
 		*/
 		if (!cmd.vertexLayout) { SGE_ASSERT(false); return; }
-		auto* vertexBuffer = static_cast<RenderGpuBuffer_DX11*>(cmd.vertexBuffer);
+		auto* vertexBuffer = static_cast<RenderGpuBuffer_DX11*>(cmd.vertexBuffer.ptr());
 		if (!vertexBuffer) { SGE_ASSERT(false); return; }
 
 		if (cmd.vertexCount <= 0) { SGE_ASSERT(false); return; }
@@ -97,22 +97,35 @@ namespace sge
 
 
 
-		ID3D11InputLayout*	outLayout;
+		for (auto& e : src->elements) {
+			auto& dst = inputDesc.emplace_back();
+			auto semanticType = Vertex_SemanticUtil::getType(e.semantic);
+			dst.SemanticName = DX11Util::getDxSemanticName(semanticType);
+			dst.SemanticIndex = Vertex_SemanticUtil::getIndex(e.semantic);
+			dst.Format = DX11Util::getDxFormat(e.dataType);
+			dst.InputSlot = 0;
+			dst.AlignedByteOffset = e.offset;
+			dst.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+			dst.InstanceDataStepRate = 0;
+		}
+
+		ComPtr<ID3D11InputLayout>	outLayout;
+		
 
 		auto* dev = _renderer->d3dDevice();
 
 
-		D3D11_INPUT_ELEMENT_DESC ied[] =
+		/*D3D11_INPUT_ELEMENT_DESC ied[] =
 		{
 			{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
 			{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		};
+		};*/
 
-		dev->CreateInputLayout(ied, 2, _testVertexShaderBytecode->GetBufferPointer(), 
-								_testVertexShaderBytecode->GetBufferSize(), &outLayout);
+		dev->CreateInputLayout(inputDesc.data(), static_cast<UINT>(inputDesc.size()), _testVertexShaderBytecode->GetBufferPointer(),
+								_testVertexShaderBytecode->GetBufferSize(), outLayout.ptrForInit());
 
 
-		RenderContext_DX11::_createVertex();
+		//RenderContext_DX11::_createVertex();
 
 
 		_testInputLayouts[src] = outLayout;
@@ -122,7 +135,7 @@ namespace sge
 	void RenderContext_DX11::onSetFrameBufferSize(Vec2f newSize)
 	{
 
-
+		_renderTargetView.reset(nullptr);
 		_swapChain->ResizeBuffers(0
 			, static_cast<UINT>(Math::max(0.0f, newSize.x))
 			, static_cast<UINT>(Math::max(0.0f, newSize.y))
@@ -133,9 +146,7 @@ namespace sge
 
 	void RenderContext_DX11::onBeginRender()
 	{
-		if(!_renderTargetView)
-			_renderTargetView->Release();
-		_renderTargetView = nullptr;
+
 
 
 		ID3D11DeviceContext4* ctx = _renderer->d3dDeviceContext();
@@ -155,7 +166,6 @@ namespace sge
 		viewport.Height = 600;
 
 		ctx->RSSetViewports(1, &viewport);
-		//_setTestShaders();
 	}
 
 	void RenderContext_DX11::onEndRender()
@@ -163,26 +173,6 @@ namespace sge
 	}
 
 	
-	void RenderContext_DX11::onRender()
-	{
-		
-
-		auto* ctx = _renderer->d3dDeviceContext();
-
-		float color[] = { 0.0f, 0.2f, 0.4f, 1.0f };
-		ctx->ClearRenderTargetView(_renderTargetView, color);
-
-
-		UINT stride = sizeof(VERTEX);
-		UINT offset = 0;
-		ctx->IASetVertexBuffers(0, 1, &_testVertexBuffer, &stride, &offset);
-
-		ctx->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		ctx->IASetInputLayout(_pLayout);
-
-		ctx->Draw(3, 0);
-		_swapChain->Present(0, 0);
-	}
 
 	void RenderContext_DX11::_createRenderTarget()
 	{
@@ -194,7 +184,7 @@ namespace sge
 		ID3D11Texture2D* backBuffer;
 		_swapChain->GetBuffer(0, IID_PPV_ARGS(&backBuffer));
 
-		dev->CreateRenderTargetView(backBuffer, nullptr, &_renderTargetView);
+		dev->CreateRenderTargetView(backBuffer, nullptr, _renderTargetView.ptrForInit());
 		
 
 		D3D11_TEXTURE2D_DESC backBufferDesc;
@@ -213,14 +203,14 @@ namespace sge
 		descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 		descDepth.CPUAccessFlags = 0;
 		descDepth.MiscFlags = 0;
-		dev->CreateTexture2D(&descDepth, nullptr, &_depthStencil);
+		dev->CreateTexture2D(&descDepth, nullptr, _depthStencil.ptrForInit());
 
 		// Create the depth stencil view
 		D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
 		descDSV.Format = descDepth.Format;
 		descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 		descDSV.Texture2D.MipSlice = 0;
-		dev->CreateDepthStencilView(_depthStencil, &descDSV, &_depthStencilView);
+		dev->CreateDepthStencilView(_depthStencil, &descDSV, _depthStencilView.ptrForInit());
 		backBuffer->Release();
 	}
 
@@ -230,49 +220,20 @@ namespace sge
 		ID3D11DeviceContext4*	ctx = _renderer->d3dDeviceContext();
 
 
-		ID3D10Blob* VS, * PS;
-		D3DCompileFromFile(L"Shader/Triangle.hlsl", 0, 0, "vs_main", "vs_4_0", 0, 0, &VS, 0);
-		D3DCompileFromFile(L"Shader/Triangle.hlsl", 0, 0, "ps_main", "ps_4_0", 0, 0, &PS, 0);
-		dev->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), nullptr, &_testVertexShader);
+		ComPtr<ID3D10Blob> VS, PS;
+		D3DCompileFromFile(L"Shader/Triangle.hlsl", 0, 0, "vs_main", "vs_4_0", 0, 0, VS.ptrForInit(), 0);
+		D3DCompileFromFile(L"Shader/Triangle.hlsl", 0, 0, "ps_main", "ps_4_0", 0, 0, PS.ptrForInit(), 0);
+		dev->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), nullptr, _testVertexShader.ptrForInit());
 
 		_testVertexShaderBytecode = VS;
 
-		dev->CreatePixelShader(PS->GetBufferPointer(), PS->GetBufferSize(), nullptr, &_testPixelShader);
+		dev->CreatePixelShader(PS->GetBufferPointer(), PS->GetBufferSize(), nullptr, _testPixelShader.ptrForInit());
 
 		ctx->VSSetShader(_testVertexShader, 0, 0);
 		ctx->PSSetShader(_testPixelShader, 0, 0);
 
 	}
 
-	void RenderContext_DX11::_createVertex()
-	{
-		ID3D11Device1* dev = _renderer->d3dDevice();
-		ID3D11DeviceContext4* ctx = _renderer->d3dDeviceContext();
-
-		VERTEX OurVertices[] =
-		{
-			{0.0f, 0.5f, 0.0f, {1.0f, 0.0f, 0.0f, 1.0f}},
-			{0.45f, -0.5, 0.0f, {0.0f, 1.0f, 0.0f, 1.0f}},
-			{-0.45f, -0.5f, 0.0f, {0.0f, 0.0f, 1.0f, 1.0f}}
-		};
-
-
-		D3D11_BUFFER_DESC bd;
-		ZeroMemory(&bd, sizeof(bd));
-
-		bd.Usage = D3D11_USAGE_DYNAMIC;                // write access access by CPU and GPU
-		bd.ByteWidth = sizeof(VERTEX) * 3;             // size is the VERTEX struct * 3
-		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;       // use as a vertex buffer
-		bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;    // allow CPU to write in buffer
-
-		dev->CreateBuffer(&bd, NULL, &_testVertexBuffer);       // create the buffer
-
-
-		D3D11_MAPPED_SUBRESOURCE ms;
-		ctx->Map(_testVertexBuffer, NULL, D3D11_MAP_WRITE_DISCARD, NULL, &ms);		// map the buffer
-		memcpy(ms.pData, OurVertices, sizeof(OurVertices));							// copy the data
-		ctx->Unmap(_testVertexBuffer, NULL);										// unmap the buffer
-	}
 
 	void RenderContext_DX11::onCommit(RenderCommandBuffer& cmdBuf)
 	{

@@ -11,7 +11,8 @@ namespace sge
 		
 		union 
 		{
-			struct { T r; T data[kElementCount];};
+			struct { T r; };
+			T data[kElementCount];
 		};
 
 		ColorR(const T& r_) : r(_r) {}
@@ -25,7 +26,8 @@ namespace sge
 
 		union
 		{
-			struct { T r, g, b; T data[kElementCount]; };
+			struct { T r, g, b; };
+			T data[kElementCount];
 		};
 
 		ColorRG(const T& r_, T& g_) 
@@ -41,7 +43,8 @@ namespace sge
 
 		union
 		{
-			struct { T r, g, b; T data[kElementCount]; };
+			struct { T r, g, b; };
+			T data[kElementCount];
 		};
 
 		ColorRGB(const T& r_, const T& g_, const T& b_) 
@@ -56,7 +59,8 @@ namespace sge
 
 		union
 		{
-			struct { T r, g, b, a; T data[kElementCount]; };
+			struct { T r, g, b, a; };
+			T data[kElementCount];
 		};
 
 		ColorRGBA(const T& r_, const T& g_, const T& b_, const T& a_)

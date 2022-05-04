@@ -88,12 +88,12 @@ namespace sge
 			auto semanticIndex = U::getIndex(e.semantic);
 
 			switch (semanticType) {
-			case ST::TexCoord: {
-				if (semanticIndex < EditMesh::kUvCountMax) {
-					Helper::copyVertexData(pData, vc, e, stride, src.uv[semanticIndex].data()); break;
-				}
-				continue;
-			} break;
+				case ST::TexCoord: {
+					if (semanticIndex < EditMesh::kUvCountMax) {
+						Helper::copyVertexData(pData, vc, e, stride, src.uv[semanticIndex].data()); break;
+					}
+					continue;
+				} break;
 			}
 
 			switch (e.semantic) {

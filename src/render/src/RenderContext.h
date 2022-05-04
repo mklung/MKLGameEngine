@@ -12,7 +12,7 @@ namespace sge {
 	};
 
 
-	class RenderContext
+	class RenderContext : public Object
 	{
 	public:
 		using CreateDesc = RenderContext_CreateDesc;
@@ -20,7 +20,6 @@ namespace sge {
 
 		void beginRender() { onBeginRender(); }
 		void endRender() { onEndRender(); }
-		void render() { onRender(); }
 
 
 		void setFrameBufferSize(Vec2f newSize);
@@ -36,7 +35,6 @@ namespace sge {
 
 		virtual void onBeginRender() {};
 		virtual void onEndRender() {};
-		virtual void onRender() {};
 
 		virtual void onCommit(RenderCommandBuffer& cmdBuf) {}
 

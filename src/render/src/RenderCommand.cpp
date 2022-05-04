@@ -3,7 +3,7 @@
 #include "RenderCommand.h"
 
 namespace sge {
-	void RenderCommandBuffer::drawMesh(const SrcLoc& debugLoc, const RenderMesh& mesh)
+	void RenderCommandBuffer::drawMesh(const SrcLoc& debugLoc, RenderMesh& mesh)
 	{
 		auto* cmd = newCommand<RenderCommand_DrawCall>();
 

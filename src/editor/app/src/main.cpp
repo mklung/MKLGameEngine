@@ -25,15 +25,14 @@ public:
 		editMesh.pos.emplace_back(0.5f, -0.5f, 0.0f);
 		editMesh.pos.emplace_back(-0.5f, -0.5f, 0.0f);
 
-		editMesh.color.emplace_back(1, 0, 0, 1);
-		editMesh.color.emplace_back(0, 1, 0, 1);
-		editMesh.color.emplace_back(0, 0, 1, 1);
+		editMesh.color.emplace_back(255, 0, 0, 1);
+		editMesh.color.emplace_back(0, 255, 0, 1);
+		editMesh.color.emplace_back(0, 0, 255, 1);
 
 		_renderMesh.create(editMesh);
 
 		VertexLayoutManager::current()->getLayout(Vertex_Pos::kType);
 
-		_renderContext->beginRender();
 	}
 
 	virtual void onCloseButton() override {
@@ -47,10 +46,11 @@ public:
 
 		_renderContext->setFrameBufferSize(clientRect().size);
 
-		
+
+		_renderContext->beginRender();
 
 		_cmdBuf.reset();
-		_cmdBuf.clearFrameBuffers()->setColor({ 0, 0, 0.2f, 1 });
+		_cmdBuf.clearFrameBuffers()->setColor({ 0.0f , 0, 0.2f, 1 });
 		_cmdBuf.drawMesh(SGE_LOC, _renderMesh);
 		_cmdBuf.swapBuffers();
 
@@ -60,7 +60,7 @@ public:
 		drawNeeded();
 	}
 
-	RenderContext* _renderContext;
+	SPtr<RenderContext> _renderContext;
 	RenderCommandBuffer _cmdBuf;
 	RenderMesh	_renderMesh;
 };

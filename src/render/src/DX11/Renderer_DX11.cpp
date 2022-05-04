@@ -27,17 +27,17 @@ Renderer_DX11::Renderer_DX11(CreateDesc& desc)
 		&featureLevel,
 		&d3dDeviceContext);
 
-	d3dDevice->QueryInterface(IID_PPV_ARGS(&_d3dDev));
-	d3dDeviceContext->QueryInterface(IID_PPV_ARGS(&_d3dCtx));
-	_d3dDev->QueryInterface(IID_PPV_ARGS(&_dxgiDev));
+	d3dDevice->QueryInterface(IID_PPV_ARGS(_d3dDev.ptrForInit()));
+	d3dDeviceContext->QueryInterface(IID_PPV_ARGS(_d3dCtx.ptrForInit()));
+	_d3dDev->QueryInterface(IID_PPV_ARGS(_dxgiDev.ptrForInit()));
 
 	IDXGIAdapter* adapter;
 	_dxgiDev->GetAdapter(&adapter);
-	adapter->QueryInterface(IID_PPV_ARGS(&_dxgiAdapter));
+	adapter->QueryInterface(IID_PPV_ARGS(_dxgiAdapter.ptrForInit()));
 	D3D11_FEATURE_DATA_THREADING s = {};
 	d3dDevice->CheckFeatureSupport(D3D11_FEATURE_THREADING, &s, sizeof(s));
 
-	_dxgiAdapter->GetParent(IID_PPV_ARGS(&_dxgiFactory));
+	_dxgiAdapter->GetParent(IID_PPV_ARGS(_dxgiFactory.ptrForInit()));
 
 }
 
