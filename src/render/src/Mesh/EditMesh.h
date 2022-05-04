@@ -10,7 +10,7 @@ namespace sge {
 		static const u8 kUvCountMax = 4;
 
 		Vector<Tuple3f> pos;
-		Vector<Tuple4d> color;
+		Vector<Color4b> color;
 
 		Vector<Tuple2f>	uv[kUvCountMax];
 
