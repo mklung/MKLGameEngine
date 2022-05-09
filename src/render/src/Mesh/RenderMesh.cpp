@@ -43,7 +43,6 @@ namespace sge
 		using Helper = RenderMesh_InternalHelper;
 
 		_vertexCount = src.pos.size();
-
 		_primitive = RenderPrimitiveType::Triangles;
 
 

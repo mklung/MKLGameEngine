@@ -13,7 +13,7 @@ namespace sge {
 			{
 				T x, y;
 			};
-			T data{ kElementCunt };
+			T data[kElementCunt];
 		};
 
 		Tuple2(const T& x_, const T& y_)

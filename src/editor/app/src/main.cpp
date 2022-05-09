@@ -1,4 +1,6 @@
+
 #include <sge_editor.h>
+#include "Mesh/OBJ/ObjLoader.h"
 
 namespace sge {
 
@@ -18,8 +20,10 @@ public:
 		}
 
 		//_renderContext->beginRender();
-
+		
 		EditMesh editMesh;
+
+		ObjLoader::LoadFile(editMesh, "Mesh/Plane.obj");
 
 		editMesh.pos.emplace_back(0.0f, 0.5f, 0.0f);
 		editMesh.pos.emplace_back(0.5f, -0.5f, 0.0f);
@@ -27,7 +31,7 @@ public:
 
 		editMesh.color.emplace_back(255, 0, 0, 1);
 		editMesh.color.emplace_back(0, 255, 0, 1);
-		editMesh.color.emplace_back(0, 0, 255, 1);
+		editMesh.color.emplace_back(0, 0, 0, 1);
 
 		_renderMesh.create(editMesh);
 

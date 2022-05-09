@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Vertex/Vertex.h"
+#include "Render_Common.h"
 
 namespace sge {
 
@@ -8,6 +9,9 @@ namespace sge {
 	{
 	public:
 		static const u8 kUvCountMax = 4;
+
+		RenderPrimitiveType	primitive = RenderPrimitiveType::Triangles;
+		Vector<u32> index;
 
 		Vector<Tuple3f> pos;
 		Vector<Color4b> color;
@@ -18,6 +22,7 @@ namespace sge {
 		Vector<Tuple3f>	tangent;
 		Vector<Tuple3f>	binormal;
 
+		void clear();
 	private:
 
 	};

@@ -10,7 +10,7 @@ namespace sge {
 
 		union {
 			struct{T x, y, z;};
-			T data{ kElementCunt };
+			T data[kElementCunt];
 		};
 
 		Tuple3(const T& x_, const T& y_, const T& z_)
