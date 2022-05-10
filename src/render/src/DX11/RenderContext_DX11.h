@@ -33,7 +33,11 @@ namespace sge
 		ComPtr<ID3D11VertexShader>		_testVertexShader;
 		ComPtr<ID3DBlob>				_testVertexShaderBytecode;
 		ComPtr<ID3D11PixelShader>		_testPixelShader;
-		ComPtr<ID3D11InputLayout>		_pLayout;
+		ComPtr<ID3D11RasterizerState>	_testRasterizerState;
+
+		ComPtr<ID3D11DepthStencilState>	_testDepthStencilState;
+		ComPtr<ID3D11BlendState>		_testBlendState;
+		//ComPtr<ID3D11InputLayout>		_pLayout;
 
 		ID3D11InputLayout* _getTestInputLayout(const VertexLayout* src);
 		VectorMap<const VertexLayout*, ComPtr<ID3D11InputLayout>> _testInputLayouts;

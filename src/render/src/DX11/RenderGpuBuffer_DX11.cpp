@@ -12,9 +12,25 @@ namespace sge
 		bd.ByteWidth = DX11Util::castUINT(Math::alignTo(desc.bufferSize, 16));
 		bd.StructureByteStride = DX11Util::castUINT(desc.stride);
 
-		bd.Usage = D3D11_USAGE_DYNAMIC;                // write access access by CPU and GPU
-		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;       // use as a vertex buffer
-		bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;    // allow CPU to write in buffer
+		switch (desc.type) {
+		case Type::Vertex: {
+			bd.Usage = D3D11_USAGE_DYNAMIC;
+			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+			bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		}break;
+		case Type::Index: {
+			bd.Usage = D3D11_USAGE_DYNAMIC;
+			bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+			bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		}break;
+		case Type::Const: {
+			bd.Usage = D3D11_USAGE_DYNAMIC;
+			bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+			bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		}break;
+		default: throw SGE_ERROR("unsupport gpu buffer type");
+		}
+
 
 		auto* renderer = Renderer_DX11::current();
 		auto* dev = renderer->d3dDevice();

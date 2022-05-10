@@ -97,6 +97,14 @@ namespace sge {
 	template<class T> using UPtr = eastl::unique_ptr<T>;
 
 	template<class T> using Span = eastl::span<T>;
+
+	template<class DST, class SRC> inline
+		Span<DST> spanCast(Span<SRC> src) {
+		size_t sizeInBytes = src.size() * sizeof(SRC);
+		return Span<DST>(reinterpret_cast<DST*>(src.data()), sizeInBytes / sizeof(DST));
+	}
+
+
 	template<class T, size_t N, bool bEnableOverflow = true> using Vector_ = eastl::fixed_vector<T, N, bEnableOverflow>;
 
 	template<class T> using Vector = eastl::vector<T>;

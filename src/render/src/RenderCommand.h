@@ -9,6 +9,8 @@
 namespace sge
 {
 	class RenderMesh;
+
+
 	enum class RenderCommandType {
 		None,
 		ClearFrameBuffers,
@@ -60,8 +62,14 @@ namespace sge
 
 		RenderPrimitiveType	primitive = RenderPrimitiveType::None;
 		const VertexLayout* vertexLayout = nullptr;
-		SPtr<RenderGpuBuffer> vertexBuffer;
+		RenderDataType		indexType = RenderDataType::UInt16;
+
+
+		SPtr<RenderGpuBuffer>	vertexBuffer;
+		SPtr<RenderGpuBuffer>	indexBuffer;
+
 		size_t vertexCount = 0;
+		size_t indexCount = 0;
 	};
 
 
@@ -76,6 +84,7 @@ namespace sge
 		}
 
 		void drawMesh(const SrcLoc& debugLoc, RenderMesh& mesh);
+		void drawSubMesh(const SrcLoc& debugLoc, const RenderSubMesh& subMesh);
 
 		void reset();
 

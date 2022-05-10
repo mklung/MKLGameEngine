@@ -4,7 +4,7 @@ namespace sge
 {
 	void ObjLoader::LoadFile(EditMesh& mesh, StrView filename)
 	{
-		SGE_LOG("Test");
+		
 		MemMapFile mm;
 		mm.open(filename);
 		LoadMem(mesh, mm);
@@ -65,7 +65,7 @@ namespace sge
 		if (_token.size() <= 0) return;
 		if (_token[0] == '#') return; //skip comment
 
-		SGE_LOG("Token : {}", _token);
+		//SGE_LOG("Token : {}", _token);
 		if (_token == "v") return _parseLine_v();
 		if (_token == "vt") return _parseLine_vt();
 		if (_token == "vn") return _parseLine_vn();
@@ -90,7 +90,7 @@ namespace sge
 			, value.y / value.w
 			, value.z / value.w);
 
-		SGE_LOG("X:{} Y:{} Z:{}", value.x, value.y, value.z);
+		//SGE_LOG("X:{} Y:{} Z:{}", value.x, value.y, value.z);
 		_tmpPos.emplace_back(pos);
 	}
 
@@ -106,7 +106,7 @@ namespace sge
 			}
 		}
 
-		SGE_LOG("X:{} Y:{} ", value.x, value.y);
+		//SGE_LOG("X:{} Y:{} ", value.x, value.y);
 		_tmpUv.emplace_back(value);
 	}
 
@@ -123,7 +123,7 @@ namespace sge
 
 		}
 
-		SGE_LOG("X:{} Y:{} Z:{}", value.x, value.y, value.z);
+		//SGE_LOG("X:{} Y:{} Z:{}", value.x, value.y, value.z);
 		_tmpNormal.emplace_back(value);
 	}
 

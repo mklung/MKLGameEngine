@@ -23,7 +23,7 @@ public:
 		
 		EditMesh editMesh;
 #if 1
-		ObjLoader::LoadFile(editMesh, "Mesh/Plane.obj");
+		ObjLoader::LoadFile(editMesh, "Mesh/test.obj");
 
 		for (size_t i = editMesh.color.size(); i < editMesh.pos.size(); i++) {
 			editMesh.color.emplace_back(255, 255, 255, 255);

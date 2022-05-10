@@ -64,6 +64,13 @@ namespace sge
 		if (cmd.vertexCount <= 0) { SGE_ASSERT(false); return; }
 		if (cmd.primitive == RenderPrimitiveType::None) { SGE_ASSERT(false); return; }
 
+
+		RenderGpuBuffer_DX11* indexBuffer = nullptr;
+		if (cmd.indexCount > 0) {
+			indexBuffer = static_cast<RenderGpuBuffer_DX11*>(cmd.indexBuffer.ptr());
+			if (!indexBuffer) { SGE_ASSERT(false); return; }
+		}
+
 		_setTestShaders();
 
 		auto* ctx = _renderer->d3dDeviceContext();
@@ -78,10 +85,20 @@ namespace sge
 		UINT stride = static_cast<UINT>(cmd.vertexLayout->stride);
 		UINT offset = 0;
 		UINT vertexCount = static_cast<UINT>(cmd.vertexCount);
+		UINT indexCount = static_cast<UINT>(cmd.indexCount);
 
 		ID3D11Buffer* ppVertexBuffers[] = { vertexBuffer->d3dBuf() };
 		ctx->IASetVertexBuffers(0, 1, ppVertexBuffers, &stride, &offset);
-		ctx->Draw(vertexCount, 0);
+		
+
+		if (indexCount > 0) {
+			auto indexType = DX11Util::getDxFormat(cmd.indexType);
+			ctx->IASetIndexBuffer(indexBuffer->d3dBuf(), indexType, 0);
+			ctx->DrawIndexed(indexCount, 0, 0);
+		}
+		else {
+			ctx->Draw(vertexCount, 0);
+		}
 	}
 
 	ID3D11InputLayout* RenderContext_DX11::_getTestInputLayout(const VertexLayout* src)
@@ -162,8 +179,8 @@ namespace sge
 		D3D11_VIEWPORT viewport = {};
 		viewport.TopLeftX = 0;
 		viewport.TopLeftY = 0;
-		viewport.Width = 800;
-		viewport.Height = 600;
+		viewport.Width = _frameBufferSize.x;
+		viewport.Height = _frameBufferSize.y;
 
 		ctx->RSSetViewports(1, &viewport);
 	}
@@ -219,19 +236,100 @@ namespace sge
 		ID3D11Device1*			dev = _renderer->d3dDevice();
 		ID3D11DeviceContext4*	ctx = _renderer->d3dDeviceContext();
 
+		if (!_testVertexShader)
+		{
+			ComPtr<ID3D10Blob> VS;
+			D3DCompileFromFile(L"Shader/Triangle.hlsl", 0, 0, "vs_main", "vs_4_0", 0, 0, VS.ptrForInit(), 0);
+			
+			_testVertexShaderBytecode = VS;
+			
+			dev->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), nullptr, _testVertexShader.ptrForInit());
 
-		ComPtr<ID3D10Blob> VS, PS;
-		D3DCompileFromFile(L"Shader/Triangle.hlsl", 0, 0, "vs_main", "vs_4_0", 0, 0, VS.ptrForInit(), 0);
-		D3DCompileFromFile(L"Shader/Triangle.hlsl", 0, 0, "ps_main", "ps_4_0", 0, 0, PS.ptrForInit(), 0);
-		dev->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), nullptr, _testVertexShader.ptrForInit());
+		}
 
-		_testVertexShaderBytecode = VS;
+		if (!_testPixelShader)
+		{
+			ComPtr<ID3D10Blob> PS;
+			D3DCompileFromFile(L"Shader/Triangle.hlsl", 0, 0, "ps_main", "ps_4_0", 0, 0, PS.ptrForInit(), 0);
+			dev->CreatePixelShader(PS->GetBufferPointer(), PS->GetBufferSize(), nullptr, _testPixelShader.ptrForInit());
+		}
 
-		dev->CreatePixelShader(PS->GetBufferPointer(), PS->GetBufferSize(), nullptr, _testPixelShader.ptrForInit());
+
+
+
+		if (!_testRasterizerState) {
+			D3D11_RASTERIZER_DESC rasterDesc = {};
+			rasterDesc.AntialiasedLineEnable = true;
+			rasterDesc.CullMode = D3D11_CULL_NONE;
+			rasterDesc.DepthBias = 0;
+			rasterDesc.DepthBiasClamp = 0.0f;
+			rasterDesc.DepthClipEnable = true;
+
+			bool wireframe = true;
+			rasterDesc.FillMode = wireframe ? D3D11_FILL_WIREFRAME : D3D11_FILL_SOLID;
+
+			rasterDesc.FrontCounterClockwise = true;
+			rasterDesc.MultisampleEnable = false;
+			rasterDesc.ScissorEnable = false;
+			rasterDesc.SlopeScaledDepthBias = 0.0f;
+
+			dev->CreateRasterizerState(&rasterDesc, _testRasterizerState.ptrForInit());
+			
+		}
+
+		if (!_testDepthStencilState) {
+			D3D11_DEPTH_STENCIL_DESC depthStencilDesc = {};
+			bool depthTest = false;
+			if (depthTest) {
+				depthStencilDesc.DepthEnable = true;
+				depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+			}
+			else {
+				depthStencilDesc.DepthEnable = false;
+			}
+
+			depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+			depthStencilDesc.StencilEnable = false;
+			depthStencilDesc.StencilReadMask = 0xFF;
+			depthStencilDesc.StencilWriteMask = 0xFF;
+
+			dev->CreateDepthStencilState(&depthStencilDesc, _testDepthStencilState.ptrForInit());
+			
+		}
+
+		if (!_testBlendState) {
+			D3D11_BLEND_DESC blendStateDesc = {};
+			blendStateDesc.AlphaToCoverageEnable = false;
+			blendStateDesc.IndependentBlendEnable = false;
+			auto& rtDesc = blendStateDesc.RenderTarget[0];
+
+			rtDesc.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+			bool blendEnable = true;
+			if (blendEnable) {
+				rtDesc.BlendEnable = true;
+				rtDesc.BlendOp = D3D11_BLEND_OP_ADD;
+				rtDesc.BlendOpAlpha = D3D11_BLEND_OP_ADD;
+				rtDesc.SrcBlend = D3D11_BLEND_SRC_ALPHA;
+				rtDesc.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+				rtDesc.SrcBlendAlpha = D3D11_BLEND_SRC_ALPHA;
+				rtDesc.DestBlendAlpha = D3D11_BLEND_INV_SRC_ALPHA;
+			}
+			else {
+				rtDesc.BlendEnable = false;
+			}
+
+			dev->CreateBlendState(&blendStateDesc, _testBlendState.ptrForInit());
+			
+		}
+
+		ctx->RSSetState(_testRasterizerState);
+		ctx->OMSetDepthStencilState(_testDepthStencilState, 1);
+
+		Color4f blendColor(1, 1, 1, 1);
+		ctx->OMSetBlendState(_testBlendState, blendColor.data, 0xffffffff);
 
 		ctx->VSSetShader(_testVertexShader, 0, 0);
 		ctx->PSSetShader(_testPixelShader, 0, 0);
-
 	}
 
 

@@ -29,8 +29,8 @@ namespace sge {
 		virtual RenderGpuBuffer* onCreateGpuBuffer(RenderGpuBuffer_CreateDesc& desc) override;
 
 		ComPtr<IDXGIFactory1>			_dxgiFactory;
-		ComPtr<IDXGIDevice>			_dxgiDev;
-		ComPtr<IDXGIAdapter3>		_dxgiAdapter;
+		ComPtr<IDXGIDevice>				_dxgiDev;
+		ComPtr<IDXGIAdapter3>			_dxgiAdapter;
 		ComPtr<ID3D11Device1>			_d3dDev;
 		ComPtr<ID3D11DeviceContext4>	_d3dCtx;
 		//ID3D11Debug*			_d3dDebug;
