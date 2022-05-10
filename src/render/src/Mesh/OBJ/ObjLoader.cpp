@@ -28,6 +28,7 @@ namespace sge
 		_outMesh->primitive = RenderPrimitiveType::Triangles;
 
 		_source = StrView(reinterpret_cast<const char*>(src.data()), src.size());
+
 		SGE_LOG("{}", _source);
 		_sourceRemain = _source;
 		_lineNumber = 0;
@@ -64,20 +65,24 @@ namespace sge
 		if (_token.size() <= 0) return;
 		if (_token[0] == '#') return; //skip comment
 
-		//if (_token == "v") return _parseLine_v();
-		//if (_token == "vt") return _parseLine_vt();
-		//if (_token == "vn") return _parseLine_vn();
-		//if (_token == "f") return _parseLine_f();
+		SGE_LOG("Token : {}", _token);
+		if (_token == "v") return _parseLine_v();
+		if (_token == "vt") return _parseLine_vt();
+		if (_token == "vn") return _parseLine_vn();
+		if (_token == "f") return _parseLine_f();
 	}
 
 	void ObjLoader::_parseLine_v()
 	{
 		Tuple4f value(0, 0, 0, 1);
 
-		for (size_t i = 0; i < 4; i++) {
+		for (size_t i = 0; i < 4; i++) 
+		{
 			_nextToken();
-			if (!StringUtil::tryParse(_token, value.data[i])) {
-			_error("error read v");
+			if (_token.size() <= 0) break;
+			if (!StringUtil::tryParse(_token, value.data[i])) 
+			{
+				_error("error read v");
 			}
 		}
 		
@@ -85,6 +90,7 @@ namespace sge
 			, value.y / value.w
 			, value.z / value.w);
 
+		SGE_LOG("X:{} Y:{} Z:{}", value.x, value.y, value.z);
 		_tmpPos.emplace_back(pos);
 	}
 
@@ -94,10 +100,13 @@ namespace sge
 
 		for (size_t i = 0; i < 2; i++) {
 			_nextToken();
+			if (_token.size() <= 0) break;
 			if (!StringUtil::tryParse(_token, value.data[i])) {
 				_error("error read vt");
 			}
 		}
+
+		SGE_LOG("X:{} Y:{} ", value.x, value.y);
 		_tmpUv.emplace_back(value);
 	}
 
@@ -107,11 +116,14 @@ namespace sge
 
 		for (size_t i = 0; i < 3; i++) {
 			_nextToken();
+			if (_token.size() <= 0) break;
 			if (!StringUtil::tryParse(_token, value.data[i])) {
 				_error("error read vn");
 			}
 
 		}
+
+		SGE_LOG("X:{} Y:{} Z:{}", value.x, value.y, value.z);
 		_tmpNormal.emplace_back(value);
 	}
 

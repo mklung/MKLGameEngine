@@ -18,7 +18,7 @@ namespace sge {
 
 	private:
 
-		RenderPrimitiveType _primitive = RenderPrimitiveType::None;
+		RenderPrimitiveType _primitive = RenderPrimitiveType::Triangles;
 		size_t _vertexCount = 0;
 		const VertexLayout* _vertexLayout = nullptr;
 		SPtr<RenderGpuBuffer>	_vertexBuf;

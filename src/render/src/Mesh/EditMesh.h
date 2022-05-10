@@ -2,6 +2,7 @@
 
 #include "../Vertex/Vertex.h"
 #include "Render_Common.h"
+#include "sge_core.h"
 
 namespace sge {
 
