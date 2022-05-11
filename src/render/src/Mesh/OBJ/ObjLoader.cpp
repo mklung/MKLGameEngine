@@ -29,7 +29,7 @@ namespace sge
 
 		_source = StrView(reinterpret_cast<const char*>(src.data()), src.size());
 
-		SGE_LOG("{}", _source);
+		//SGE_LOG("{}", _source);
 		_sourceRemain = _source;
 		_lineNumber = 0;
 

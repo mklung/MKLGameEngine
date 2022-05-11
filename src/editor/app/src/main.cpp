@@ -87,13 +87,12 @@ public:
 			String file = getExecutableFilename();
 			String path = FilePath::getDir(file);
 			path.append("/../../../../../../Assets");
+			SGE_LOG("dir = {}", path);
 			setCurrentDir(path);
 
 			auto dir = getCurrentDir();
-			SGE_LOG("dir = {}", dir);
 		}
 		Base::onCreate(desc);
-
 
 		Renderer::CreateDesc renderDesc;
 		renderDesc.apiType = Renderer::ApiType::DX11;

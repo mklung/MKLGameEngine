@@ -24,6 +24,19 @@ function(sge_source_group src_path src_files)
 	endforeach()
 endfunction()
 
+function(sge_set_target_warning_level target_name)
+	if(MSVC)
+	  target_compile_options(${target_name} PRIVATE /WX)     #warning treated as error
+	  target_compile_options(${target_name} PRIVATE /W4)     #warning level 4
+	  target_compile_options(${target_name} PRIVATE /wd4100) #warning C4100: unreferenced formal parameter in function
+	  target_compile_options(${target_name} PRIVATE /wd4201) #warning C4201: nonstandard extension used: nameless struct/union
+	  target_compile_options(${target_name} PRIVATE /wd4127) #warning C4127: conditional expression is constant
+	else()
+	  target_compile_options(${target_name} PRIVATE -Wall -Wextra -Wpedantic -Werror)
+	endif()
+endfunction()
+
+
 function(sge_add_library target_name src_path)
 	file(GLOB_RECURSE src_files
 		"${src_path}/src/*.*"
@@ -58,5 +71,8 @@ add_subdirectory(src/engine)
 #-- editor
 add_subdirectory(src/editor)
 add_subdirectory(src/editor/app)
+
+#-- shaderCompiler
+add_subdirectory(src/shadercompiler)
 
 set_property (DIRECTORY PROPERTY VS_STARTUP_PROJECT sge_editor_app)
