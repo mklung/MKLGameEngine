@@ -4,9 +4,8 @@
 
 namespace sge
 {
-	class LoadShader;
 
-	class LoadShader
+	class LoadShader : public NonCopyable
 	{
 	public:
 		void	loadShaderFile(StrView filename);

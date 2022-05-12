@@ -1,5 +1,5 @@
 #include "LoadShader.h"
-
+#include "Lexer/Lexer.h"
 namespace sge
 
 {
@@ -46,6 +46,8 @@ namespace sge
 		MemMapFile mm;
 		mm.open(filename);
 		SGE_LOG("{}", mm.data());
+		Lexer::lexer(mm);
+		
 	}
 
 	void LoadShader::onSetCurrentDir(StrView dir)
