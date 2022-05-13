@@ -24,6 +24,10 @@ namespace sge
 				_parseLine();
 			}
 		}
+		for (int i = 0; i < _tokens.size(); i++)
+		{
+			SGE_LOG("{}", _tokens[i].value);
+		}
 	}
 
 	void Lexer::_nextLine()
@@ -98,14 +102,56 @@ namespace sge
 					viewIndex++;
 					src_c = startPoint + viewIndex;
 
-					if (viewIndex >= _lineRemain.size())
+					if (viewIndex > _lineRemain.size())
 						return;
 				}
 				t.value = idf;
-				SGE_LOG("Identifier{} : {}", _lineNumber, t.value);
+				_tokens.emplace_back(t);
+				SGE_LOG("Identifier\t{}\t: {}", _lineNumber, t.value);
 				
 			}
 
+
+			else if (token >= '0' && token <= '9') 
+			{
+				t.type = TokenType::Number;
+				String number;
+				while (*src_c >= '0' && *src_c <= '9') 
+				{
+					number += *src_c;
+
+					viewIndex++;
+					src_c = startPoint + viewIndex;
+				}
+				
+				if (*src_c == '.')
+				{
+					number += '.';
+					if (!(*(src_c + 1) >= '0' && *(src_c + 1)<= '9'))
+					{
+						number += '0';
+					}
+					else
+					{
+						viewIndex++;
+						src_c = startPoint + viewIndex;
+
+						while (*src_c >= '0' && *src_c <= '9')
+						{
+							number += *src_c;
+
+							viewIndex++;
+							src_c = startPoint + viewIndex;
+						}
+						
+					}
+				}
+
+				t.value = number;
+
+				_tokens.emplace_back(t);
+				SGE_LOG("Number\t\t{}\t: {}", _lineNumber, t.value);
+			}
 
 			else if (token == '"') 
 			{
@@ -114,31 +160,44 @@ namespace sge
 				viewIndex++;
 				src_c = startPoint + viewIndex;
 
-				while (*src_c != token) 
+				while (*src_c != '"') 
 				{
 					_s += *src_c;
 					
 					viewIndex++;
 					src_c = startPoint + viewIndex;
-					if (viewIndex >= _lineRemain.size())
+
+					if (viewIndex > _lineRemain.size())
 						return;
 				}
 
 				
 				t.value = _s;
-				SGE_LOG("String{} : {}", _lineNumber, t.value);
+
+				_tokens.emplace_back(t);
+				SGE_LOG("String\t\t{}\t: {}", _lineNumber, t.value);
 
 			}
+			else if	(token == '=' || token == '+' || token == '-' || token == '{' ||
+					token == '}' || token == ')' || token == '(' || token == ',' ||
+					token == ';' || token == '<' || token == '>' )
+			{
+					t.type = TokenType::Operator;
+					t.value = token;
 
+
+					_tokens.emplace_back(t);
+					SGE_LOG("Operator\t{}\t: {}", _lineNumber, t.value);
+					viewIndex++;
+			}
 			else if (token == '/') 
 			{
-				SGE_LOG("Comments {}", _lineNumber);
+				SGE_LOG("Comments\t{}", _lineNumber);
 				return;
 			}
 			else
 			{
 				viewIndex++;
-
 			}
 		}
 

@@ -4,7 +4,7 @@ Shader "Test  02"
 	// test
 	Properties
 	{
-		Color4f color=(1,1,1,1);   // abs
+		Color4f color=(10.15, 0.5, 1., 1100);   // abs
 		String name = "";
 	}
 	Pass
