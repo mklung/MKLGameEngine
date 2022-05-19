@@ -242,7 +242,6 @@ namespace sge
 			
 			_testVertexShaderBytecode = VS;
 			
-
 			dev->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), nullptr, _testVertexShader.ptrForInit());
 
 		}

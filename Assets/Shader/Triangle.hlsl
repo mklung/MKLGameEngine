@@ -1,3 +1,4 @@
+#if 0
 Shader "Test  02" 
 {
     
@@ -19,7 +20,12 @@ Shader "Test  02"
 
 	
 }
+#endif
 
+
+int a;
+int b;
+float4 a_color;
 
 struct VOut
 {
