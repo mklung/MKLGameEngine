@@ -16,9 +16,12 @@ void main()
 
 	auto dir = loadShader.getCurrentDir();
 
-	loadShader.loadShaderFile("Shader/Test.hlsl");
+	loadShader.loadShaderFile("Shader/Triangle.hlsl");
 	SGE_LOG("dir : {} ", dir);
-	
+
+
+	int a;
+	scanf("%d", &a);
 	return;
 }
 

@@ -1,7 +1,6 @@
 #include "RenderContext_DX11.h"
 #include "Renderer_DX11.h"
 #include "RenderGpuBuffer_DX11.h"
-
 namespace sge
 {
 
@@ -243,6 +242,7 @@ namespace sge
 			
 			_testVertexShaderBytecode = VS;
 			
+
 			dev->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), nullptr, _testVertexShader.ptrForInit());
 
 		}

@@ -1,6 +1,7 @@
 
 #pragma once
-#include "sge_core.h"
+#include "Lexer_Common.h"
+
 namespace sge
 {
 	enum  class TokenType
@@ -11,6 +12,7 @@ namespace sge
 		Number,
 		String,
 	};
+
 	struct Token
 	{
 		TokenType type;
@@ -27,8 +29,6 @@ namespace sge
 
 		void _lexer(Span<const u8> src);
 		void _nextLine();
-		void _nextChar(char* c, int* index);
-		void _nextToken();
 		void _parseLine();
 
 		void _error(StrView msg) { throw SGE_ERROR("{}: {}", _lineNumber, msg); }

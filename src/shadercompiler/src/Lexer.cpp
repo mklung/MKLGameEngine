@@ -1,5 +1,7 @@
 #include "Lexer.h"
 
+#include "Compiler.h"
+
 namespace sge
 
 {
@@ -20,14 +22,13 @@ namespace sge
 			if (_currentLine.size()) 
 			{
 				_lineRemain = _currentLine;
-				//_nextToken();
 				_parseLine();
 			}
 		}
-		for (int i = 0; i < _tokens.size(); i++)
-		{
-			SGE_LOG("{}", _tokens[i].value);
-		}
+
+
+		ShaderCompiler compiler;
+		compiler.GetEntryPoint(_tokens);
 	}
 
 	void Lexer::_nextLine()
@@ -42,28 +43,6 @@ namespace sge
 	}
 
 
-
-	void Lexer::_nextToken()
-	{
-		while (_lineRemain.size() >0 )
-		{
-			const char* c = _lineRemain.begin();
-			String splitChar = "";
-
-			if(*c != '"')
-				splitChar = " \t\r";
-			else
-				splitChar = "\t\r";
-
-			auto ret = StringUtil::splitByChar(_lineRemain, splitChar);
-
-			_token = StringUtil::trimChar(ret.first, " \t\r");
-			_lineRemain = StringUtil::trimChar(ret.second, " \t\r");
-			SGE_LOG("T {}: {}", _lineNumber, _token);
-
-		}
-
-	}
 
 	void Lexer::_parseLine()
 	{
@@ -107,7 +86,7 @@ namespace sge
 				}
 				t.value = idf;
 				_tokens.emplace_back(t);
-				SGE_LOG("Identifier\t{}\t: {}", _lineNumber, t.value);
+				//SGE_LOG("Identifier\t{}\t: {}", _lineNumber, t.value);
 				
 			}
 
@@ -150,7 +129,7 @@ namespace sge
 				t.value = number;
 
 				_tokens.emplace_back(t);
-				SGE_LOG("Number\t\t{}\t: {}", _lineNumber, t.value);
+				//SGE_LOG("Number\t\t{}\t: {}", _lineNumber, t.value);
 			}
 
 			else if (token == '"') 
@@ -175,7 +154,7 @@ namespace sge
 				t.value = _s;
 
 				_tokens.emplace_back(t);
-				SGE_LOG("String\t\t{}\t: {}", _lineNumber, t.value);
+				//SGE_LOG("String\t\t{}\t: {}", _lineNumber, t.value);
 
 			}
 			else if	(token == '=' || token == '+' || token == '-' || token == '{' ||
@@ -187,12 +166,12 @@ namespace sge
 
 
 					_tokens.emplace_back(t);
-					SGE_LOG("Operator\t{}\t: {}", _lineNumber, t.value);
+					//SGE_LOG("Operator\t{}\t: {}", _lineNumber, t.value);
 					viewIndex++;
 			}
 			else if (token == '/') 
 			{
-				SGE_LOG("Comments\t{}", _lineNumber);
+				//SGE_LOG("Comments\t{}", _lineNumber);
 				return;
 			}
 			else

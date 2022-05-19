@@ -1,27 +1,8 @@
 #include "LoadShader.h"
-#include "Lexer/Lexer.h"
+#include "Lexer.h"
+
 namespace sge
-
 {
-	//void LoadShader::loadShaderFile(StrView fileName)
-	//{
-	//	MemMapFile mm;
-	//	mm.open(fileName);
-
-	//	SGE_LOG("{}", mm.data());
-	//}
-
-	//void LoadShader::setCurrentDir()
-	//{
-	//	String file = getExecutableFilename();
-	//	String _path = FilePath::getDir(file);
-	//	_path.append("/../../../../../../Assets");
-	//	onSetCurrentDir(_path);
-	//}
-
-
-
-
 	String LoadShader::onGetExecutableFilename()
 	{
 		wchar_t tmp[MAX_PATH + 1];
