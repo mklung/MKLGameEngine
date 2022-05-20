@@ -5,9 +5,10 @@
 namespace sge
 
 {
-	void Lexer::lexer(Span<const u8> src)
+	void Lexer::lexer(Span<const u8> src, StrView _shaderfile)
 	{
 		Lexer l;
+		l.shaderFile = _shaderfile;
 		l._lexer(src);
 	}
 
@@ -28,7 +29,7 @@ namespace sge
 
 
 		ShaderCompiler compiler;
-		compiler.GetEntryPoint(_tokens);
+		compiler.GetEntryPoint(_tokens, shaderFile);
 	}
 
 	void Lexer::_nextLine()

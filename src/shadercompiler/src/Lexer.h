@@ -24,7 +24,9 @@ namespace sge
 	{
 	public:
 
-		static void lexer(Span<const u8> src);
+		static void lexer(Span<const u8> src, StrView filename);
+		StrView shaderFile;
+
 	private:
 
 		void _lexer(Span<const u8> src);

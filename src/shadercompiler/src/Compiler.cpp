@@ -4,22 +4,21 @@
 #include "DX11/RenderCommon_DX11.h"
 namespace sge
 {
-	void ShaderCompiler::onGetEntryPoint(Vector<Token>& t)
+	void ShaderCompiler::onGetEntryPoint(Vector<Token>& t, StrView filename)
 	{
 
-
-
+		ShaderFileName = filename;
 		for (int i = 0; i < t.size(); i++)
 		{
 			if (t[i].value == "VsFunc")
 			{
 				vShaderEntryPt = t[i + 1].value;
-				SGE_LOG("{}", t[i].value);
+				//SGE_LOG("{}", t[i].value);
 			}
 			if (t[i].value == "PsFunc")
 			{
 				pShaderEntryPt = t[i + 1].value;
-				SGE_LOG("{}", t[i].value);
+				//SGE_LOG("{}", t[i].value);
 
 			}
 		}
@@ -33,8 +32,17 @@ namespace sge
 		ComPtr<ID3DBlob> ps;
 		ComPtr<ID3DBlob> vs;
 
-		D3DCompileFromFile(L"Shader/Triangle.hlsl", 0, 0, "vs_main", "vs_4_0", 0, 0, vs.ptrForInit(), 0);
-		D3DCompileFromFile(L"Shader/Triangle.hlsl", 0, 0, "ps_main", "ps_4_0", 0, 0, ps.ptrForInit(), 0);
+		size_t convertedChar = 0;
+		const char* source = ShaderFileName.data();
+		size_t charNum = sizeof(char) * ShaderFileName.size() + 1;
+		wchar_t* shaderFile = new wchar_t[charNum];
+		mbstate_t state = mbstate_t();
+		mbsrtowcs(shaderFile, &source, charNum, &state);
+		
+		SGE_LOG("{}", shaderFile);
+
+		D3DCompileFromFile(shaderFile, 0, 0, vShaderEntryPt.data(), "vs_4_0", 0, 0, vs.ptrForInit(), 0);
+		D3DCompileFromFile(shaderFile, 0, 0, pShaderEntryPt.data(), "ps_4_0", 0, 0, ps.ptrForInit(), 0);
 
 		FileStream ps_filestream;
 		ps_filestream.openWrite("Library/DX11/Triangle_DX11_ps.bin", true);
