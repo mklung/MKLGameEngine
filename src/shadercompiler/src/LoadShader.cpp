@@ -1,6 +1,5 @@
 #include "LoadShader.h"
-#include "Lexer.h"
-#include "Compiler.h"
+
 namespace sge
 {
 	String LoadShader::onGetExecutableFilename()
@@ -29,7 +28,9 @@ namespace sge
 		mm.open(filename);
 		SGE_LOG("{}", mm.data());
 
-		Lexer::lexer(mm, filename);
+		
+		_shaderParse.LoadMem(mm, filename);
+		//Lexer::lexer(mm, filename);
 		
 	}
 

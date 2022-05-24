@@ -1,186 +1,184 @@
+
 #include "Lexer.h"
 
-#include "Compiler.h"
-
 namespace sge
-
 {
-	void Lexer::lexer(Span<const u8> src, StrView _shaderfile)
+	Lexer::Lexer(StrView src)
 	{
-		Lexer l;
-		l.shaderFile = _shaderfile;
-		l._lexer(src);
+		_src = src;
+		_srcRemain = _src;
 	}
 
-	void Lexer::_lexer(Span<const u8> src)
-	{
-		_src = StrView(reinterpret_cast<const char*>(src.data()), src.size());
-		_srcRemain = _src;
-		_lineNumber = 0;
+	const String skipChar = " \n\t\r\0";
+	const String operatorChar = ".+-*/{}()<>,;#:=<>|@$%&[]!\'";
 
-		while (_srcRemain.size() > 0) {
-			_nextLine();
-			if (_currentLine.size()) 
+	Token Lexer::nextToken()
+	{
+		
+ 		SkipChar();
+		if (End()) { _token.type = TokenType::None; return _token; }
+
+		auto token = _src.at(viewPos);
+		
+		
+		if ((token >= 'a' && token <= 'z') ||
+			(token >= 'A' && token <= 'Z') ||
+			(token == '_'))
+		{
+			_token.type = TokenType::Identifier;
+			int viewEnd = viewPos;
+
+			while ((token >= 'a' && token <= 'z') ||
+					(token >= 'A' && token <= 'Z') ||
+					(token >= '0' && token <= '9') ||
+					(token == '_'))
 			{
-				_lineRemain = _currentLine;
-				_parseLine();
+				if (viewEnd > _src.size() - 1)
+					break;
+
+				viewEnd++;
+				token = _src.at(viewEnd);
 			}
+
+			int viewSize = (viewEnd - viewPos);
+			_token.value = _src.substr(viewPos, viewEnd - viewPos);
+			viewPos = viewEnd;
+
+			SGE_LOG("Idf\t{}\t: {}", _lineNumber, _token.value);
+
+			return _token;
 		}
 
-
-		ShaderCompiler compiler;
-		compiler.GetEntryPoint(_tokens, shaderFile);
-	}
-
-	void Lexer::_nextLine()
-	{
-		auto ret = StringUtil::splitByChar(_srcRemain, "\n");
-		_currentLine = ret.first;
-		_srcRemain = ret.second;
-		_lineNumber++;
-
-		
-		
-	}
-
-
-
-	void Lexer::_parseLine()
-	{
-		int viewIndex = 0;
-		char token;
-		const char* src_c;
-		const char* startPoint;
-		Token t;
-
-
-		while (viewIndex < _lineRemain.size())
+		else if (token == '"') 
 		{
-			token = _lineRemain[viewIndex];
-			startPoint = _lineRemain.begin();
-			src_c = startPoint + viewIndex;
+			_token.type = TokenType::String;
+			int viewEnd = viewPos + 1;
+			token = _src.at(viewEnd);
 
-			if (token == '\n') 
+			while (token  != '"')
 			{
-				return;
+				if (viewEnd > _src.size() - 1)
+					break;
+
+				viewEnd++;
+				token = _src.at(viewEnd);
 			}
-
-
-			else if (	(token >= 'a' && token <= 'z') || 
-						(token >= 'A' && token <= 'Z') || 
-						(token == '_')) 
+			
+			if (viewPos + 1 != viewEnd)
 			{
-				t.type = TokenType::Identifier;
-				String idf;
-				char c;
-				while (	(*src_c >= 'a' && *src_c <= 'z') || 
-						(*src_c >= 'A' && *src_c <= 'Z') || 
-						(*src_c >= '0' && *src_c <= '9') || 
-						(*src_c == '_')) 
-				{
-					idf += *src_c;
-					viewIndex++;
-					src_c = startPoint + viewIndex;
-
-					if (viewIndex > _lineRemain.size())
-						return;
-				}
-				t.value = idf;
-				_tokens.emplace_back(t);
-				//SGE_LOG("Identifier\t{}\t: {}", _lineNumber, t.value);
-				
-			}
-
-
-			else if (token >= '0' && token <= '9') 
-			{
-				t.type = TokenType::Number;
-				String number;
-				while (*src_c >= '0' && *src_c <= '9') 
-				{
-					number += *src_c;
-
-					viewIndex++;
-					src_c = startPoint + viewIndex;
-				}
-				
-				if (*src_c == '.')
-				{
-					number += '.';
-					if (!(*(src_c + 1) >= '0' && *(src_c + 1)<= '9'))
-					{
-						number += '0';
-					}
-					else
-					{
-						viewIndex++;
-						src_c = startPoint + viewIndex;
-
-						while (*src_c >= '0' && *src_c <= '9')
-						{
-							number += *src_c;
-
-							viewIndex++;
-							src_c = startPoint + viewIndex;
-						}
-						
-					}
-				}
-
-				t.value = number;
-
-				_tokens.emplace_back(t);
-				//SGE_LOG("Number\t\t{}\t: {}", _lineNumber, t.value);
-			}
-
-			else if (token == '"') 
-			{
-				t.type = TokenType::String;
-				String _s = "";
-				viewIndex++;
-				src_c = startPoint + viewIndex;
-
-				while (*src_c != '"') 
-				{
-					_s += *src_c;
-					
-					viewIndex++;
-					src_c = startPoint + viewIndex;
-
-					if (viewIndex > _lineRemain.size())
-						return;
-				}
-
-				
-				t.value = _s;
-
-				_tokens.emplace_back(t);
-				//SGE_LOG("String\t\t{}\t: {}", _lineNumber, t.value);
-
-			}
-			else if	(token == '=' || token == '+' || token == '-' || token == '{' ||
-					token == '}' || token == ')' || token == '(' || token == ',' ||
-					token == ';' || token == '<' || token == '>' )
-			{
-					t.type = TokenType::Operator;
-					t.value = token;
-
-
-					_tokens.emplace_back(t);
-					//SGE_LOG("Operator\t{}\t: {}", _lineNumber, t.value);
-					viewIndex++;
-			}
-			else if (token == '/') 
-			{
-				//SGE_LOG("Comments\t{}", _lineNumber);
-				return;
+				int viewSize = (viewEnd - viewPos);
+				_token.value = _src.substr(viewPos + 1, viewSize - 1);
 			}
 			else
-			{
-				viewIndex++;
-			}
+				_token.value = "";
+
+
+			viewPos = viewEnd + 1;
+			SGE_LOG("String\t{}\t: {}", _lineNumber, _token.value);
+			return _token;
+				
+
+
 		}
 
+		else if (token >= '0' && token <= '9')
+		{
+			_token.type = TokenType::Number;
+			int viewEnd = viewPos;
+
+			while (token >= '0' && token <= '9' || token == '.')
+			{
+				if (viewEnd > _src.size() - 1)
+					break;
+
+				viewEnd++;
+				token = _src.at(viewEnd);
+			}
+
+			int viewSize = (viewEnd - viewPos);
+			_token.value = _src.substr(viewPos, viewEnd - viewPos);
+
+			if (_token.value.back() == '.')
+				_token.value += '0';
+
+			viewPos = viewEnd;
+
+			SGE_LOG("Number\t{}\t: {}", _lineNumber, _token.value);
+			return _token;
+		}
+
+
+		else if	(CheckOperatorChar(token))
+		{
+			if (token == '/' && _src.at(viewPos + 1) == '/')
+			{
+				_token.type = TokenType::Comment;
+				int viewEnd = viewPos;
+
+				while (token != '\n')
+				{
+					if (viewEnd > _src.size() - 1)
+						break;
+
+					viewEnd++;
+					token = _src.at(viewEnd);
+				}
+
+
+				
+				int viewSize = (viewEnd - viewPos);
+				_token.value = _src.substr(viewPos, viewEnd - viewPos);
+				SGE_LOG("CM\t{}\t: {}", _lineNumber, _token.value);
+				viewPos = viewEnd;
+				return _token;
+			}
+
+			_token.type = TokenType::Operator;
+			_token.value = token;
+
+			viewPos++;
+			SGE_LOG("Opt\t{}\t: {}", _lineNumber, _token.value);
+			return _token;
+		}
+
+		return _token;
+		
+	}
+
+	void Lexer::SkipChar()
+	{
+		if (viewPos >= _src.size() - 1)
+			return;
+
+		auto token = _src.at(viewPos);
+		while (token == ' ' || token == '\n' || token == '\t' || token == '\r')
+		{
+			if (token == '\n')
+				_lineNumber++;
+
+			if (viewPos > _src.size() - 1)
+				break;
+
+			viewPos++;
+			token = _src.at(viewPos);
+		}
+
+	}
+	bool Lexer::CheckOperatorChar(char _t)
+	{
+		for (size_t i = 0; i < operatorChar.size(); i++)
+		{
+			if(_t == operatorChar[i])
+				return true;
+		}
+		return false;
+	}
+
+	bool Lexer::End()
+	{
+		
+		//SGE_LOG("view Pos{}, TextSize:{}", viewPos, _src.size() - 1);
+		return viewPos > _src.size() - 1? true : false;
 	}
 
 }

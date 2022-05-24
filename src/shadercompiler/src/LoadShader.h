@@ -1,6 +1,7 @@
 #pragma once
 
 #include "sge_core.h"
+#include "Parse.h"
 
 namespace sge
 {
@@ -21,5 +22,7 @@ namespace sge
 		
 		String	onGetExecutableFilename();
 		String	onGetCurrentDir();
+
+		ShaderParse _shaderParse;
 	};
 }

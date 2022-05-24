@@ -1,5 +1,5 @@
 #if 0
-Shader "Test  02" 
+Shader "Test 001"  0.5 1232
 {
     
 	// test
@@ -36,11 +36,9 @@ struct VOut
 VOut vs_main(float4 position : POSITION, float4 color : COLOR)
 {
     VOut output;
-
-    output.position = position;
-    output.color = color;
-
-    return output;
+	output.position = position;
+	output.color = color;
+	return output;
 }
 
 
