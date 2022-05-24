@@ -6,7 +6,6 @@ namespace sge
 	Lexer::Lexer(StrView src)
 	{
 		_src = src;
-		_srcRemain = _src;
 	}
 
 	const String skipChar = " \n\t\r\0";

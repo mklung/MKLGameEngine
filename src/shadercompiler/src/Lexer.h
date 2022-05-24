@@ -26,7 +26,6 @@ namespace sge
 		int _lineNumber = 1;
 
 		StrView _src;
-		StrView _srcRemain;
 
 		Token _token;
 
