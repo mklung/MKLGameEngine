@@ -16,7 +16,8 @@ namespace sge
 
 		void SetshaderPath (StrView filename);
 		void Parse (Span<const u8> src);
-		ShaderData shaderData() { return _shaderData; }
+
+		ShaderData* shaderData() { return &_shaderData; }
 	private:
 		ShaderData _shaderData;
 

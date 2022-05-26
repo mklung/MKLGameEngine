@@ -6,11 +6,12 @@ namespace sge
 {
 	class Pass
 	{
+	public:
 		String vsEntryPt;
 		String psEntryPt;
 	};
 
-	class ShaderData 
+	class ShaderData : NonCopyable
 	{
 	public:
 		String shaderPath;

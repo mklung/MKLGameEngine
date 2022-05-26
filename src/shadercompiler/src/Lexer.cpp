@@ -140,6 +140,9 @@ namespace sge
 			return _token;
 		}
 
+		_token.type = TokenType::None;
+		_token.value = token + "undefination";
+		SGE_LOG("Opt\t{}\t: {}", _lineNumber, _token.value);
 		return _token;
 		
 	}
@@ -175,8 +178,6 @@ namespace sge
 
 	bool Lexer::End()
 	{
-		
-		//SGE_LOG("view Pos{}, TextSize:{}", viewPos, _src.size() - 1);
 		return viewPos > _src.size() - 1? true : false;
 	}
 

@@ -17,6 +17,15 @@ Shader "Test 001"  0.5 1232
 	
 	}
 	
+	Pass
+	{
+		// Queue "Transparent"
+		// Cull None
+		
+		VsFunc vs_main2;
+		PsFunc ps_main2;
+	
+	}
 
 	
 }

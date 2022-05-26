@@ -29,22 +29,59 @@ namespace sge
 		_src = StrView(reinterpret_cast<const char*>(src.data()), src.size());
 		Lexer lexer(_src);
 		Token token;
-		token.type = TokenType::Identifier;
-		while (token.type != TokenType::None)
+
+		
+		while (true)
 		{
 			token = lexer.nextToken();
+			
+			if (token.type == TokenType::None)
+				break;
+
+			else if (token.type == TokenType::Identifier)
+			{
+				if (token.value == "Shader")
+				{
+					token = lexer.nextToken();
+					if (token.type == TokenType::None) break;
+
+					if (token.type == TokenType::String)
+						_shaderData.shaderName = token.value;
+				}
+				else if (token.value == "Pass")
+				{
+					Pass newPass;
+					while (token.value != "}")
+					{
+						token = lexer.nextToken();
+						if (token.type == TokenType::None) break;
+
+						if (token.type == TokenType::Identifier && token.value == "VsFunc")
+						{
+							token = lexer.nextToken();
+							if (token.type == TokenType::None) break;
+
+							else if (token.type == TokenType::Identifier)
+								newPass.vsEntryPt = token.value;
+						}
+						else if (token.type == TokenType::Identifier && token.value == "PsFunc")
+						{
+							token = lexer.nextToken();
+							if (token.type == TokenType::None) break;
+
+							else if (token.type == TokenType::Identifier)
+								newPass.psEntryPt = token.value;
+						}
+					}
+					_shaderData.pass.emplace_back(newPass);
+				}
+			}
 		} 
 		
 
-	}
-
-	void ShaderContent()
-	{
+		SGE_LOG("{}", _shaderData.shaderName);
 
 	}
 
-	void PassContent()
-	{
 
-	}
 }
