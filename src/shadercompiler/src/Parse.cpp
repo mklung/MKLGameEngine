@@ -2,6 +2,7 @@
 
 #include "Parse.h"
 #include "Lexer.h"
+#include "Compiler.h"
 
 namespace sge
 {
@@ -22,7 +23,13 @@ namespace sge
 	void ShaderParse::SetshaderPath(StrView filename)
 	{
 		String path = filename.data();
-		_shaderData.shaderPath = path;
+		int sPos = path.find_last_of('/') + 1;
+		int ePos = path.find_last_of('.');
+		int size = ePos - sPos;
+		String fn = path.substr(sPos, size);
+		//SGE_LOG("S:{}, E:{}, SIZE:{}, fname:{}", startPos, endPos, size, fname);
+		_shaderData.fileName = fn;
+		_shaderData.path = path;
 	}
 	void ShaderParse::Parse(Span<const u8> src)
 	{
@@ -78,8 +85,15 @@ namespace sge
 			}
 		} 
 		
+		SGE_LOG("\nFilePath:{}\nFileName:{}\nShaderName:{}\nPassSize:{}\n", _shaderData.path,
+			_shaderData.fileName,
+			_shaderData.shaderName,
+			_shaderData.pass.size());
 
-		SGE_LOG("{}", _shaderData.shaderName);
+		ShaderCompiler hlslCompiler;
+		hlslCompiler.CompilerShader(&_shaderData);
+
+		//SGE_LOG("{}", _shaderData.shaderName);
 
 	}
 

@@ -1,63 +1,84 @@
 #pragma once
 
 #include "Compiler.h"
-#include "DX11/RenderCommon_DX11.h"
+
 namespace sge
 {
-	//void ShaderCompiler::onGetEntryPoint(Vector<Token>& t, StrView filename)
-	//{
+	void ShaderCompiler::CompilerShader(ShaderData *shaderData)
+	{
+		String fileName = shaderData->path;
+		MemMapFile mm;
+		mm.open(fileName);
+		auto hlsl = StrView(reinterpret_cast<const char*>(mm.data()), mm.size());
 
-	//	//ShaderFileName = filename;
-	//	//for (int i = 0; i < t.size(); i++)
-	//	//{
-	//	//	if (t[i].value == "VsFunc")
-	//	//	{
-	//	//		vShaderEntryPt = t[i + 1].value;
-	//	//		//SGE_LOG("{}", t[i].value);
-	//	//	}
-	//	//	if (t[i].value == "PsFunc")
-	//	//	{
-	//	//		pShaderEntryPt = t[i + 1].value;
-	//	//		//SGE_LOG("{}", t[i].value);
+		ComPtr<ID3DBlob> bytecode;
+		ComPtr<ID3DBlob> errorMsg;
 
-	//	//	}
-	//	//}
+		int passSize = shaderData->pass.size();
 
-	//	//onCompilerShader();
+		UINT flage1 = 0;
+		UINT flage2 = 0;
+		SGE_LOG("{}", shaderData->pass[0].psEntryPt.c_str());
 
-	//}
+		for (int i = 0; i < passSize; i++)
+		{
+			if (shaderData->pass[i].psEntryPt != "")
+			{
+				auto hr = D3DCompile2(
+					hlsl.data(), hlsl.size(), mm.filename().c_str(),
+					nullptr, nullptr, 
+					shaderData->pass[i].psEntryPt.c_str(), "ps_4_0", 
+					flage1, flage2, 
+					0, nullptr, 0,
+					bytecode.ptrForInit(), errorMsg.ptrForInit());
 
-	//void ShaderCompiler::onCompilerShader()
-	//{
-	//	ComPtr<ID3DBlob> ps;
-	//	ComPtr<ID3DBlob> vs;
+				FileStream ps_filestream;
+				
+				String filePath = "Library/Shader/DX11/" + shaderData->fileName + "_Pass";
+				filePath.append("_DX11_vs.bin");
+				SGE_LOG("{}", filePath);
 
-	//	size_t convertedChar = 0;
-	//	const char* source = ShaderFileName.data();
-	//	size_t charNum = sizeof(char) * ShaderFileName.size() + 1;
-	//	wchar_t* shaderFile = new wchar_t[charNum];
-	//	mbstate_t state = mbstate_t();
-	//	mbsrtowcs(shaderFile, &source, charNum, &state);
-	//	
-	//	SGE_LOG("{}", shaderFile);
+				ps_filestream.openWrite(filePath, true);
+				auto* p = reinterpret_cast<u8*>(bytecode->GetBufferPointer());
+				Span<const u8> p_span = Span<const u8>(p, bytecode->GetBufferSize());
+				ps_filestream.writeBytes(p_span);
 
-	//	D3DCompileFromFile(shaderFile, 0, 0, vShaderEntryPt.data(), "vs_4_0", 0, 0, vs.ptrForInit(), 0);
-	//	D3DCompileFromFile(shaderFile, 0, 0, pShaderEntryPt.data(), "ps_4_0", 0, 0, ps.ptrForInit(), 0);
+				ShaderReflect(bytecode);
+				
+			}
 
-	//	FileStream ps_filestream;
-	//	ps_filestream.openWrite("Library/DX11/Triangle_DX11_ps.bin", true);
-	//	auto *p = reinterpret_cast<u8*>(ps->GetBufferPointer());
-	//	Span<const u8> p_span = Span<const u8>(p , ps->GetBufferSize());
-	//	ps_filestream.writeBytes(p_span);
-	//	ps_filestream.close();
+			if (shaderData->pass[i].vsEntryPt != "")
+			{
+				auto hr = D3DCompile2(
+					hlsl.data(), hlsl.size(),
+					shaderData->fileName.c_str(), nullptr,
+					nullptr, shaderData->pass[i].vsEntryPt.c_str(),
+					"vs_4_0", flage1, flage2, 0, nullptr, 0,
+					bytecode.ptrForInit(), errorMsg.ptrForInit());
+
+				FileStream vs_filestream;
+				String filePath = "Library/Shader/DX11/" + shaderData->fileName + "_Pass" + "_DX11_vs.bin";
+				vs_filestream.openWrite(filePath, true);
+				auto* p = reinterpret_cast<u8*>(bytecode->GetBufferPointer());
+				Span<const u8> p_span = Span<const u8>(p, bytecode->GetBufferSize());
+				vs_filestream.writeBytes(p_span);
+
+				ShaderReflect(bytecode);
+			}
+		}
+	}
+
+	void ShaderCompiler::ShaderReflect(ComPtr<ID3DBlob>& byteCode)
+	{
+		ComPtr<ID3D11ShaderReflection> reflection;
+		auto hr = D3DReflect(byteCode->GetBufferPointer(), byteCode->GetBufferSize(), IID_PPV_ARGS(reflection.ptrForInit()));
+		D3D11_SHADER_DESC shaderDesc;
+		hr = reflection->GetDesc(&shaderDesc);
+
+	}
 
 
-	//	FileStream vs_filestream;
-	//	vs_filestream.openWrite("Library/DX11/Triangle_DX11_vs.bin", true);
-	//	auto* v = reinterpret_cast<u8*>(vs->GetBufferPointer());
-	//	Span<const u8> v_span = Span<const u8>(v, vs->GetBufferSize());
-	//	vs_filestream.writeBytes(v_span);
-	//	vs_filestream.close();
-	//}
+
+
 
 }

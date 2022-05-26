@@ -11,13 +11,13 @@ void main()
 	sge::LoadShader loadShader;
 	sge::String file = loadShader.getExecutableFilename();
 	sge::String path = sge::FilePath::getDir(file);
-	path.append("/../../../../../Assets");
+	path.append("/../../../../../Data");
 	loadShader.setCurrentDir(path);
 
 	auto dir = loadShader.getCurrentDir();
 
 	SGE_LOG("dir : {} ", dir);
-	loadShader.loadShaderFile("Shader/Triangle.hlsl");
+	loadShader.loadShaderFile("Assets/Shader/Triangle.hlsl");
 
 
 	int a;

@@ -43,7 +43,7 @@ namespace sge
 			_token.value = _src.substr(viewPos, viewEnd - viewPos);
 			viewPos = viewEnd;
 
-			SGE_LOG("Idf\t{}\t: {}", _lineNumber, _token.value);
+			if (debugLog) SGE_LOG("Idf\t{}\t: {}", _lineNumber, _token.value);
 
 			return _token;
 		}
@@ -73,7 +73,7 @@ namespace sge
 
 
 			viewPos = viewEnd + 1;
-			SGE_LOG("String\t{}\t: {}", _lineNumber, _token.value);
+			if (debugLog) SGE_LOG("String\t{}\t: {}", _lineNumber, _token.value);
 			return _token;
 				
 
@@ -102,7 +102,7 @@ namespace sge
 
 			viewPos = viewEnd;
 
-			SGE_LOG("Number\t{}\t: {}", _lineNumber, _token.value);
+			if (debugLog) SGE_LOG("Number\t{}\t: {}", _lineNumber, _token.value);
 			return _token;
 		}
 
@@ -127,7 +127,7 @@ namespace sge
 				
 				int viewSize = (viewEnd - viewPos);
 				_token.value = _src.substr(viewPos, viewEnd - viewPos);
-				SGE_LOG("CM\t{}\t: {}", _lineNumber, _token.value);
+				if (debugLog) SGE_LOG("CM\t{}\t: {}", _lineNumber, _token.value);
 				viewPos = viewEnd;
 				return _token;
 			}
@@ -136,13 +136,13 @@ namespace sge
 			_token.value = token;
 
 			viewPos++;
-			SGE_LOG("Opt\t{}\t: {}", _lineNumber, _token.value);
+			if (debugLog) SGE_LOG("Opt\t{}\t: {}", _lineNumber, _token.value);
 			return _token;
 		}
 
 		_token.type = TokenType::None;
 		_token.value = token + "undefination";
-		SGE_LOG("Opt\t{}\t: {}", _lineNumber, _token.value);
+		if (debugLog) SGE_LOG("Opt\t{}\t: {}", _lineNumber, _token.value);
 		return _token;
 		
 	}

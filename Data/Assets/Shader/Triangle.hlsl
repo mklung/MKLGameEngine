@@ -1,5 +1,5 @@
 #if 0
-Shader "Test 001"  0.5 1232
+Shader "Test 001" 
 {
     
 	// test
@@ -16,17 +16,6 @@ Shader "Test 001"  0.5 1232
 		PsFunc ps_main;
 	
 	}
-	
-	Pass
-	{
-		// Queue "Transparent"
-		// Cull None
-		
-		VsFunc vs_main2;
-		PsFunc ps_main2;
-	
-	}
-
 	
 }
 #endif

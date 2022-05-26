@@ -14,7 +14,8 @@ namespace sge
 	class ShaderData : NonCopyable
 	{
 	public:
-		String shaderPath;
+		String path;
+		String fileName;
 		String shaderName;
 		Vector<Pass> pass;
 	private:
