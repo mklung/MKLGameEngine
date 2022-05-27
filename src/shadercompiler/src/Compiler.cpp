@@ -34,7 +34,7 @@ namespace sge
 
 				FileStream ps_filestream;
 				
-				String filePath = "Library/Shader/DX11/" + shaderData->fileName + "_Pass";
+				String filePath = "LocalTemp/Shader/DX11/" + shaderData->fileName + "_Pass";
 				filePath.append("_DX11_vs.bin");
 				SGE_LOG("{}", filePath);
 
@@ -57,7 +57,7 @@ namespace sge
 					bytecode.ptrForInit(), errorMsg.ptrForInit());
 
 				FileStream vs_filestream;
-				String filePath = "Library/Shader/DX11/" + shaderData->fileName + "_Pass" + "_DX11_vs.bin";
+				String filePath = "LocalTemp/Shader/DX11/" + shaderData->fileName + "_Pass" + "_DX11_vs.bin";
 				vs_filestream.openWrite(filePath, true);
 				auto* p = reinterpret_cast<u8*>(bytecode->GetBufferPointer());
 				Span<const u8> p_span = Span<const u8>(p, bytecode->GetBufferSize());
@@ -80,10 +80,17 @@ namespace sge
 		for (int i = 0; i < shaderDesc.InputParameters; i++)
 		{
 			D11_PARAM_DESC desc;
+			ShaderInputParam sip;
+
 			hr = reflection->GetInputParameterDesc(i, &desc);
-			SGE_LOG("Name:{} ComponentType:{} ValueType:{}", desc.SemanticName, desc.ComponentType, desc.SystemValueType);
-			auto type = ConvertShaderDataType(&desc);
 			
+			sip.dataType = ConvertShaderDataType(&desc);
+			sip.attrId = Fmt("{}{}", desc.SemanticName, desc.SemanticIndex);
+
+			StrView type = enumStr(sip.dataType);
+			SGE_LOG("attrId:{} ValueType:{}", sip.attrId, type);
+
+			inputParams.emplace_back(sip);
 		}
 	}
 

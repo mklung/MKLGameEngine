@@ -1,9 +1,7 @@
 #pragma once
 
 #include "Lexer.h"
-#include "ShaderData.h"
 #include "DX11/RenderCommon_DX11.h"
-#include "RenderDataType.h"
 
 namespace sge
 {
