@@ -10,24 +10,17 @@ namespace sge
 	{
 		MemMapFile mm;
 		mm.open(filename);
-		LoadMem(mm, filename);
 
 	}
-	void ShaderParse::LoadMem(Span<const u8> src, StrView filename)
-	{
-		ShaderParse sp;
-		sp.SetshaderPath(filename);
-		sp.Parse(src);
 
-	}
 	void ShaderParse::SetshaderPath(StrView filename)
 	{
 		String path = filename.data();
-		int sPos = path.find_last_of('/');
+		int sPos = path.find_last_of("/\\");
 		int ePos = path.find_last_of('.');
-		int size = ePos - sPos + 1;
+		int size = ePos - sPos;
 		String fn = path.substr(sPos, size);
-		//SGE_LOG("S:{}, E:{}, SIZE:{}, fname:{}", startPos, endPos, size, fname);
+
 		_shaderData.fileName = fn;
 		_shaderData.path = path;
 	}
@@ -35,48 +28,48 @@ namespace sge
 	{
 		_src = StrView(reinterpret_cast<const char*>(src.data()), src.size());
 		Lexer lexer(_src);
-		Token token;
+		ShaderToken token;
 
 		
 		while (true)
 		{
 			token = lexer.nextToken();
 			
-			if (token.type == TokenType::None)
+			if (token.type == ShaderTokenType::None)
 				break;
 
-			else if (token.type == TokenType::Identifier)
+			else if (token.type == ShaderTokenType::Identifier)
 			{
 				if (token.value == "Shader")
 				{
 					token = lexer.nextToken();
-					if (token.type == TokenType::None) break;
+					if (token.type == ShaderTokenType::None) break;
 
-					if (token.type == TokenType::String)
+					if (token.type == ShaderTokenType::String)
 						_shaderData.shaderName = token.value;
 				}
 				else if (token.value == "Pass")
 				{
-					Pass newPass;
+					ShaderPass newPass;
 					while (token.value != "}")
 					{
 						token = lexer.nextToken();
-						if (token.type == TokenType::None) break;
+						if (token.type == ShaderTokenType::None) break;
 
-						if (token.type == TokenType::Identifier && token.value == "VsFunc")
+						if (token.type == ShaderTokenType::Identifier && token.value == "VsFunc")
 						{
 							token = lexer.nextToken();
-							if (token.type == TokenType::None) break;
+							if (token.type == ShaderTokenType::None) break;
 
-							else if (token.type == TokenType::Identifier)
+							else if (token.type == ShaderTokenType::Identifier)
 								newPass.vsEntryPt = token.value;
 						}
-						else if (token.type == TokenType::Identifier && token.value == "PsFunc")
+						else if (token.type == ShaderTokenType::Identifier && token.value == "PsFunc")
 						{
 							token = lexer.nextToken();
-							if (token.type == TokenType::None) break;
+							if (token.type == ShaderTokenType::None) break;
 
-							else if (token.type == TokenType::Identifier)
+							else if (token.type == ShaderTokenType::Identifier)
 								newPass.psEntryPt = token.value;
 						}
 					}

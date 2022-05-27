@@ -22,6 +22,9 @@ namespace sge
 
 		for (int i = 0; i < passSize; i++)
 		{
+
+			StrView index = Fmt("{}", i);
+
 			if (shaderData->pass[i].psEntryPt != "")
 			{
 				auto hr = D3DCompile2(
@@ -33,9 +36,9 @@ namespace sge
 					bytecode.ptrForInit(), errorMsg.ptrForInit());
 
 				FileStream ps_filestream;
+
 				
-				String filePath = "LocalTemp/Shader/DX11/" + shaderData->fileName + "_Pass";
-				filePath.append("_DX11_vs.bin");
+				String filePath = "LocalTemp/Shader/DX11/" + shaderData->fileName + "_DX11_Pass" + index.data() + "_vs.bin";
 				SGE_LOG("{}", filePath);
 
 				ps_filestream.openWrite(filePath, true);
@@ -57,7 +60,10 @@ namespace sge
 					bytecode.ptrForInit(), errorMsg.ptrForInit());
 
 				FileStream vs_filestream;
-				String filePath = "LocalTemp/Shader/DX11/" + shaderData->fileName + "_Pass" + "_DX11_vs.bin";
+
+				String filePath = "LocalTemp/Shader/DX11/" + shaderData->fileName + "_DX11_Pass" + index.data() + "_ps.bin";
+				SGE_LOG("{}", filePath);
+
 				vs_filestream.openWrite(filePath, true);
 				auto* p = reinterpret_cast<u8*>(bytecode->GetBufferPointer());
 				Span<const u8> p_span = Span<const u8>(p, bytecode->GetBufferSize());

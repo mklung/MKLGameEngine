@@ -12,7 +12,6 @@ namespace sge
 	{
 	public:
 		static void LoadFile(StrView filename);
-		static void LoadMem(Span<const u8> src, StrView filename);
 
 		void SetshaderPath (StrView filename);
 		void Parse (Span<const u8> src);

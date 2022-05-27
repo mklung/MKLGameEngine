@@ -11,11 +11,11 @@ namespace sge
 	const String skipChar = " \n\t\r\0";
 	const String operatorChar = ".+-*/{}()<>,;#:=<>|@$%&[]!\'";
 
-	Token Lexer::nextToken()
+	ShaderToken Lexer::nextToken()
 	{
 		
  		SkipChar();
-		if (End()) { _token.type = TokenType::None; return _token; }
+		if (End()) { _token.type = ShaderTokenType::None; return _token; }
 
 		auto token = _src.at(viewPos);
 		
@@ -24,7 +24,7 @@ namespace sge
 			(token >= 'A' && token <= 'Z') ||
 			(token == '_'))
 		{
-			_token.type = TokenType::Identifier;
+			_token.type = ShaderTokenType::Identifier;
 			int viewEnd = viewPos;
 
 			while ((token >= 'a' && token <= 'z') ||
@@ -50,7 +50,7 @@ namespace sge
 
 		else if (token == '"') 
 		{
-			_token.type = TokenType::String;
+			_token.type = ShaderTokenType::String;
 			int viewEnd = viewPos + 1;
 			token = _src.at(viewEnd);
 
@@ -82,7 +82,7 @@ namespace sge
 
 		else if (token >= '0' && token <= '9')
 		{
-			_token.type = TokenType::Number;
+			_token.type = ShaderTokenType::Number;
 			int viewEnd = viewPos;
 
 			while (token >= '0' && token <= '9' || token == '.')
@@ -111,7 +111,7 @@ namespace sge
 		{
 			if (token == '/' && _src.at(viewPos + 1) == '/')
 			{
-				_token.type = TokenType::Comment;
+				_token.type = ShaderTokenType::Comment;
 				int viewEnd = viewPos;
 
 				while (token != '\n')
@@ -132,7 +132,7 @@ namespace sge
 				return _token;
 			}
 
-			_token.type = TokenType::Operator;
+			_token.type = ShaderTokenType::Operator;
 			_token.value = token;
 
 			viewPos++;
@@ -140,7 +140,7 @@ namespace sge
 			return _token;
 		}
 
-		_token.type = TokenType::None;
+		_token.type = ShaderTokenType::None;
 		_token.value = token + "undefination";
 		if (debugLog) SGE_LOG("Opt\t{}\t: {}", _lineNumber, _token.value);
 		return _token;

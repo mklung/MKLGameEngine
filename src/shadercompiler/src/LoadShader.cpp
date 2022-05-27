@@ -25,12 +25,11 @@ namespace sge
 	{
 
 		MemMapFile mm;
+		SGE_LOG("{}", filename);
 		mm.open(filename);
-		SGE_LOG("{}", mm.data());
 
-		
-		_shaderParse.LoadMem(mm, filename);
-		//Lexer::lexer(mm, filename);
+		_shaderParse.SetshaderPath(filename);
+		_shaderParse.Parse(mm);
 		
 	}
 

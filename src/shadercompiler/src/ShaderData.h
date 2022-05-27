@@ -16,7 +16,7 @@ namespace sge
 	};
 
 
-	class Pass
+	class ShaderPass
 	{
 	public:
 		String vsEntryPt;
@@ -29,11 +29,11 @@ namespace sge
 		String path;
 		String fileName;
 		String shaderName;
-		Vector<Pass> pass;
+		Vector<ShaderPass> pass;
 	private:
 	};
 
-	enum class TokenType
+	enum class ShaderTokenType
 	{
 		None,
 		Identifier,
@@ -43,9 +43,9 @@ namespace sge
 		Comment,
 	};
 
-	struct Token
+	struct ShaderToken
 	{
-		TokenType type;
+		ShaderTokenType type;
 		String value;
 
 	};

@@ -5,7 +5,7 @@ Shader "Test 001"
 	// test
 	Properties
 	{
-		Color4f color=(10.15, 0.5, 1., 1100);   // abs
+		Color4f color = (10.15, 0.5, 1., 1100);   // abs
 	}
 	Pass
 	{
@@ -20,27 +20,27 @@ Shader "Test 001"
 }
 #endif
 
-
-int a;
-int b;
-float4 a_color;
+float4 a;
+float4 b;
 
 struct VOut
 {
+	
     float4 position : SV_POSITION;
     float4 color : COLOR;
 };
 
 VOut vs_main(float4 position : POSITION, float4 color : COLOR)
 {
+
     VOut output;
 	output.position = position;
-	output.color = color;
+	output.color = color * a * b;
 	return output;
 }
 
 
 float4 ps_main(float4 position : SV_POSITION, float4 color : COLOR) : SV_TARGET
 {
-    return color;
+    return color * a;
 }
