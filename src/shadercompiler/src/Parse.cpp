@@ -23,9 +23,9 @@ namespace sge
 	void ShaderParse::SetshaderPath(StrView filename)
 	{
 		String path = filename.data();
-		int sPos = path.find_last_of('/') + 1;
+		int sPos = path.find_last_of('/');
 		int ePos = path.find_last_of('.');
-		int size = ePos - sPos;
+		int size = ePos - sPos + 1;
 		String fn = path.substr(sPos, size);
 		//SGE_LOG("S:{}, E:{}, SIZE:{}, fname:{}", startPos, endPos, size, fname);
 		_shaderData.fileName = fn;
