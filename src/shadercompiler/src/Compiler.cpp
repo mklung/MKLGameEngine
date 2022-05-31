@@ -27,10 +27,11 @@ namespace sge
 
 			if (shaderData->pass[i].psEntryPt != "")
 			{
+				String target = "ps_5_0";
 				auto hr = D3DCompile2(
 					hlsl.data(), hlsl.size(), mm.filename().c_str(),
 					nullptr, nullptr, 
-					shaderData->pass[i].psEntryPt.c_str(), "ps_5_0", 
+					shaderData->pass[i].psEntryPt.c_str(), target.data(),
 					flage1, flage2, 
 					0, nullptr, 0,
 					bytecode.ptrForInit(), errorMsg.ptrForInit());
@@ -46,17 +47,18 @@ namespace sge
 				Span<const u8> p_span = Span<const u8>(p, bytecode->GetBufferSize());
 				ps_filestream.writeBytes(p_span);
 
-				ShaderReflect(bytecode);
+				ShaderReflect(bytecode, target);
 				
 			}
 
 			if (shaderData->pass[i].vsEntryPt != "")
 			{
+				String target = "vs_5_0";
 				auto hr = D3DCompile2(
 					hlsl.data(), hlsl.size(),
 					shaderData->fileName.c_str(), nullptr,
 					nullptr, shaderData->pass[i].vsEntryPt.c_str(),
-					"vs_5_0", flage1, flage2, 0, nullptr, 0,
+					target.data(), flage1, flage2, 0, nullptr, 0,
 					bytecode.ptrForInit(), errorMsg.ptrForInit());
 
 				FileStream vs_filestream;
@@ -69,20 +71,23 @@ namespace sge
 				Span<const u8> p_span = Span<const u8>(p, bytecode->GetBufferSize());
 				vs_filestream.writeBytes(p_span);
 
-				ShaderReflect(bytecode);
+				ShaderReflect(bytecode, target);
 			}
 		}
 	}
 
-	void ShaderCompiler::ShaderReflect(ComPtr<ID3DBlob>& byteCode)
+	void ShaderCompiler::ShaderReflect(ComPtr<ID3DBlob>& byteCode, String profile)
 	{
 		ComPtr<ID3D11ShaderReflection> reflection;
 		auto hr = D3DReflect(byteCode->GetBufferPointer(), byteCode->GetBufferSize(), IID_PPV_ARGS(reflection.ptrForInit()));
 		D3D11_SHADER_DESC shaderDesc;
 		hr = reflection->GetDesc(&shaderDesc);
-		
-		Vector<ShaderInputParam> inputParams;
 
+		ShaderDescData shaderDescData;
+		//ShaderInputParam> inputParams;
+
+		shaderDescData.profile = profile;
+		
 		for (int i = 0; i < shaderDesc.InputParameters; i++)
 		{
 			D11_PARAM_DESC desc;
@@ -96,8 +101,47 @@ namespace sge
 			StrView type = enumStr(sip.dataType);
 			SGE_LOG("attrId:{} ValueType:{}", sip.attrId, type);
 
-			inputParams.emplace_back(sip);
+			shaderDescData.inputs.emplace_back(sip);
 		}
+
+		
+
+		{
+			D3D11_SHADER_BUFFER_DESC bufferDesc;
+			D3D11_SHADER_VARIABLE_DESC varDesc;
+			D3D11_SHADER_INPUT_BIND_DESC bindDesc;
+			for (int i = 0; i < shaderDesc.ConstantBuffers; i++)
+			{
+				ConstBufferDesc constbufDesc;
+
+				auto* constBuf = reflection->GetConstantBufferByIndex(i);
+				hr = constBuf->GetDesc(&bufferDesc);
+
+				constbufDesc.name = bufferDesc.Name;
+				constbufDesc.dataSize = bufferDesc.Size;
+				
+				reflection->GetResourceBindingDescByName(bufferDesc.Name, &bindDesc);
+
+				constbufDesc.bindPoint = bindDesc.BindPoint;
+				constbufDesc.bindCount = bindDesc.BindCount;
+				int a = 1;
+				for (int j = 0; j < bufferDesc.Variables; j++)
+				{
+					auto* varBuf = constBuf->GetVariableByIndex(j);
+					varBuf->GetDesc(&varDesc);
+					ShaderVariable shaderVar;
+					shaderVar.name = varDesc.Name;
+					shaderVar.offset = varDesc.StartOffset;
+					
+					continue;
+					//varDesc.
+				}
+
+				shaderDescData.constBuffers.emplace_back(constbufDesc);
+			}
+		}
+		//SGE_LOG("{}", shaderDescData.inputs[0].attrId);
+		//int a = 1;
 	}
 
 	RenderDataType ShaderCompiler::ConvertShaderDataType(D11_PARAM_DESC* desc)

@@ -2,9 +2,13 @@
 
 #include "sge_core.h"
 #include "RenderDataType.h"
+#include "nlohmann/json.hpp"
 
 namespace sge
 {
+
+	using Json = nlohmann::json;
+
 	enum class ShaderPropType {
 		None,
 		Int,
@@ -63,8 +67,9 @@ namespace sge
 		String name;
 		int bindPoint;
 		int bindCount;
-		int dataSize;
+		u8 dataSize;
 		Vector<ShaderVariable> variables;
+		Json  ToJson();
 	};
 
 	struct  ShaderInputParam
@@ -73,15 +78,20 @@ namespace sge
 		String name;
 		String attrId;
 		RenderDataType dataType;
+
+		Json  ToJson();
 	};
 
 
-	struct  ShaderDesc
+	struct  ShaderDescData
 	{
+	public:
 		String profile;
 		Vector<ShaderInputParam> inputs;
 		//Vector<ShaderVariable> params;
 		Vector<ConstBufferDesc> constBuffers;
+
+		Json ToJson();
 	};
 
 
