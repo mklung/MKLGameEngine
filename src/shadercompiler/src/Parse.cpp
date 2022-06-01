@@ -19,7 +19,7 @@ namespace sge
 		int sPos = path.find_last_of("/\\");
 		int ePos = path.find_last_of('.');
 		int size = ePos - sPos;
-		String fn = path.substr(sPos, size);
+		String fn = path.substr(sPos + 1, size - 1);
 
 		_shaderData.fileName = fn;
 		_shaderData.path = path;

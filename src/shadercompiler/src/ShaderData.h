@@ -56,9 +56,12 @@ namespace sge
 
 	struct  ShaderVariable
 	{
+	public:
 		String name;
 		int offset;
 		ShaderPropType dataType;
+
+		Json  ToJson();
 	};
 
 	struct  ConstBufferDesc
@@ -88,10 +91,10 @@ namespace sge
 	public:
 		String profile;
 		Vector<ShaderInputParam> inputs;
-		//Vector<ShaderVariable> params;
 		Vector<ConstBufferDesc> constBuffers;
 
-		Json ToJson();
+		String ToJson();
+		void Clear();
 	};
 
 

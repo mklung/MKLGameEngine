@@ -97,6 +97,7 @@ namespace sge {
 	template<class T> using UPtr = eastl::unique_ptr<T>;
 
 	template<class T> using Span = eastl::span<T>;
+	using ByteSpan = Span<const u8>;
 
 	template<class DST, class SRC> inline
 		Span<DST> spanCast(Span<SRC> src) {
@@ -139,6 +140,18 @@ namespace sge {
 
 	using StrView = StrViewA;
 	using String = StringA;
+
+	inline StrView StrView_make(ByteSpan s) {
+		return StrView(reinterpret_cast<const char*>(s.data()), s.size());
+	}
+
+	inline ByteSpan ByteSpan_make(StrView v) {
+		return ByteSpan(reinterpret_cast<const u8*>(v.data()), v.size());
+	}
+
+	inline ByteSpan ByteSpan_make(String v) {
+		return ByteSpan(reinterpret_cast<const u8*>(v.data()), v.size());
+	}
 
 	template<size_t N> using String_ = StringA_<N>;
 	using TempString = TempStringA;

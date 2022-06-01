@@ -5,6 +5,8 @@
 
 namespace sge
 {
+	const String COMPILE_FILE_PATH = "LocalTemp/Shader/DX11";
+
 	class ShaderCompiler
 	{
 		using D11_PARAM_DESC = D3D11_SIGNATURE_PARAMETER_DESC;
@@ -13,7 +15,7 @@ namespace sge
 
 		void CompilerShader(ShaderData* shaderData);
 	private:
-		void ShaderReflect(ComPtr<ID3DBlob>& bytecode, String profile);
+		void ShaderReflect(ComPtr<ID3DBlob>& bytecode, String profile, String fileName);
 		RenderDataType ConvertShaderDataType(D11_PARAM_DESC* desc);
 
 	};

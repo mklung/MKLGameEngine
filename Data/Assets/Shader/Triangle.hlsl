@@ -35,13 +35,13 @@ VOut vs_main(float4 position : POSITION, float4 color : COLOR)
 {
 
     VOut output;
-	output.position = position * a;
-	output.color = color * c;
+	output.position = position;
+	output.color = color * b * c;
 	return output;
 }
 
 
 float4 ps_main(float4 position : SV_POSITION, float4 color : COLOR) : SV_TARGET
 {
-    return color * b;
+    return color * a;
 }

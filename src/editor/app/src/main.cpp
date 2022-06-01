@@ -23,7 +23,7 @@ public:
 		
 		EditMesh editMesh;
 #if 1
-		ObjLoader::LoadFile(editMesh, "Mesh/test.obj");
+		ObjLoader::LoadFile(editMesh, "Assets/Mesh/test.obj");
 
 		for (size_t i = editMesh.color.size(); i < editMesh.pos.size(); i++) {
 			editMesh.color.emplace_back(255, 255, 255, 255);
@@ -86,7 +86,7 @@ public:
 		{
 			String file = getExecutableFilename();
 			String path = FilePath::getDir(file);
-			path.append("/../../../../../../Assets");
+			path.append("/../../../../../../Data");
 			SGE_LOG("dir = {}", path);
 			setCurrentDir(path);
 

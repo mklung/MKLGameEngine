@@ -238,7 +238,7 @@ namespace sge
 		if (!_testVertexShader)
 		{
 			ComPtr<ID3D10Blob> VS;
-			D3DCompileFromFile(L"Shader/Triangle.hlsl", 0, 0, "vs_main", "vs_4_0", 0, 0, VS.ptrForInit(), 0);
+			D3DCompileFromFile(L"Assets/Shader/Triangle.hlsl", 0, 0, "vs_main", "vs_5_0", 0, 0, VS.ptrForInit(), 0);
 			
 			_testVertexShaderBytecode = VS;
 			
@@ -249,7 +249,7 @@ namespace sge
 		if (!_testPixelShader)
 		{
 			ComPtr<ID3D10Blob> PS;
-			D3DCompileFromFile(L"Shader/Triangle.hlsl", 0, 0, "ps_main", "ps_4_0", 0, 0, PS.ptrForInit(), 0);
+			D3DCompileFromFile(L"Assets/Shader/Triangle.hlsl", 0, 0, "ps_main", "ps_5_0", 0, 0, PS.ptrForInit(), 0);
 			dev->CreatePixelShader(PS->GetBufferPointer(), PS->GetBufferSize(), nullptr, _testPixelShader.ptrForInit());
 		}
 
