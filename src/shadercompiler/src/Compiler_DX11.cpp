@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Compiler.h"
+#include "Compiler_DX11.h"
 
 namespace sge
 {
@@ -25,8 +25,8 @@ namespace sge
 		for (int i = 0; i < passSize; i++)
 		{
 
-			StrView index = Fmt("{}", i);
 			String profile = "";
+			auto PassIndex = Fmt("{}", i);
 			if (shaderData->pass[i].psEntryPt != "")
 			{
 				profile = "ps_5_0";
@@ -37,17 +37,12 @@ namespace sge
 					flage1, flage2, 
 					0, nullptr, 0,
 					bytecode.ptrForInit(), errorMsg.ptrForInit());
-				FileStream filestream;
-				String shaderName = shaderData->fileName.data();
-				auto filePath = Fmt("{}/{}_{}.bin", COMPILE_FILE_PATH, shaderName, profile);
-				SGE_LOG("{}", filePath);
 
-				filestream.openWrite(filePath, true);
-				auto* p = reinterpret_cast<u8*>(bytecode->GetBufferPointer());
-				Span<const u8> p_span = Span<const u8>(p, bytecode->GetBufferSize());
-				filestream.writeBytes(p_span);
+				auto binFileName = Fmt("{}_Pass{}_{}.bin", shaderData->fileName.data(), PassIndex, profile);
+				WriteBinFile(bytecode, binFileName.c_str());
 
-				ShaderReflect(bytecode, profile, shaderName);
+				auto jsonFileName = Fmt("{}_Pass{}_{}.json", shaderData->fileName.data(), PassIndex, profile);
+				ShaderReflect(bytecode, profile, jsonFileName.c_str());
 			}
 
 			if (shaderData->pass[i].vsEntryPt != "")
@@ -59,24 +54,16 @@ namespace sge
 					nullptr, shaderData->pass[i].vsEntryPt.c_str(),
 					profile.data(), flage1, flage2, 0, nullptr, 0,
 					bytecode.ptrForInit(), errorMsg.ptrForInit());
-				FileStream filestream;
-				String shaderName = shaderData->fileName.data();
-				auto filePath = Fmt("{}/{}_{}.bin", COMPILE_FILE_PATH, shaderName, profile);
-				SGE_LOG("{}", filePath);
 
-				filestream.openWrite(filePath, true);
-				auto* p = reinterpret_cast<u8*>(bytecode->GetBufferPointer());
-				Span<const u8> p_span = Span<const u8>(p, bytecode->GetBufferSize());
-				filestream.writeBytes(p_span);
-
-				ShaderReflect(bytecode, profile, shaderName);
+				auto binFileName = Fmt("{}_Pass{}_{}.bin", shaderData->fileName.data(), PassIndex, profile);
+				WriteBinFile(bytecode, binFileName.c_str());
+				
+				auto jsonFileName  = Fmt("{}_Pass{}_{}.json", shaderData->fileName.data(), PassIndex, profile);
+				ShaderReflect(bytecode, profile, jsonFileName.c_str());
 			}
-
-
 		}
-
-		
 	}
+
 
 	void ShaderCompiler::ShaderReflect(ComPtr<ID3DBlob>& byteCode, String profile, String fileName)
 	{
@@ -137,7 +124,6 @@ namespace sge
 
 					constbufDesc.variables.emplace_back(shaderVar);
 					continue;
-					//varDesc.
 				}
 
 				shaderDescData.constBuffers.emplace_back(constbufDesc);
@@ -146,7 +132,7 @@ namespace sge
 		}
 
 		FileStream filestream;
-		auto filePath = Fmt("LocalTemp/Shader/DX11/{}_{}.json", fileName, profile);
+		auto filePath = Fmt("{}/{}", COMPILE_FILE_PATH, fileName);
 		SGE_LOG("{}", shaderDescData.ToJson());
 		Span<const u8> p = ByteSpan_make(shaderDescData.ToJson());
 
@@ -156,6 +142,21 @@ namespace sge
 	
 		filestream.writeBytes(p);
 		SGE_LOG("\n");
+	}
+
+	void ShaderCompiler::WriteBinFile(ComPtr<ID3DBlob>& bytecode, String fileName)
+	{
+
+		FileStream filestream;
+		auto filePath = Fmt("{}/{}", COMPILE_FILE_PATH, fileName);
+		SGE_LOG("{}", filePath);
+
+		filestream.openWrite(filePath, true);
+		auto* p = reinterpret_cast<u8*>(bytecode->GetBufferPointer());
+		Span<const u8> p_span = Span<const u8>(p, bytecode->GetBufferSize());
+		filestream.writeBytes(p_span);
+
+
 	}
 
 	RenderDataType ShaderCompiler::ConvertShaderDataType(D11_PARAM_DESC* desc)

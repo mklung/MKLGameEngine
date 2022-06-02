@@ -2,7 +2,7 @@
 
 #include "Parse.h"
 #include "Lexer.h"
-#include "Compiler.h"
+#include "Compiler_DX11.h"
 
 namespace sge
 {

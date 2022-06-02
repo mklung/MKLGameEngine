@@ -16,6 +16,8 @@ namespace sge
 		void CompilerShader(ShaderData* shaderData);
 	private:
 		void ShaderReflect(ComPtr<ID3DBlob>& bytecode, String profile, String fileName);
+		void WriteBinFile(ComPtr<ID3DBlob>& bytecode, String fileName);
+
 		RenderDataType ConvertShaderDataType(D11_PARAM_DESC* desc);
 
 	};
