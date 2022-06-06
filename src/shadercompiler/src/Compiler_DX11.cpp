@@ -127,32 +127,21 @@ namespace sge
 			}
 		}
 
-		FileStream filestream;
-		auto filePath = Fmt("{}/{}", COMPILE_FILE_PATH, fileName);
-		SGE_LOG("{}", shaderDescData.ToJson());
-		Span<const u8> p = ByteSpan_make(shaderDescData.ToJson());
 
-		filestream.openWrite(filePath, true);
-		
-		//Span<const u8> p_span = Span<const u8>(p, bytecode->GetBufferSize());
-	
-		filestream.writeBytes(p);
+		auto filePath = Fmt("{}/{}", COMPILE_FILE_PATH, fileName);
+		File::writeFile(filePath, shaderDescData.ToJson(), false);
+
 		SGE_LOG("\n");
 	}
 
 	void ShaderCompiler::WriteBinFile(ComPtr<ID3DBlob>& bytecode, String fileName)
 	{
-
-		FileStream filestream;
 		auto filePath = Fmt("{}/{}", COMPILE_FILE_PATH, fileName);
 		SGE_LOG("{}", filePath);
-
-		filestream.openWrite(filePath, true);
 		auto* p = reinterpret_cast<u8*>(bytecode->GetBufferPointer());
 		Span<const u8> p_span = Span<const u8>(p, bytecode->GetBufferSize());
-		filestream.writeBytes(p_span);
 
-
+		File::writeFile(filePath, p_span, false);
 	}
 
 	RenderDataType ShaderCompiler::ConvertShaderDataType(D11_PARAM_DESC* desc)
