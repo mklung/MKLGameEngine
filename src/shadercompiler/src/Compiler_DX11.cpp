@@ -8,7 +8,7 @@ namespace sge
 
 	void ShaderCompiler::CompilerShader(ShaderData *shaderData)
 	{
-		String fileName = shaderData->path;
+		String fileName = shaderData->path.c_str();
 		MemMapFile mm;
 		mm.open(fileName);
 		auto hlsl = StrView(reinterpret_cast<const char*>(mm.data()), mm.size());
@@ -42,7 +42,7 @@ namespace sge
 				WriteBinFile(bytecode, binFileName.c_str());
 
 				auto jsonFileName = Fmt("{}_Pass{}_{}.json", shaderData->fileName.data(), PassIndex, profile);
-				ShaderReflect(bytecode, profile, jsonFileName.c_str());
+				ShaderReflect(bytecode, profile.c_str(), jsonFileName.c_str());
 			}
 
 			if (shaderData->pass[i].vsEntryPt != "")
@@ -59,7 +59,7 @@ namespace sge
 				WriteBinFile(bytecode, binFileName.c_str());
 				
 				auto jsonFileName  = Fmt("{}_Pass{}_{}.json", shaderData->fileName.data(), PassIndex, profile);
-				ShaderReflect(bytecode, profile, jsonFileName.c_str());
+				ShaderReflect(bytecode, profile.c_str(), jsonFileName.c_str());
 			}
 		}
 	}
@@ -80,7 +80,7 @@ namespace sge
 		for (int i = 0; i < shaderDesc.InputParameters; i++)
 		{
 			D11_PARAM_DESC desc;
-			ShaderInputParam sip;
+			auto& sip = shaderDescData.inputs.emplace_back();
 
 			hr = reflection->GetInputParameterDesc(i, &desc);
 			
@@ -89,8 +89,6 @@ namespace sge
 
 			StrView type = enumStr(sip.dataType);
 			SGE_LOG("attrId:{} ValueType:{}", sip.attrId, type);
-
-			shaderDescData.inputs.emplace_back(sip);
 		}
 
 		
@@ -101,7 +99,7 @@ namespace sge
 			D3D11_SHADER_INPUT_BIND_DESC bindDesc;
 			for (int i = 0; i < shaderDesc.ConstantBuffers; i++)
 			{
-				ConstBufferDesc constbufDesc;
+				ConstBufferDesc& constbufDesc = shaderDescData.constBuffers.emplace_back();
 
 				auto* constBuf = reflection->GetConstantBufferByIndex(i);
 				hr = constBuf->GetDesc(&bufferDesc);
@@ -118,15 +116,13 @@ namespace sge
 				{
 					auto* varBuf = constBuf->GetVariableByIndex(j);
 					varBuf->GetDesc(&varDesc);
-					ShaderVariable shaderVar;
+					ShaderVariable& shaderVar = constbufDesc.variables.emplace_back();
 					shaderVar.name = varDesc.Name;
 					shaderVar.offset = varDesc.StartOffset;
 
-					constbufDesc.variables.emplace_back(shaderVar);
 					continue;
 				}
 
-				shaderDescData.constBuffers.emplace_back(constbufDesc);
 				int b = 1;
 			}
 		}

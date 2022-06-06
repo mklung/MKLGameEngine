@@ -1,5 +1,9 @@
 #pragma once
 
+#ifndef _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS 1
+#endif
+
 #include "../detect_platform/sge_detect_platform.h"
 
 #if SGE_OS_WINDOWS
@@ -41,7 +45,11 @@
 #include <EASTL/shared_ptr.h>
 #include <EASTL/weak_ptr.h>
 
+#include <nlohmann/json.hpp>
+
 #include "sge_macro.h"
+
+using Json = nlohmann::json;
 
 //==== EASTL ====
 
@@ -105,12 +113,12 @@ namespace sge {
 		return Span<DST>(reinterpret_cast<DST*>(src.data()), sizeInBytes / sizeof(DST));
 	}
 
-
 	template<class T, size_t N, bool bEnableOverflow = true> using Vector_ = eastl::fixed_vector<T, N, bEnableOverflow>;
-
 	template<class T> using Vector = eastl::vector<T>;
+
 	template<class KEY, class VALUE> using Map = eastl::map<KEY, VALUE>;
 	template<class KEY, class VALUE> using VectorMap = eastl::vector_map<KEY, VALUE>;
+	template<class VALUE> using StringMap = eastl::string_map<VALUE>;
 
 	template<class T> using Opt = eastl::optional<T>;
 
@@ -118,19 +126,37 @@ namespace sge {
 	using StrViewA = StrViewT<char>;
 	using StrViewW = StrViewT<wchar_t>;
 
-	template<class T, size_t N, bool bEnableOverflow = true> // using FixedStringT = eastl::fixed_string<T, N, bEnableOverflow>;
-	class StringT : public eastl::fixed_string<T, N, bEnableOverflow> {
-		using Base = eastl::fixed_string<T, N, bEnableOverflow>;
-	public:
-		StringT() = default;
-		StringT(StrViewT<T> view) : Base(view.data(), view.size()) {}
-		StringT(StringT&& str) : Base(std::move(str)) {}
-
-		template<class R> void operator=(R&& r) { Base::operator=(SGE_FORWARD(r)); }
+	template<class T, size_t N, bool bEnableOverflow = true>
+	struct StringT_Base {
+		using type = typename eastl::fixed_string<T, N, bEnableOverflow>;
 	};
 
-	using StringA = eastl::basic_string<char>;
-	using StringW = eastl::basic_string<wchar_t>;
+	template<class T>
+	struct StringT_Base<T, 0, true> {
+		using type = typename eastl::basic_string<T>;
+	};
+
+	template<class T, size_t N, bool bEnableOverflow = true> // using FixedStringT = eastl::fixed_string<T, N, bEnableOverflow>;
+	class StringT : public StringT_Base<T, N, bEnableOverflow>::type {
+		using Base = typename StringT_Base<T, N, bEnableOverflow>::type;
+	public:
+		StringT() = default;
+		StringT(const T* begin, const T* end) : Base(begin, end) {}
+		StringT(StrViewT<T> view) : Base(view.data(), view.size()) {}
+		StringT(StringT&& str) : Base(std::move(str)) {}
+		StringT(const T* sz) : Base(sz) {}
+
+		template<class R> void operator=(R&& r) { Base::operator=(SGE_FORWARD(r)); }
+
+		void operator+=(StrViewT<T> v) { Base::append(v.begin(), v.end()); }
+
+		template<size_t N>
+		void operator+=(const StringT<T, N>& v) { Base::append(v.begin(), v.end()); }
+
+		template<class R> void operator+=(const R& r) { Base::operator+=(r); }
+
+		StrViewT<T>	view() const { return StrViewT<T>(data(), size()); }
+	};
 
 	template<size_t N, bool bEnableOverflow = true> using StringA_ = StringT<char, N, bEnableOverflow>;
 	template<size_t N, bool bEnableOverflow = true> using StringW_ = StringT<wchar_t, N, bEnableOverflow>;
@@ -138,18 +164,21 @@ namespace sge {
 	using TempStringA = StringA_<220>;
 	using TempStringW = StringW_<220>;
 
+	using StringA = StringA_<0>;
+	using StringW = StringW_<0>;
+
 	using StrView = StrViewA;
 	using String = StringA;
+
+	inline StrView StrView_c_str(const char* s) {
+		return s ? StrView(s, strlen(s)) : StrView();
+	}
 
 	inline StrView StrView_make(ByteSpan s) {
 		return StrView(reinterpret_cast<const char*>(s.data()), s.size());
 	}
 
 	inline ByteSpan ByteSpan_make(StrView v) {
-		return ByteSpan(reinterpret_cast<const u8*>(v.data()), v.size());
-	}
-
-	inline ByteSpan ByteSpan_make(String v) {
 		return ByteSpan(reinterpret_cast<const u8*>(v.data()), v.size());
 	}
 
@@ -174,22 +203,19 @@ namespace sge {
 		SrcLoc() = default;
 		SrcLoc(const char* file_, int line_, const char* func_)
 			: file(file_)
+			, func(func_)
 			, line(line_)
-			, func(func_) {
-		}
+		{}
 
 		const char* file = "";
-		const char* func;
+		const char* func = "";
 		int line = 0;
 	};
 
 	class NonCopyable {
 	public:
 		NonCopyable() = default;
-
 	private:
-		NonCopyable(NonCopyable&&) = delete;
-
 		NonCopyable(const NonCopyable&) = delete;
 		void operator=(const NonCopyable&) = delete;
 	};

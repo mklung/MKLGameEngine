@@ -25,15 +25,16 @@ namespace sge
 	public:
 		String vsEntryPt;
 		String psEntryPt;
+		void clear();
 	};
 
-	class ShaderData : NonCopyable
+	class ShaderData
 	{
 	public:
 		String path;
 		String fileName;
 		String shaderName;
-		Vector<ShaderPass> pass;
+		Vector_<ShaderPass, 4> pass;
 	private:
 	};
 
@@ -49,6 +50,7 @@ namespace sge
 
 	struct ShaderToken
 	{
+	public:
 		ShaderTokenType type;
 		String value;
 
@@ -71,7 +73,7 @@ namespace sge
 		int bindPoint;
 		int bindCount;
 		u8 dataSize;
-		Vector<ShaderVariable> variables;
+		Vector_<ShaderVariable, 4> variables;
 		Json  ToJson();
 	};
 
@@ -81,7 +83,6 @@ namespace sge
 		String name;
 		String attrId;
 		RenderDataType dataType;
-
 		Json  ToJson();
 	};
 
@@ -90,8 +91,8 @@ namespace sge
 	{
 	public:
 		String profile;
-		Vector<ShaderInputParam> inputs;
-		Vector<ConstBufferDesc> constBuffers;
+		Vector_<ShaderInputParam, 8> inputs;
+		Vector_<ConstBufferDesc, 8> constBuffers;
 
 		String ToJson();
 		void Clear();

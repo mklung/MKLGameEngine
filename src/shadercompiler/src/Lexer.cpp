@@ -11,11 +11,11 @@ namespace sge
 	const String skipChar = " \n\t\r\0";
 	const String operatorChar = ".+-*/{}()<>,;#:=<>|@$%&[]!\'";
 
-	ShaderToken Lexer::nextToken()
+	ShaderToken* Lexer::nextToken()
 	{
 		
  		SkipChar();
-		if (End()) { _token.type = ShaderTokenType::None; return _token; }
+		if (End()) { _token.type = ShaderTokenType::None; return &_token; }
 
 		auto token = _src.at(viewPos);
 		
@@ -45,7 +45,7 @@ namespace sge
 
 			if (debugLog) SGE_LOG("Idf\t{}\t: {}", _lineNumber, _token.value);
 
-			return _token;
+			return &_token;
 		}
 
 		else if (token == '"') 
@@ -74,7 +74,7 @@ namespace sge
 
 			viewPos = viewEnd + 1;
 			if (debugLog) SGE_LOG("String\t{}\t: {}", _lineNumber, _token.value);
-			return _token;
+			return &_token;
 				
 
 
@@ -103,7 +103,7 @@ namespace sge
 			viewPos = viewEnd;
 
 			if (debugLog) SGE_LOG("Number\t{}\t: {}", _lineNumber, _token.value);
-			return _token;
+			return &_token;
 		}
 
 
@@ -129,7 +129,7 @@ namespace sge
 				_token.value = _src.substr(viewPos, viewEnd - viewPos);
 				if (debugLog) SGE_LOG("CM\t{}\t: {}", _lineNumber, _token.value);
 				viewPos = viewEnd;
-				return _token;
+				return &_token;
 			}
 
 			_token.type = ShaderTokenType::Operator;
@@ -137,13 +137,13 @@ namespace sge
 
 			viewPos++;
 			if (debugLog) SGE_LOG("Opt\t{}\t: {}", _lineNumber, _token.value);
-			return _token;
+			return &_token;
 		}
 
 		_token.type = ShaderTokenType::None;
 		_token.value = token + "undefination";
 		if (debugLog) SGE_LOG("Opt\t{}\t: {}", _lineNumber, _token.value);
-		return _token;
+		return &_token;
 		
 	}
 

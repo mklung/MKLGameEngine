@@ -9,8 +9,8 @@ namespace sge
 
 		static void setCurrent(StrView dir);
 		static String getCurrent();
-		static void create(StrView path);
 
+		static void create(StrView path);
 		static bool exist(StrView path);
 
 	private:

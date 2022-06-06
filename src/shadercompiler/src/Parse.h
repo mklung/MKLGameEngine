@@ -19,7 +19,6 @@ namespace sge
 		ShaderData* shaderData() { return &_shaderData; }
 	private:
 		ShaderData _shaderData;
-
 		StrView _shaderText;
 		StrView _src;
 	};

@@ -12,7 +12,7 @@ namespace sge
 	public:
 		Lexer(StrView src);
 		StrView shaderFile;
-		ShaderToken nextToken();
+		ShaderToken* nextToken();
 		bool End();
 
 	private:
@@ -27,7 +27,6 @@ namespace sge
 		bool debugLog = false;
 
 		StrView _src;
-
 		ShaderToken _token;
 
 	};
