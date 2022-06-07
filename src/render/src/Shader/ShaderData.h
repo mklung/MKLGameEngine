@@ -38,7 +38,7 @@ namespace sge
 	private:
 	};
 
-	enum class ShaderTokenType
+	enum class TokenType
 	{
 		None,
 		Identifier,
@@ -48,10 +48,10 @@ namespace sge
 		Comment,
 	};
 
-	struct ShaderToken
+	struct Token
 	{
 	public:
-		ShaderTokenType type;
+		TokenType type;
 		String value;
 
 	};
@@ -61,7 +61,7 @@ namespace sge
 	public:
 		String name;
 		int offset;
-		ShaderPropType dataType;
+		RenderDataType dataType;
 
 		Json  ToJson();
 	};

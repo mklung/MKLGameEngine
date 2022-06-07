@@ -77,6 +77,8 @@ namespace sge
 
 		shaderDescData.profile = profile;
 		
+		shaderDescData.inputs.reserve(shaderDesc.InputParameters);
+
 		for (int i = 0; i < shaderDesc.InputParameters; i++)
 		{
 			D11_PARAM_DESC desc;
@@ -94,39 +96,83 @@ namespace sge
 		
 
 		{
-			D3D11_SHADER_BUFFER_DESC bufferDesc;
-			D3D11_SHADER_VARIABLE_DESC varDesc;
-			D3D11_SHADER_INPUT_BIND_DESC bindDesc;
+			shaderDescData.constBuffers.reserve(shaderDesc.ConstantBuffers);
+
 			for (int i = 0; i < shaderDesc.ConstantBuffers; i++)
 			{
+				D3D11_SHADER_BUFFER_DESC bufferDesc;
+				D3D11_SHADER_INPUT_BIND_DESC bindDesc;
+
 				ConstBufferDesc& constbufDesc = shaderDescData.constBuffers.emplace_back();
 
 				auto* constBuf = reflection->GetConstantBufferByIndex(i);
+
 				hr = constBuf->GetDesc(&bufferDesc);
+				DX11Util::throwIfError(hr);
 
-				constbufDesc.name = bufferDesc.Name;
-				constbufDesc.dataSize = bufferDesc.Size;
-				
-				reflection->GetResourceBindingDescByName(bufferDesc.Name, &bindDesc);
+				hr = reflection->GetResourceBindingDescByName(bufferDesc.Name, &bindDesc);
+				DX11Util::throwIfError(hr);
 
-				constbufDesc.bindPoint = bindDesc.BindPoint;
-				constbufDesc.bindCount = bindDesc.BindCount;
+				constbufDesc.name		= bufferDesc.Name;
+				constbufDesc.dataSize	= bufferDesc.Size;
+				constbufDesc.bindPoint	= bindDesc.BindPoint;
+				constbufDesc.bindCount	= bindDesc.BindCount;
 
-				for (int j = 0; j < bufferDesc.Variables - 1; j++)
+
+				constbufDesc.variables.reserve(bufferDesc.Variables);
+				for (int j = 0; j < bufferDesc.Variables; j++)
 				{
 					auto* varBuf = constBuf->GetVariableByIndex(j);
-					varBuf->GetDesc(&varDesc);
+					D3D11_SHADER_VARIABLE_DESC varDesc;
+					hr = varBuf->GetDesc(&varDesc);
+					DX11Util::throwIfError(hr);
+
+					D3D11_SHADER_TYPE_DESC varType;
+					hr = varBuf->GetType()->GetDesc(&varType);
+					DX11Util::throwIfError(hr);
+
+					if (0 == (varDesc.uFlags & D3D_SVF_USED)) continue;
+
 					ShaderVariable& shaderVar = constbufDesc.variables.emplace_back();
 					shaderVar.name = varDesc.Name;
 					shaderVar.offset = varDesc.StartOffset;
 
+					TempString dataType;
+					switch (varType.Type)
+					{
+						case D3D_SVT_BOOL:		dataType.append("Bool");		break;
+						case D3D_SVT_INT:		dataType.append("Int32");		break;
+						case D3D_SVT_UINT:		dataType.append("UInt32");		break;
+						case D3D_SVT_UINT8:		dataType.append("UInt8");		break;
+						case D3D_SVT_FLOAT:		dataType.append("Float32");		break;
+						case D3D_SVT_DOUBLE:	dataType.append("Float64");		break;
+						default: throw SGE_ERROR("unsupported type {}", varType.Type);
+					}
+
+					switch (varType.Class) 
+					{
+						case D3D_SVC_SCALAR: break;
+						case D3D_SVC_VECTOR:			FmtTo(dataType, "x{}",		varType.Columns); break;
+						case D3D_SVC_MATRIX_COLUMNS:	FmtTo(dataType, "_{}x{}",	varType.Rows, varType.Columns); break;
+						case D3D_SVC_MATRIX_ROWS:		FmtTo(dataType, "_{}x{}",	varType.Rows, varType.Columns); break;
+						default: throw SGE_ERROR("unsupported Class {}", varType.Class);
+					}
+
+					if (!enumTryParse(shaderVar.dataType, dataType)) {
+						throw SGE_ERROR("cannot parse dataType {}", dataType);
+					}
+
+					if (shaderVar.dataType == RenderDataType::None) {
+						throw SGE_ERROR("dataType is None");
+					}
+
 					continue;
 				}
 
-				int b = 1;
 			}
 		}
 
+		SGE_LOG("{}", shaderDescData.ToJson());
 
 		auto filePath = Fmt("{}/{}", COMPILE_FILE_PATH, fileName);
 		File::writeFile(filePath, shaderDescData.ToJson(), false);

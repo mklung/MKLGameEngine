@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "ShaderData.h"
+#include "Shader/ShaderData.h"
 
 namespace sge
 {
@@ -12,7 +12,7 @@ namespace sge
 	public:
 		Lexer(StrView src);
 		StrView shaderFile;
-		ShaderToken* nextToken();
+		Token* nextToken();
 		bool End();
 
 	private:
@@ -27,7 +27,7 @@ namespace sge
 		bool debugLog = false;
 
 		StrView _src;
-		ShaderToken _token;
+		Token _token;
 
 	};
 }
