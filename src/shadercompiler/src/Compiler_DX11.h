@@ -13,7 +13,7 @@ namespace sge
 
 	public:
 
-		void CompilerShader(ShaderData* shaderData);
+		void CompilerShader(ShaderInfo* shaderData);
 	private:
 		void ShaderReflect(ComPtr<ID3DBlob>& bytecode, String profile, String fileName);
 		void WriteBinFile(ComPtr<ID3DBlob>& bytecode, String fileName);

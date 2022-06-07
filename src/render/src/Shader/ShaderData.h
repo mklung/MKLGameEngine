@@ -3,11 +3,18 @@
 #include "sge_core.h"
 #include "RenderDataType.h"
 #include "nlohmann/json.hpp"
+#include "sge_core/serializer/json/JsonUtil.h"
 
 namespace sge
 {
 
 	using Json = nlohmann::json;
+
+	enum class ShaderDescMask {
+		None,
+		Vertex = 1 << 0,
+		Pixel = 1 << 1,
+	};
 
 	enum class ShaderPropType {
 		None,
@@ -20,21 +27,37 @@ namespace sge
 	};
 
 
-	class ShaderPass
-	{
-	public:
-		String vsEntryPt;
-		String psEntryPt;
-		void clear();
-	};
 
-	class ShaderData
+
+
+	struct ShaderInfo
 	{
+
+		struct Pass
+		{
+		public:
+			String name;
+			String vsEntryPt;
+			String psEntryPt;
+		};
+
+		struct  Prop
+		{
+		public:
+			ShaderPropType propTypr = ShaderPropType::None;
+			String		name;
+			String		displayName;
+			String		defaultValue;
+		};
+
 	public:
 		String path;
 		String fileName;
 		String shaderName;
-		Vector_<ShaderPass, 4> pass;
+		Vector_<Prop, 8> props;
+		Vector_<Pass, 1> passes;
+
+		void clear();
 	private:
 	};
 
@@ -85,7 +108,6 @@ namespace sge
 		RenderDataType dataType;
 		Json  ToJson();
 	};
-
 
 	struct  ShaderDescData
 	{

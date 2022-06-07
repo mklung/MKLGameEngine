@@ -6,7 +6,7 @@ namespace sge
 {
 	
 
-	void ShaderCompiler::CompilerShader(ShaderData *shaderData)
+	void ShaderCompiler::CompilerShader(ShaderInfo *shaderData)
 	{
 		String fileName = shaderData->path.c_str();
 		MemMapFile mm;

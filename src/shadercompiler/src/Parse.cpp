@@ -29,7 +29,6 @@ namespace sge
 		_src = StrView(reinterpret_cast<const char*>(src.data()), src.size());
 		Lexer lexer(_src);
 		Token* token;
-		//ShaderPass newPass;
 		
 		while (true)
 		{
@@ -47,10 +46,12 @@ namespace sge
 
 					if (token->type == TokenType::String)
 						_shaderData.shaderName = token->value;
+
+					// Read Shader Prop -------------------
 				}
 				else if (token->value == "Pass")
 				{
-					auto& newPass = _shaderData.pass.emplace_back();
+					auto& newPass = _shaderData.passes.emplace_back();
 					while (token->value != "}")
 					{
 						token = lexer.nextToken();
@@ -80,7 +81,7 @@ namespace sge
 		SGE_LOG("\nFilePath:{}\nFileName:{}\nShaderName:{}\nPassSize:{}\n", _shaderData.path,
 			_shaderData.fileName,
 			_shaderData.shaderName,
-			_shaderData.pass.size());
+			_shaderData.passes.size());
 
 		ShaderCompiler hlslCompiler;
 		hlslCompiler.CompilerShader(&_shaderData);

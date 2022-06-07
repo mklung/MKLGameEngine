@@ -64,4 +64,12 @@ namespace sge
 	}
 
 
+	void ShaderInfo::clear()
+	{
+		props.clear();
+		passes.clear();
+
+	}
+
+
 }
