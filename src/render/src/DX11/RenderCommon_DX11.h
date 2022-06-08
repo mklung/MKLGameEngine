@@ -12,6 +12,8 @@
 
 #include <Render_Common.h>
 #include <Vertex/Vertex.h>
+#include <Shader/Shader.h>
+
 
 namespace sge {
 

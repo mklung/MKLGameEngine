@@ -10,8 +10,8 @@ namespace sge
 	class Lexer : public NonCopyable
 	{
 	public:
-		Lexer(StrView src);
-		StrView shaderFile;
+		void Read(StrView src);
+		StrView shaderFile() { return _src; }
 		Token* nextToken();
 		bool End();
 

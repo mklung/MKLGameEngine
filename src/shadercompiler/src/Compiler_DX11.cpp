@@ -16,24 +16,24 @@ namespace sge
 		ComPtr<ID3DBlob> bytecode;
 		ComPtr<ID3DBlob> errorMsg;
 
-		int passSize = shaderData->pass.size();
+		int passSize = shaderData->passes.size();
 
 		UINT flage1 = 0;
 		UINT flage2 = 0;
-		SGE_LOG("{}", shaderData->pass[0].psEntryPt.c_str());
+		SGE_LOG("{}", shaderData->passes[0].psEntryPt.c_str());
 
 		for (int i = 0; i < passSize; i++)
 		{
 
 			String profile = "";
 			auto PassIndex = Fmt("{}", i);
-			if (shaderData->pass[i].psEntryPt != "")
+			if (shaderData->passes[i].psEntryPt != "")
 			{
 				profile = "ps_5_0";
 				auto hr = D3DCompile2(
 					hlsl.data(), hlsl.size(), mm.filename().c_str(),
 					nullptr, nullptr, 
-					shaderData->pass[i].psEntryPt.c_str(), profile.data(),
+					shaderData->passes[i].psEntryPt.c_str(), profile.data(),
 					flage1, flage2, 
 					0, nullptr, 0,
 					bytecode.ptrForInit(), errorMsg.ptrForInit());
@@ -45,13 +45,13 @@ namespace sge
 				ShaderReflect(bytecode, profile.c_str(), jsonFileName.c_str());
 			}
 
-			if (shaderData->pass[i].vsEntryPt != "")
+			if (shaderData->passes[i].vsEntryPt != "")
 			{
 				profile = "vs_5_0";
 				auto hr = D3DCompile2(
 					hlsl.data(), hlsl.size(),
 					shaderData->fileName.c_str(), nullptr,
-					nullptr, shaderData->pass[i].vsEntryPt.c_str(),
+					nullptr, shaderData->passes[i].vsEntryPt.c_str(),
 					profile.data(), flage1, flage2, 0, nullptr, 0,
 					bytecode.ptrForInit(), errorMsg.ptrForInit());
 
@@ -218,9 +218,5 @@ namespace sge
 			break;
 		}
 	}
-
-
-
-
 
 }

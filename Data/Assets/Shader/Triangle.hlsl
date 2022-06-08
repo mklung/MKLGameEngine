@@ -1,11 +1,13 @@
 #if 0
 Shader "Test 001" 
 {
-    
+   
 	// test
 	Properties
 	{
-		Color4f color = (10.15, 0.5, 1., 1100);   // abs
+		_Color ("Color", Color4f) = (0.5, 0.1, 1);
+		_Test2 ("Test2", Vec4f) = (0, 0, 0, 1);
+		_Test ("Test", Float) = 0.5;
 	}
 	Pass
 	{

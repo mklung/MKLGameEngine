@@ -55,7 +55,7 @@ namespace sge
 		String fileName;
 		String shaderName;
 		Vector_<Prop, 8> props;
-		Vector_<Pass, 1> passes;
+		Vector_<Pass, 2> passes;
 
 		void clear();
 	private:
@@ -77,6 +77,8 @@ namespace sge
 		TokenType type;
 		String value;
 
+		bool CheckToken(TokenType _type, String _expectValue) {return (type == _type && value == _expectValue);}
+		bool CheckToken(TokenType _type) {return (type == _type);}
 	};
 
 	struct  ShaderVariable

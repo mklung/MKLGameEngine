@@ -3,13 +3,16 @@
 
 namespace sge
 {
-	Lexer::Lexer(StrView src)
+	void Lexer::Read(StrView src)
 	{
 		_src = src;
+		viewPos = 0;
+		endPos = 0;
+		_lineNumber = 1;
 	}
 
 	const String skipChar = " \n\t\r\0";
-	const String operatorChar = ".+-*/{}()<>,;#:=<>|@$%&[]!\'";
+	const String operatorChar = ".+-*/{}()<>,;:=<>|@$%&[]!\'";
 
 	Token* Lexer::nextToken()
 	{
@@ -153,6 +156,15 @@ namespace sge
 			return;
 
 		auto token = _src.at(viewPos);
+		if (token == '#')
+		{
+			while (token != '\n')
+			{
+				if ( viewPos++ > _src.size() - 1) break;
+				token = _src.at(viewPos);
+			}
+		}
+
 		while (token == ' ' || token == '\n' || token == '\t' || token == '\r')
 		{
 			if (token == '\n')

@@ -27,67 +27,136 @@ namespace sge
 	void ShaderParse::Parse(Span<const u8> src)
 	{
 		_src = StrView(reinterpret_cast<const char*>(src.data()), src.size());
-		Lexer lexer(_src);
-		Token* token;
+		_lexer.Read(_src);
 		
-		while (true)
+		_token = _lexer.nextToken();
+
+		if (_token->CheckToken(TokenType::None))
+			SGE_LOG_ERROR("TokenType is none");
+
+		else if (_token->CheckToken(TokenType::Identifier, "Shader"))
 		{
-			token = lexer.nextToken();
-			
-			if (token->type == TokenType::None)
-				break;
+			_token = _lexer.nextToken();
+			if (_token->CheckToken(TokenType::None)) 
+				SGE_LOG_ERROR("TokenType is none");
 
-			else if (token->type == TokenType::Identifier)
+			if (_token->type == TokenType::String)
 			{
-				if (token->value == "Shader")
-				{
-					token = lexer.nextToken();
-					if (token->type == TokenType::None) break;
-
-					if (token->type == TokenType::String)
-						_shaderData.shaderName = token->value;
-
-					// Read Shader Prop -------------------
-				}
-				else if (token->value == "Pass")
-				{
-					auto& newPass = _shaderData.passes.emplace_back();
-					while (token->value != "}")
-					{
-						token = lexer.nextToken();
-						if (token->type == TokenType::None) break;
-
-						if (token->type == TokenType::Identifier && token->value == "VsFunc")
-						{
-							token = lexer.nextToken();
-							if (token->type == TokenType::None) break;
-
-							else if (token->type == TokenType::Identifier)
-								newPass.vsEntryPt = token->value;
-						}
-						else if (token->type == TokenType::Identifier && token->value == "PsFunc")
-						{
-							token = lexer.nextToken();
-							if (token->type == TokenType::None) break;
-
-							else if (token->type == TokenType::Identifier)
-								newPass.psEntryPt = token->value;
-						}
-					}
-				}
+				_shaderData.shaderName = _token->value.c_str();
+				_token = _lexer.nextToken();
 			}
-		} 
-		
-		SGE_LOG("\nFilePath:{}\nFileName:{}\nShaderName:{}\nPassSize:{}\n", _shaderData.path,
-			_shaderData.fileName,
-			_shaderData.shaderName,
-			_shaderData.passes.size());
+
+			if (_token->CheckToken(TokenType::Operator, "{"))
+			{
+				_numbracket++;
+				_readProperties();
+			}
+			
+		}
+	
+		SGE_LOG("\nFilePath:{}\nFileName:{}\nShaderName:{}\nPassSize:{}\nPropertySize:{}\n", _shaderData.path,
+			_shaderData.fileName,_shaderData.shaderName,
+			_shaderData.passes.size(), _shaderData.props.size());
 
 		ShaderCompiler hlslCompiler;
 		hlslCompiler.CompilerShader(&_shaderData);
 
 		//SGE_LOG("{}", _shaderData.shaderName);
 
+	}
+
+	void ShaderParse::_readProperties()
+	{
+		while (true)
+		{
+			_token = _lexer.nextToken();
+			if (_token->CheckToken(TokenType::Operator, "}"))				{ break; }
+			if (_token->CheckToken(TokenType::Identifier, "Properties"))	{ _readProperty(); }
+			if (_token->CheckToken(TokenType::Identifier, "Pass"))			{ _readPass(); }
+			if (_token->CheckToken(TokenType::None))						{ break; }
+		}
+		
+	}
+
+	void ShaderParse::_readProperty()
+	{
+		_token = _lexer.nextToken();
+		if (!_token->CheckToken(TokenType::Operator, "{")) SGE_LOG_ERROR("Properties not {");
+
+		while (true)
+		{
+			_token = _lexer.nextToken();
+			
+			if (_token->CheckToken(TokenType::Operator, "}")) { break; }
+			{
+				auto& o = _shaderData.props.emplace_back();
+				o.name = _token->value;
+
+				while (!_token->CheckToken(TokenType::Operator, ";"))
+				{
+					_token = _lexer.nextToken();
+					
+					if (_token->CheckToken(TokenType::String)) o.displayName = _token->value;;
+					if (_token->CheckToken(TokenType::Identifier)) enumTryParse(o.propTypr, _token->value.c_str());
+					if (_token->CheckToken(TokenType::Operator, "="))
+					{
+						_token = _lexer.nextToken();
+						while (!_token->CheckToken(TokenType::Operator, ";"))
+						{
+							if (_token->CheckToken(TokenType::None)) break;
+							o.defaultValue += _token->value;
+							_token = _lexer.nextToken();
+						}
+						SGE_LOG("V : {}", o.defaultValue);
+					}
+					if (_token->CheckToken(TokenType::None)) break;
+				}
+				
+			}
+		}
+	}
+
+	void ShaderParse::_readPass()
+	{
+		int _shaderbracket = 0;
+
+		auto& newPass = _shaderData.passes.emplace_back();
+		while (true)
+		{
+			_token = _lexer.nextToken();
+
+			if (_token->CheckToken(TokenType::Operator, "{"))
+			{
+				_shaderbracket++;
+			}
+
+			if (_token->CheckToken(TokenType::Operator, "}"))
+			{
+				if (--_shaderbracket == 0) break;
+			}
+
+
+			if (_token->CheckToken(TokenType::Identifier, "VsFunc"))
+			{
+				_token = _lexer.nextToken();
+				if (_token->type == TokenType::None) break;
+
+				else if (_token->type == TokenType::Identifier)
+					newPass.vsEntryPt = _token->value;
+			}
+
+			if (_token->CheckToken(TokenType::Identifier, "PsFunc"))
+			{
+				_token = _lexer.nextToken();
+				if (_token->type == TokenType::None) break;
+
+				else if (_token->type == TokenType::Identifier)
+					newPass.psEntryPt = _token->value;
+			}
+
+			if (_token->type == TokenType::None) break;
+
+		}
 	}
 
 
