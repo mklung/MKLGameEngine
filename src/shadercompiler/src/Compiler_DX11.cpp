@@ -103,7 +103,7 @@ namespace sge
 				D3D11_SHADER_BUFFER_DESC bufferDesc;
 				D3D11_SHADER_INPUT_BIND_DESC bindDesc;
 
-				ConstBufferDesc& constbufDesc = shaderDescData.constBuffers.emplace_back();
+				ConstBufferInfo& constbufDesc = shaderDescData.constBuffers.emplace_back();
 
 				auto* constBuf = reflection->GetConstantBufferByIndex(i);
 

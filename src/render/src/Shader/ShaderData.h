@@ -3,6 +3,7 @@
 #include "sge_core.h"
 #include "RenderDataType.h"
 #include "nlohmann/json.hpp"
+#include "Vertex/Vertex.h"
 #include "sge_core/serializer/json/JsonUtil.h"
 
 namespace sge
@@ -91,7 +92,7 @@ namespace sge
 		Json  ToJson();
 	};
 
-	struct  ConstBufferDesc
+	struct  ConstBufferInfo
 	{
 	public:
 		String name;
@@ -100,6 +101,16 @@ namespace sge
 		u8 dataSize;
 		Vector_<ShaderVariable, 4> variables;
 		Json  ToJson();
+
+		const ShaderVariable* findVariable(StrView propname) const
+		{
+			for (auto& v : variables)
+			{
+				if (v.name == propname) return &v;
+			}
+
+			return nullptr;
+		}
 	};
 
 	struct  ShaderInputParam
@@ -116,7 +127,7 @@ namespace sge
 	public:
 		String profile;
 		Vector_<ShaderInputParam, 8> inputs;
-		Vector_<ConstBufferDesc, 8> constBuffers;
+		Vector_<ConstBufferInfo, 8> constBuffers;
 
 		String ToJson();
 		void Clear();

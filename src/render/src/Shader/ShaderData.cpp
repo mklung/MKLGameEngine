@@ -4,7 +4,7 @@
 
 namespace sge
 {
-	Json ConstBufferDesc::ToJson()
+	Json ConstBufferInfo::ToJson()
 	{
 		Json j;
 		j["name"]		= name.c_str();

@@ -18,6 +18,7 @@
 #include "sge_core/file/FilePath.h"
 #include "sge_core/file/MemMapFile.h"
 
+#include "sge_core/app/ProjectSettings.h"
 
 #include "sge_core/pointer/SPtr.h"
 #include "sge_core/pointer/ComPtr.h"
