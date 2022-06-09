@@ -12,12 +12,12 @@ namespace sge
 
 	struct MaterialPass_Stage : public NonCopyable
 	{
-		using M_Pass = MaterialPass;
+		//using M_Pass = MaterialPass;
 	public:
 		virtual ~MaterialPass_Stage() = default;
 		MaterialPass_Stage(MaterialPass* pass, ShaderStage* shaderPass);
 
-		const ShaderDescData* Info() const {}
+		const ShaderDescData* Info() const { return _shaderStage->info(); }
 
 	friend class MaterialPass;
 	protected:
@@ -76,8 +76,8 @@ namespace sge
 			}
 		}
 
-		ShaderPass*				_pass = nullptr;
-		ShaderDescData*			_shaderDescData = nullptr;
+		MaterialPass*			_pass = nullptr;
+		ShaderStage*			_shaderStage = nullptr;
 		Vector_<ConstBuffer, 4> _constBufs;
 
 	};
@@ -138,9 +138,9 @@ namespace sge
 		virtual ~Material() = default;
 
 		void setShader(Shader* shader);
-		void setParam(StrView name, const float& v);
-		void setParam(StrView name, const Tuple4f& v);
-		void setParam(StrView name, const Color4f& v);
+		void setParam(StrView name, const float& v) { _setParam(name, v); }
+		void setParam(StrView name, const Tuple4f& v) { _setParam(name, v); }
+		void setParam(StrView name, const Color4f& v) { _setParam(name, v.toTuple()); }
 
 		Span<SPtr<M_Pass>>	passes() { return _passes; }
 

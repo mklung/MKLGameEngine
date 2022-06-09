@@ -67,6 +67,8 @@ namespace sge
 			: r(r_), g(g_), b(b_) , a(a_) {}
 
 		ColorRGB<T> rgb() const { return ColorRGB(r, g, b); }
+
+		Tuple4<T>	toTuple() const { return Tuple4<T>(r, g, b, a); }
 	};
 
 	using ColorRGBAf = ColorRGBA<float>;

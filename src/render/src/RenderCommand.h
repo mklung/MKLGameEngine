@@ -1,15 +1,12 @@
 #pragma once
 
-#include "Vertex/Vertex.h"
-#include "RenderGpuBuffer.h"
-#include "Mesh/RenderMesh.h"
-#include "sge_core.h"
-#include "Render_Common.h"
+#include <Vertex/Vertex.h>
+#include <Shader/Material.h>
 
 namespace sge
 {
 	class RenderMesh;
-
+	class RenderSubMesh;
 
 	enum class RenderCommandType {
 		None,
@@ -68,6 +65,8 @@ namespace sge
 		SPtr<RenderGpuBuffer>	vertexBuffer;
 		SPtr<RenderGpuBuffer>	indexBuffer;
 
+		SPtr<MaterialPass>		materialPass;
+
 		size_t vertexCount = 0;
 		size_t indexCount = 0;
 	};
@@ -83,8 +82,8 @@ namespace sge
 			return newCommand<RenderCommand_SwapBuffers>();
 		}
 
-		void drawMesh(const SrcLoc& debugLoc, RenderMesh& mesh);
-		void drawSubMesh(const SrcLoc& debugLoc, const RenderSubMesh& subMesh);
+		void drawMesh(const SrcLoc& debugLoc, RenderMesh& mesh, Material* mat);
+		void drawSubMesh(const SrcLoc& debugLoc, const RenderSubMesh& subMesh, Material* mat);
 
 		void reset();
 

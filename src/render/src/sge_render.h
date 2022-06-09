@@ -1,3 +1,5 @@
+#pragma once
 
-#include "Renderer.h"
-#include "RenderContext.h"
+#include <Shader/Shader.h>
+#include <Renderer.h>
+#include <RenderContext.h>
