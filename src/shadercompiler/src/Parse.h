@@ -1,6 +1,6 @@
 #pragma once
 
-
+#include "sge_core.h"
 #include "Shader/ShaderData.h"
 #include "Lexer.h"
 #include <Mesh/EditMesh.h>

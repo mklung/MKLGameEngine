@@ -12,7 +12,9 @@ void main()
 	sge::String file = loadShader.getExecutableFilename();
 	sge::String path = sge::FilePath::getDir(file);
 	path.append("/../../../../../Data");
-	loadShader.setCurrentDir(path);
+
+	sge::Directory::setCurrent(path);
+	//loadShader.setCurrentDir(path);
 
 	auto dir = loadShader.getCurrentDir();
 

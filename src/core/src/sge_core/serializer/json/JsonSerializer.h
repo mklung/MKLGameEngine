@@ -1,13 +1,10 @@
 #pragma once
-#include "sge_core.h"
 
-namespace sge
-{
+namespace sge {
+
 	template<class SE, class T, class ENABLE = void>
-	struct JsonIO 
-	{
-		static void io(SE& se, T& data) 
-		{
+	struct JsonIO {
+		static void io(SE& se, T& data) {
 			se.beginObject();
 			data.onJson(se);
 			se.endObject();
@@ -16,28 +13,25 @@ namespace sge
 
 	// enum class
 	template<class SE, class T>
-	struct JsonIO <SE, T, std::enable_if_t<std::is_enum_v<T>> > 
-	{
+	struct JsonIO <SE, T, std::enable_if_t<std::is_enum_v<T>> > {
 		static void io(SE& se, T& data) {
 			se.toEnum(data);
 		}
 	};
 
-	struct JsonSerializer : public NonCopyable 
-	{
+	struct JsonSerializer : public NonCopyable {
 		using This = JsonSerializer;
-	public:
-		JsonSerializer(Json& outJson) : _json(outJson) 
-		{
+
+		JsonSerializer(Json& outJson) : _json(outJson) {
 			_stack.emplace_back(&_json);
 		}
 
-		void io(u8&  v) { toValue(v); }
+		void io(u8&  v)	{ toValue(v); }
 		void io(u16& v) { toValue(v); }
 		void io(u32& v) { toValue(v); }
 		void io(u64& v) { toValue(v); }
 
-		void io(i8&  v) { toValue(v); }
+		void io(i8&  v)	{ toValue(v); }
 		void io(i16& v) { toValue(v); }
 		void io(i32& v) { toValue(v); }
 		void io(i64& v) { toValue(v); }
@@ -46,22 +40,24 @@ namespace sge
 		void io(f64& v) { toValue(v); }
 
 		template<class V> void io(V& v) { JsonIO<This, V>::io(*this, v); }
+
 		template<class V> void named_io(const char* name, V& v) {
 			toObjectMember(name, v);
 		}
 
+
+		template<class SE, class T, class ENABLE> friend struct JsonIO;
 	protected:
+
 		template<class V>
-		void toValue(const V& v) 
-		{
+		void toValue(const V& v) {
 			auto& cur = _stack.back();
 			if (!cur->is_null())
 				throw SGE_ERROR("already contains value");
 			*cur = v;
 		}
 
-		void toStrView(StrView v) 
-		{
+		void toStrView(StrView v) {
 			auto& cur = _stack.back();
 			if (!cur->is_null())
 				throw SGE_ERROR("already contains value");
@@ -71,22 +67,26 @@ namespace sge
 		}
 
 		template<class V>
-		void toEnum(const V& v) 
-		{
-			toValue(enumStr(v));
+		void toEnum(const V& v) {
+			toStrView(enumStr(v));
 		}
 
-		void beginObject() 
-		{
+
+		void beginObject() {
 			auto& cur = _stack.back();
 			if (!cur->is_null())
 				throw SGE_ERROR("already contains value");
 			*cur = Json::object();
 		}
 
+		void endObject() {
+			auto& cur = _stack.back();
+			if (!cur->is_object())
+				throw SGE_ERROR("end object");
+		}
+
 		template<class V>
-		void toObjectMember(const char* name, V& v) 
-		{
+		void toObjectMember(const char* name, V& v) {
 			auto& obj = _stack.back();
 			if (!obj->is_object())
 				throw SGE_ERROR("not inside object");
@@ -97,16 +97,14 @@ namespace sge
 			_stack.pop_back();
 		}
 
-		void beginArray() 
-		{
+		void beginArray() {
 			auto& cur = _stack.back();
 			if (!cur->is_null())
 				throw SGE_ERROR("already contains value");
 			*cur = Json::array();
 		}
 
-		void resizeArray(size_t size) 
-		{
+		void resizeArray(size_t size) {
 			auto& cur = _stack.back();
 			if (!cur->is_array())
 				throw SGE_ERROR("not inside array");
@@ -115,16 +113,14 @@ namespace sge
 			arr->resize(size);
 		}
 
-		void endArray() 
-		{
+		void endArray() {
 			auto& cur = _stack.back();
 			if (!cur->is_array())
 				throw SGE_ERROR("end array");
 		}
 
 		template<class V>
-		void toArrayElement(size_t index, V& v) 
-		{
+		void toArrayElement(size_t index, V& v) {
 			auto& cur = _stack.back();
 			if (!cur->is_array())
 				throw SGE_ERROR("not inside array");
@@ -138,15 +134,13 @@ namespace sge
 			_stack.pop_back();
 		}
 
-
 	private:
 		Json& _json;
 		Vector_<Json*, 64>	_stack;
 	};
 
 	template<class T, size_t N>
-	struct JsonIO <JsonSerializer, Vector_<T, N>> 
-	{
+	struct JsonIO <JsonSerializer, Vector_<T, N>> {
 		static void io(JsonSerializer& se, Vector_<T, N>& data) {
 			se.beginArray();
 			size_t n = data.size();
@@ -159,10 +153,10 @@ namespace sge
 	};
 
 	template<size_t N>
-	struct JsonIO <JsonSerializer, String_<N>> 
-	{
+	struct JsonIO <JsonSerializer, String_<N>> {
 		static void io(JsonSerializer& se, String_<N>& data) {
 			se.toStrView(data);
 		}
 	};
+
 }

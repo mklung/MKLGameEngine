@@ -2,7 +2,6 @@
 
 #include "sge_core.h"
 #include "RenderDataType.h"
-#include "nlohmann/json.hpp"
 #include "Vertex/Vertex.h"
 #include "sge_core/serializer/json/JsonUtil.h"
 
@@ -27,7 +26,23 @@ namespace sge
 		Color4f,
 	};
 
-
+	inline
+		StrView enumStr(ShaderPropType v)
+	{
+		switch (v)
+		{
+#define E(V) case ShaderPropType::V: return #V;
+			E(None)
+				E(Int)
+				E(Float)
+				E(Vec2f)
+				E(Vec3f)
+				E(Vec4f)
+				E(Color4f);
+#undef E
+		default: return "";
+		}
+	}
 
 
 
@@ -40,6 +55,13 @@ namespace sge
 			String name;
 			String vsEntryPt;
 			String psEntryPt;
+
+			template<class SE>
+			void onJson(SE& se) {
+				SGE_NAMED_IO(se, name);
+				SGE_NAMED_IO(se, vsEntryPt);
+				SGE_NAMED_IO(se, psEntryPt);
+			}
 		};
 
 		struct  Prop
@@ -49,6 +71,13 @@ namespace sge
 			String		name;
 			String		displayName;
 			String		defaultValue;
+
+			template<class SE>
+			void onJson(SE& se) {
+				SGE_NAMED_IO(se, name);
+				SGE_NAMED_IO(se, displayName);
+				SGE_NAMED_IO(se, defaultValue);
+			}
 		};
 
 	public:
@@ -59,7 +88,15 @@ namespace sge
 		Vector_<Pass, 2> passes;
 
 		void clear();
-	private:
+
+		template<class SE>
+		void onJson(SE& se) {
+			SGE_NAMED_IO(se, path);
+			SGE_NAMED_IO(se, fileName);
+			SGE_NAMED_IO(se, shaderName);
+			SGE_NAMED_IO(se, props);
+			SGE_NAMED_IO(se, passes);
+		}
 	};
 
 	enum class TokenType
@@ -82,55 +119,89 @@ namespace sge
 		bool CheckToken(TokenType _type) {return (type == _type);}
 	};
 
-	struct  ShaderVariable
+
+
+
+
+
+
+	class  ShaderDescData
 	{
 	public:
-		String name;
-		int offset;
-		RenderDataType dataType;
 
-		Json  ToJson();
-	};
-
-	struct  ConstBufferInfo
-	{
-	public:
-		String name;
-		int bindPoint;
-		int bindCount;
-		u8 dataSize;
-		Vector_<ShaderVariable, 4> variables;
-		Json  ToJson();
-
-		const ShaderVariable* findVariable(StrView propname) const
+		class  ShaderInputParam
 		{
-			for (auto& v : variables)
-			{
-				if (v.name == propname) return &v;
+		public:
+			String			name;
+			String			attrId;
+			RenderDataType dataType = RenderDataType::None;
+
+			template<class SE>
+			void onJson(SE& se) {
+				SGE_NAMED_IO(se, name);
+				SGE_NAMED_IO(se, attrId);
+				//SGE_NAMED_IO(se, dataType);
+			}
+		};
+
+		class  ShaderVariable
+		{
+		public:
+			String			name;
+			int				offset = 0;
+			RenderDataType	dataType = RenderDataType::None;
+
+			template<class SE>
+			void onJson(SE& se) {
+				SGE_NAMED_IO(se, name);
+				SGE_NAMED_IO(se, offset);
+				SGE_NAMED_IO(se, dataType);
 			}
 
-			return nullptr;
-		}
-	};
+		};
+				
+		class  ConstBufferInfo
+		{
+		public:
+			String	name;
+			int		bindPoint = 0;
+			int		bindCount = 0;
+			size_t	dataSize = 0;
+			Vector_<ShaderVariable, 4> variables;
 
-	struct  ShaderInputParam
-	{
-	public:
-		String name;
-		String attrId;
-		RenderDataType dataType;
-		Json  ToJson();
-	};
+			const ShaderVariable* findVariable(StrView propname) const
+			{
+				for (auto& v : variables)
+				{
+					if (v.name == propname) return &v;
+				}
 
-	struct  ShaderDescData
-	{
-	public:
+				return nullptr;
+			}
+
+			template<class SE>
+			void onJson(SE& se) {
+				SGE_NAMED_IO(se, name);
+				SGE_NAMED_IO(se, bindPoint);
+				SGE_NAMED_IO(se, bindCount);
+				SGE_NAMED_IO(se, dataSize);
+				SGE_NAMED_IO(se, variables);
+			}
+
+		};
+
 		String profile;
 		Vector_<ShaderInputParam, 8> inputs;
 		Vector_<ConstBufferInfo, 8> constBuffers;
 
-		String ToJson();
 		void Clear();
+
+		template<class SE>
+		void onJson(SE& se) {
+			SGE_NAMED_IO(se, profile);
+			SGE_NAMED_IO(se, inputs);
+			SGE_NAMED_IO(se, constBuffers);
+		}
 	};
 
 
@@ -149,21 +220,5 @@ namespace sge
 			return false;
 	}
 
-	inline
-	StrView enumStr(ShaderPropType v) 
-	{
-		switch (v) 
-		{
-#define E(V) case ShaderPropType::V: return #V;
-			E(None)
-				E(Int)
-				E(Float)
-				E(Vec2f)
-				E(Vec3f)
-				E(Vec4f)
-				E(Color4f);
-#undef E
-		default: return "";
-		}
-	}
+
 }

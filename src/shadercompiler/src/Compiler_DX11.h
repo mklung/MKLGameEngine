@@ -5,7 +5,7 @@
 
 namespace sge
 {
-	const String COMPILE_FILE_PATH = "LocalTemp/Shader/DX11";
+	const String COMPILE_FILE_PATH = "LocalTemp/Assets/Shaders";
 
 	class ShaderCompiler
 	{
@@ -19,6 +19,7 @@ namespace sge
 		void WriteBinFile(ComPtr<ID3DBlob>& bytecode, String fileName);
 
 		RenderDataType ConvertShaderDataType(D11_PARAM_DESC* desc);
+		StrView filePath;
 
 	};
 

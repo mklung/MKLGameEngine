@@ -17,6 +17,7 @@
 
 #include "sge_core/file/FilePath.h"
 #include "sge_core/file/MemMapFile.h"
+#include <sge_core/file/Directory.h>
 
 #include "sge_core/app/ProjectSettings.h"
 

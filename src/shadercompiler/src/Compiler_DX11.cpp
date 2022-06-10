@@ -38,10 +38,10 @@ namespace sge
 					0, nullptr, 0,
 					bytecode.ptrForInit(), errorMsg.ptrForInit());
 
-				auto binFileName = Fmt("{}_Pass{}_{}.bin", shaderData->fileName.data(), PassIndex, profile);
+				auto binFileName = Fmt("{}/DX11/vs_Pass{}.bin", shaderData->fileName.data(), PassIndex);
 				WriteBinFile(bytecode, binFileName.c_str());
 
-				auto jsonFileName = Fmt("{}_Pass{}_{}.json", shaderData->fileName.data(), PassIndex, profile);
+				auto jsonFileName = Fmt("{}/DX11/vs_Pass{}.json", shaderData->fileName.data(), PassIndex);
 				ShaderReflect(bytecode, profile.c_str(), jsonFileName.c_str());
 			}
 
@@ -55,10 +55,10 @@ namespace sge
 					profile.data(), flage1, flage2, 0, nullptr, 0,
 					bytecode.ptrForInit(), errorMsg.ptrForInit());
 
-				auto binFileName = Fmt("{}_Pass{}_{}.bin", shaderData->fileName.data(), PassIndex, profile);
+				auto binFileName = Fmt("{}/DX11/ps_Pass{}.bin", shaderData->fileName.data(), PassIndex);
 				WriteBinFile(bytecode, binFileName.c_str());
 				
-				auto jsonFileName  = Fmt("{}_Pass{}_{}.json", shaderData->fileName.data(), PassIndex, profile);
+				auto jsonFileName  = Fmt("{}/DX11/ps_Pass{}.json", shaderData->fileName.data(), PassIndex);
 				ShaderReflect(bytecode, profile.c_str(), jsonFileName.c_str());
 			}
 		}
@@ -103,7 +103,7 @@ namespace sge
 				D3D11_SHADER_BUFFER_DESC bufferDesc;
 				D3D11_SHADER_INPUT_BIND_DESC bindDesc;
 
-				ConstBufferInfo& constbufDesc = shaderDescData.constBuffers.emplace_back();
+				auto& constbufDesc = shaderDescData.constBuffers.emplace_back();
 
 				auto* constBuf = reflection->GetConstantBufferByIndex(i);
 
@@ -133,7 +133,7 @@ namespace sge
 
 					if (0 == (varDesc.uFlags & D3D_SVF_USED)) continue;
 
-					ShaderVariable& shaderVar = constbufDesc.variables.emplace_back();
+					auto& shaderVar = constbufDesc.variables.emplace_back();
 					shaderVar.name = varDesc.Name;
 					shaderVar.offset = varDesc.StartOffset;
 
@@ -172,11 +172,12 @@ namespace sge
 			}
 		}
 
-		SGE_LOG("{}", shaderDescData.ToJson());
+		//SGE_LOG("{}", shaderDescData.ToJson());
 
 		auto filePath = Fmt("{}/{}", COMPILE_FILE_PATH, fileName);
-		File::writeFile(filePath, shaderDescData.ToJson(), false);
-
+		//File::writeFile(filePath, shaderDescData.ToJson(), false);
+		
+		JsonUtil::writeFile(filePath, shaderDescData, false);
 		SGE_LOG("\n");
 	}
 

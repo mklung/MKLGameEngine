@@ -58,10 +58,17 @@ namespace sge
 			_shaderData.fileName,_shaderData.shaderName,
 			_shaderData.passes.size(), _shaderData.props.size());
 
+		StrView shaderFilename = Fmt("Assets/Shaders/{}", _shaderData.fileName);
+		String outputPath = Fmt("LocalTemp/{}", shaderFilename);
+		SGE_LOG("{}", outputPath);
+		Directory::create(outputPath);
+
+		auto jsonFilename = Fmt("{}/info.json", outputPath);
+		JsonUtil::writeFile(jsonFilename, _shaderData, false);
+
 		ShaderCompiler hlslCompiler;
 		hlslCompiler.CompilerShader(&_shaderData);
 
-		//SGE_LOG("{}", _shaderData.shaderName);
 
 	}
 

@@ -8,15 +8,15 @@ namespace sge {
 		auto* end = path.end();
 		auto* begin = path.begin();
 
-		if (end == nullptr) return String();
+		if (end == nullptr) return StrView();
 		auto* p = end - 1;
 		for (; p >= begin; p--) {
 			if (*p == '/' || *p == '\\') {
-				return String(begin, p);
+				return StrView(begin, p - begin);
 			}
 		}
 
-		return String();
+		return StrView();
 	}
 
 	bool FilePath::isRealpath(const StrView& path) {

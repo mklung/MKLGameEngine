@@ -101,7 +101,10 @@ namespace sge
 	}
 
 
+
 	struct RenderDataTypeUtil {
+		RenderDataTypeUtil() = delete;
+
 		using Type = RenderDataType;
 
 		template<class T> static constexpr Type get();

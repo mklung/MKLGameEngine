@@ -19,6 +19,7 @@ public:
 			_renderContext = renderer->createContext(renderContextDesc);
 		}
 
+
 		//_renderContext->beginRender();
 		
 		EditMesh editMesh;
