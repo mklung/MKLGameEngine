@@ -6,7 +6,7 @@ namespace sge
 
 	RenderContext_DX11::RenderContext_DX11(CreateDesc & desc) : RenderContext(desc)
 	{
-		_renderer = Renderer_DX11::current();
+		_renderer = Renderer_DX11::instance();
 
 		auto* win = static_cast<NativeUIWindow_Win32*>(desc.window);
 
@@ -192,7 +192,7 @@ namespace sge
 
 	void RenderContext_DX11::_createRenderTarget()
 	{
-		auto* renderer = Renderer_DX11::current();
+		auto* renderer = Renderer_DX11::instance();
 		if (renderer == NULL)
 			return;
 		auto* dev = renderer->d3dDevice();

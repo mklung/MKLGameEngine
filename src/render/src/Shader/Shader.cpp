@@ -12,7 +12,7 @@ namespace sge
 	}
 
 	Shader::~Shader() {
-		auto* renderer = Renderer::current();
+		auto* renderer = Renderer::instance();
 		//renderer->onShaderDestory(this);
 	}
 

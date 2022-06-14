@@ -11,7 +11,7 @@ public:
 
 
 		Base::onCreate(desc);
-		auto* renderer = Renderer::current();
+		auto* renderer = Renderer::instance();
 
 		{
 			RenderContext::CreateDesc renderContextDesc;
@@ -45,7 +45,7 @@ public:
 #endif
 		_renderMesh.create(editMesh);
 
-		VertexLayoutManager::current()->getLayout(Vertex_Pos::kType);
+		VertexLayoutManager::instance()->getLayout(Vertex_Pos::kType);
 
 	}
 

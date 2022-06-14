@@ -10,7 +10,7 @@ namespace sge {
 
 	}
 
-	VertexLayoutManager* VertexLayoutManager::current() {
+	VertexLayoutManager* VertexLayoutManager::instance() {
 		static VertexLayoutManager s;
 		return &s;
 	}

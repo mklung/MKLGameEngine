@@ -14,7 +14,7 @@ namespace sge
 	class Renderer : public NonCopyable
 	{
 	public:
-		static Renderer* current() { return _current; }
+		static Renderer* instance() { return _current; }
 		Renderer();
 		~Renderer();
 

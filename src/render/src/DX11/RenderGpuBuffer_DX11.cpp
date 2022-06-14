@@ -32,7 +32,7 @@ namespace sge
 		}
 
 
-		auto* renderer = Renderer_DX11::current();
+		auto* renderer = Renderer_DX11::instance();
 		auto* dev = renderer->d3dDevice();
 
 		dev->CreateBuffer(&bd, nullptr, _d3dBuf.ptrForInit());
@@ -41,7 +41,7 @@ namespace sge
 	void RenderGpuBuffer_DX11::onUploadToGpu(Span<const u8> data, size_t offset)
 	{
 
-		auto* renderer = Renderer_DX11::current();
+		auto* renderer = Renderer_DX11::instance();
 		auto* ctx = renderer->d3dDeviceContext();
 		D3D11_MAPPED_SUBRESOURCE mapped = {};
 
