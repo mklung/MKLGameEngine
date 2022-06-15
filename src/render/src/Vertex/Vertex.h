@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Render_Common.h"
 #include "../RenderDataType.h"
 
 namespace sge {
@@ -8,8 +7,7 @@ namespace sge {
 
 	enum class VertexType : u64 { None };
 
-	struct VertexTypeUtil 
-	{
+	struct VertexTypeUtil {
 		static constexpr VertexType addPos(VertexType t, RenderDataType posType) {
 			return static_cast<VertexType>(static_cast<u64>(t)
 				| static_cast<u64>(posType));
@@ -63,82 +61,62 @@ namespace sge {
 
 
 
-	enum class VertexSemantic : u16;
+	enum class Vertex_Semantic : u16;
 
-	SGE_ENUM_ALL_OPERATOR(VertexSemantic)
-	enum class VertexSemanticType : u8 {
+	enum class Vertex_SemanticType : u8 {
 		None,
-		POSITION,
-		COLOR,
-		TEXCOORD,
-		NORMAL,
-		TANGENT,
-		BINORMAL,
+		Pos,
+		Color,
+		TexCoord,
+		Normal,
+		Tangent,
+		Binormal,
 	};
 
-//#define VertexSemanticType_ENUM_LIST(E) \
-//	E(None)		\
-//	E(POSITION)	\
-//	E(COLOR)	\
-//	E(TEXCOORD)	\
-//	E(NORMAL)	\
-//	E(TANGENT)	\
-//	E(BINORMAL)	\
-////----
-//	SGE_ENUM_STR_UTIL(VertexSemanticType)
-//
-
-
-
+	SGE_ENUM_ALL_OPERATOR(Vertex_Semantic)
 
 	struct Vertex_SemanticUtil 
 	{
-		using Semantic = VertexSemantic;
-		using Type = VertexSemanticType;
+		using Semantic = Vertex_Semantic;
+		using Type = Vertex_SemanticType;
 		using Index = u8;
 
-		static constexpr Semantic make(Type type, Index index) {
-			return static_cast<Semantic>((enumInt(type) << 8) | index);
+		static constexpr u16 make(Type type, Index index) {
+			return static_cast<u16>((enumInt(type) << 8) | index);
 		};
-
-		static constexpr u16 _make(Type type, Index index) {
-			return static_cast<u16>(make(type, index));
-		};
-
 		static constexpr Type	getType(Semantic v) { return static_cast<Type>(enumInt(v) >> 8); }
 		static constexpr Index	getIndex(Semantic v) { return static_cast<u8>(enumInt(v)); }
 	};
 
 
-	enum class VertexSemantic : u16 {
+	enum class Vertex_Semantic : u16 {
 		None = 0,
-		POSITION = Vertex_SemanticUtil::_make(VertexSemanticType::POSITION, 0),
+		Pos = Vertex_SemanticUtil::make(Vertex_SemanticType::Pos, 0),
 
-		Color0 = Vertex_SemanticUtil::_make(VertexSemanticType::COLOR, 0),
-		Color1 = Vertex_SemanticUtil::_make(VertexSemanticType::COLOR, 1),
-		Color2 = Vertex_SemanticUtil::_make(VertexSemanticType::COLOR, 2),
-		Color3 = Vertex_SemanticUtil::_make(VertexSemanticType::COLOR, 3),
+		Color0 = Vertex_SemanticUtil::make(Vertex_SemanticType::Color, 0),
+		Color1 = Vertex_SemanticUtil::make(Vertex_SemanticType::Color, 1),
+		Color2 = Vertex_SemanticUtil::make(Vertex_SemanticType::Color, 2),
+		Color3 = Vertex_SemanticUtil::make(Vertex_SemanticType::Color, 3),
 
-		TexCoord0 = Vertex_SemanticUtil::_make(VertexSemanticType::TEXCOORD, 0),
-		TexCoord1 = Vertex_SemanticUtil::_make(VertexSemanticType::TEXCOORD, 1),
-		TexCoord2 = Vertex_SemanticUtil::_make(VertexSemanticType::TEXCOORD, 2),
-		TexCoord3 = Vertex_SemanticUtil::_make(VertexSemanticType::TEXCOORD, 3),
-		TexCoord4 = Vertex_SemanticUtil::_make(VertexSemanticType::TEXCOORD, 4),
-		TexCoord5 = Vertex_SemanticUtil::_make(VertexSemanticType::TEXCOORD, 5),
-		TexCoord6 = Vertex_SemanticUtil::_make(VertexSemanticType::TEXCOORD, 6),
-		TexCoord7 = Vertex_SemanticUtil::_make(VertexSemanticType::TEXCOORD, 7),
+		TexCoord0 = Vertex_SemanticUtil::make(Vertex_SemanticType::TexCoord, 0),
+		TexCoord1 = Vertex_SemanticUtil::make(Vertex_SemanticType::TexCoord, 1),
+		TexCoord2 = Vertex_SemanticUtil::make(Vertex_SemanticType::TexCoord, 2),
+		TexCoord3 = Vertex_SemanticUtil::make(Vertex_SemanticType::TexCoord, 3),
+		TexCoord4 = Vertex_SemanticUtil::make(Vertex_SemanticType::TexCoord, 4),
+		TexCoord5 = Vertex_SemanticUtil::make(Vertex_SemanticType::TexCoord, 5),
+		TexCoord6 = Vertex_SemanticUtil::make(Vertex_SemanticType::TexCoord, 6),
+		TexCoord7 = Vertex_SemanticUtil::make(Vertex_SemanticType::TexCoord, 7),
 
-		NORMAL = Vertex_SemanticUtil::_make(VertexSemanticType::NORMAL, 0),
-		TANGENT = Vertex_SemanticUtil::_make(VertexSemanticType::TANGENT, 0),
-		BINORMAL = Vertex_SemanticUtil::_make(VertexSemanticType::BINORMAL, 0),
+		Normal = Vertex_SemanticUtil::make(Vertex_SemanticType::Normal, 0),
+		Tangent = Vertex_SemanticUtil::make(Vertex_SemanticType::Tangent, 0),
+		Binormal = Vertex_SemanticUtil::make(Vertex_SemanticType::Binormal, 0),
 
 	};
-
 
 	struct VertexLayout : public NonCopyable
 	{
 
-		using Semantic = VertexSemantic;
+		using Semantic = Vertex_Semantic;
 		using DataType = RenderDataType;
 
 		struct Element {
@@ -152,7 +130,7 @@ namespace sge {
 		Vector_<Element, 16>	elements;
 
 		template<class VERTEX, class ATTR>
-		void addElement(Semantic semantic, ATTR VERTEX::* attr) 
+		void addElement(Semantic semantic, ATTR VERTEX::* attr, size_t index = 0) 
 		{
 			if (std::is_array<ATTR>()) {
 				size_t n = std::extent<ATTR>();
@@ -164,7 +142,6 @@ namespace sge {
 				_addElement(semantic, attr, 0);
 			}
 		}
-
 	private:
 		template<class VERTEX, class ATTR>
 		void _addElement(Semantic semantic, ATTR VERTEX::* attr, size_t index) {
@@ -178,7 +155,7 @@ namespace sge {
 
 
 	struct VertexBase {
-		using Semantic = VertexSemantic;
+		using Semantic = Vertex_Semantic;
 
 		using PosType = void;
 		using ColorType = void;
@@ -210,7 +187,7 @@ namespace sge {
 		static const VertexType kType = VertexTypeUtil::addPos(VertexType::None, kPosType);
 
 		static void onRegister(VertexLayout* layout) {
-			layout->addElement(Semantic::POSITION, &VertexT_Pos::pos);
+			layout->addElement(Semantic::Pos, &VertexT_Pos::pos);
 		}
 	};
 
@@ -258,7 +235,7 @@ namespace sge {
 
 		static void onRegister(VertexLayout* layout) {
 			BASE::onRegister(layout);
-			layout->addElement(Semantic::NORMAL, &VertexT_Normal::normal);
+			layout->addElement(Semantic::Normal, &VertexT_Normal::normal);
 		}
 	};
 
@@ -276,7 +253,7 @@ namespace sge {
 			static_assert(std::is_same<TangentType, NormalType>::value, "");
 
 			BASE::onRegister(layout);
-			layout->addElement(Semantic::TANGENT, &VertexT_Tangent::tangent);
+			layout->addElement(Semantic::Tangent, &VertexT_Tangent::tangent);
 		}
 	};
 
@@ -294,7 +271,7 @@ namespace sge {
 			static_assert(std::is_same<BinormalType, NormalType>::value, "");
 
 			BASE::onRegister(layout);
-			layout->addElement(Semantic::BINORMAL, &VertexT_Binormal::binormal);
+			layout->addElement(Semantic::Binormal, &VertexT_Binormal::binormal);
 		}
 	};
 
@@ -315,4 +292,3 @@ namespace sge {
 	template<u8 UV_COUNT> using Vertex_PosColorBinormalUv = VertexT_Binormal<Tuple3f, 1, Vertex_PosColorTangentUv<UV_COUNT>>;
 
 }
-
