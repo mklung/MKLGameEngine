@@ -38,6 +38,8 @@ namespace sge {
 		static const char*				getDxSemanticName(VertexSemanticType t);
 		static VertexSemanticType		parseDxSemanticName(StrView s);
 
+		static const char* getDxStageProfile(ShaderDescMask s);
+
 		static String getStrFromHRESULT(HRESULT hr);
 
 	private:
@@ -59,6 +61,15 @@ namespace sge {
 		return str;
 	}
 
+	inline
+	const char* DX11Util::getDxStageProfile(ShaderDescMask s)
+	{
+		switch (s) {
+		case ShaderDescMask::Vertex:	return "ps_Pass0";
+		case ShaderDescMask::Pixel:		return "vs_Pass0";
+		default: return "";
+		}
+	}
 	inline
 		void DX11Util::reportError(HRESULT hr) {
 		if (!SUCCEEDED(hr)) {

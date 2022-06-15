@@ -25,7 +25,7 @@ namespace sge {
 
 	private:
 
-		static VertexLayoutManager* s_current;
+		static VertexLayoutManager* s_instance;
 		Map<VertexType, VertexLayout>	_table;
 	};
 

@@ -17,6 +17,7 @@ namespace sge
 		void onCmd_SwapBuffers(RenderCommand_SwapBuffers& cmd);
 		void onCmd_DrawCall(RenderCommand_DrawCall& cmd);
 
+		Renderer_DX11* renderer() { return _renderer; }
 
 		struct VERTEX { FLOAT X, Y, Z; 
 						FLOAT Color[4]; };

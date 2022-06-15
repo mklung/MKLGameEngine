@@ -2,6 +2,7 @@
 
 #include "sge_core.h"
 #include "mesh/RenderMesh.h"
+#include <Shader/Material.h>
 
 namespace sge
 {
@@ -36,19 +37,19 @@ namespace sge
 		Vector_<u8, 1024> vertexData;
 		RenderContext*		createContext(RenderContext_CreateDesc& desc)		{ return onCreateContext(desc); }
 		RenderGpuBuffer*	createGpuBuffer(RenderGpuBuffer_CreateDesc& desc)	{ return onCreateGpuBuffer(desc); }
-		//SPtr<Shader>		createShader(StrView filename);
+		SPtr<Shader>		createShader(StrView filename);
 		//SPtr<Material>		createMaterial() { return onCreateMaterial(); }
 
-		//void onShaderDestory(Shader* shader);
+		void onShaderDestory(Shader* shader);
 
 	protected:
 
 		virtual RenderContext*		onCreateContext(RenderContext_CreateDesc& desc) = 0;
 		virtual RenderGpuBuffer*	onCreateGpuBuffer(RenderGpuBuffer_CreateDesc& desc) = 0;
-		//virtual SPtr<Shader>		onCreateShader(StrView filename) = 0;
+		virtual SPtr<Shader>		onCreateShader(StrView filename) = 0;
 		//virtual SPtr<Material>		onCreateMaterial() = 0;
 
-		//StringMap<Shader*>	_shaders;
+		StringMap<Shader*>	_shaders;
 		static Renderer* s_instance;
 
 		bool _vsync : 1;

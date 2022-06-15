@@ -13,7 +13,7 @@ namespace sge
 
 	Shader::~Shader() {
 		auto* renderer = Renderer::instance();
-		//renderer->onShaderDestory(this);
+		renderer->onShaderDestory(this);
 	}
 
 	ShaderPass::ShaderPass(Shader* shader, ShaderInfo::Pass& info)

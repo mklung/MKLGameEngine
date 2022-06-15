@@ -18,7 +18,7 @@ public:
 			renderContextDesc.window = this;
 			_renderContext = renderer->createContext(renderContextDesc);
 		}
-
+		auto shader = renderer->createShader("Assets/Shaders/Triangle.hlsl");
 
 		//_renderContext->beginRender();
 		

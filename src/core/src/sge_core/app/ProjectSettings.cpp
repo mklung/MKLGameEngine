@@ -18,7 +18,7 @@ namespace sge {
 	}
 
 	StrView ProjectSettings::importedPath() const {
-		return "LocalTemp/Imported";
+		return "LocalTemp";
 	}
 
 }
