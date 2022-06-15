@@ -11,7 +11,7 @@ namespace sge
 	public:
 
 		RenderContext_DX11(CreateDesc& desc);
-
+		Renderer_DX11* renderer() { return _renderer; }
 
 		void onCmd_ClearFrameBuffers(RenderCommand_ClearFrameBuffers& cmd);
 		void onCmd_SwapBuffers(RenderCommand_SwapBuffers& cmd);
@@ -19,14 +19,14 @@ namespace sge
 
 
 		struct VERTEX { FLOAT X, Y, Z; 
-						FLOAT Color[4]; };
+						FLOAT COLOR[4]; };
 
 	protected:
 		Renderer_DX11* _renderer = nullptr;
 
 		ComPtr<IDXGISwapChain>			_swapChain;
 		ComPtr<ID3D11RenderTargetView>	_renderTargetView;
-		ComPtr<ID3D11Texture2D>		_depthStencil;
+		ComPtr<ID3D11Texture2D>			_depthStencil;
 		ComPtr<ID3D11DepthStencilView>	_depthStencilView;
 
 		ComPtr<ID3D11Buffer>			_testVertexBuffer;
