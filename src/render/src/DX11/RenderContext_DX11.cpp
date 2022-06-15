@@ -26,8 +26,8 @@ namespace sge
 			scd.SampleDesc.Count = 1;
 			scd.Windowed = TRUE;
 
-			auto hr = dxgiFactory->CreateSwapChain(dev, &scd, _swapChain.ptrForInit());
-			DX11Util::throwIfError(hr);
+			dxgiFactory->CreateSwapChain(dev, &scd, _swapChain.ptrForInit());
+
 		}
 	}
 

@@ -2,7 +2,6 @@
 
 #include "sge_core.h"
 #include "mesh/RenderMesh.h"
-#include "Shader/Material.h"
 
 namespace sge
 {
@@ -15,7 +14,7 @@ namespace sge
 	class Renderer : public NonCopyable
 	{
 	public:
-		static Renderer* instance() { return _instance; }
+		static Renderer* instance() { return _current; }
 		Renderer();
 		~Renderer();
 
@@ -35,22 +34,22 @@ namespace sge
 		bool vsync() const { return _vsync; }
 
 		Vector_<u8, 1024> vertexData;
-		RenderContext*			createContext(RenderContext_CreateDesc& desc)		{ return onCreateContext(desc); }
-		SPtr<RenderGpuBuffer>	createGpuBuffer(RenderGpuBuffer_CreateDesc& desc)	{ return onCreateGpuBuffer(desc); }
-		//SPtr<Shader>			createShader(StrView filename);
-		//SPtr<Material>			createMaterial() { return onCreateMaterial(); }
+		RenderContext*		createContext(RenderContext_CreateDesc& desc)		{ return onCreateContext(desc); }
+		RenderGpuBuffer*	createGpuBuffer(RenderGpuBuffer_CreateDesc& desc)	{ return onCreateGpuBuffer(desc); }
+		//SPtr<Shader>		createShader(StrView filename);
+		//SPtr<Material>		createMaterial() { return onCreateMaterial(); }
 
-		void onShaderDestory(Shader* shader);
+		//void onShaderDestory(Shader* shader);
 
 	protected:
 
-		virtual RenderContext*			onCreateContext(RenderContext_CreateDesc& desc) = 0;
-		virtual SPtr<RenderGpuBuffer>	onCreateGpuBuffer(RenderGpuBuffer_CreateDesc& desc) = 0;
-		//virtual SPtr<Shader>			onCreateShader(StrView filename) = 0;
-		//virtual SPtr<Material>			onCreateMaterial() = 0;
+		virtual RenderContext*		onCreateContext(RenderContext_CreateDesc& desc) = 0;
+		virtual RenderGpuBuffer*	onCreateGpuBuffer(RenderGpuBuffer_CreateDesc& desc) = 0;
+		//virtual SPtr<Shader>		onCreateShader(StrView filename) = 0;
+		//virtual SPtr<Material>		onCreateMaterial() = 0;
 
-		StringMap<Shader*>	_shaders;
-		static Renderer* _instance;
+		//StringMap<Shader*>	_shaders;
+		static Renderer* _current;
 
 		bool _vsync : 1;
 	};
