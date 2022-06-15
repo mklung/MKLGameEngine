@@ -25,25 +25,5 @@ namespace sge {
 		return v;*/
 	}
 
-	const char* DX11Util::getDxSemanticName(VertexSemanticType v) 
-	{
-		const char* s ;
-		switch (v)
-		{
-			case sge::VertexSemanticType::None:		s = "None";		break;
-			case sge::VertexSemanticType::POSITION: s = "POSITION";	break;
-			case sge::VertexSemanticType::COLOR:	s = "COLOR";	break;
-			case sge::VertexSemanticType::TEXCOORD:	s = "TEXCOORD"; break;
-			case sge::VertexSemanticType::NORMAL:	s = "NORMAL";	break;
-			case sge::VertexSemanticType::TANGENT:	s = "TANGENT";	break;
-			case sge::VertexSemanticType::BINORMAL:	s = "BINORMAL"; break;
-			default: break;
-		}
-
-		if (!s) {
-			throw SGE_ERROR("unknown VertexLayout_SemanticType {}", v);
-		}
-		return s;
-	}
 
 }

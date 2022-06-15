@@ -87,8 +87,8 @@ namespace sge
 		_vertexLayout->type;
 
 		for (auto& e : _vertexLayout->elements) {
-			using S = Vertex_Semantic;
-			using ST = Vertex_SemanticType;
+			using S = VertexSemantic;
+			using ST = VertexSemanticType;
 			using U = Vertex_SemanticUtil;
 
 			auto semanticType = U::getType(e.semantic);
@@ -153,15 +153,15 @@ namespace sge
 		auto vc = _vertexCount;
 
 		for (auto& e : vertexLayout->elements) {
-			using S = Vertex_Semantic;
-			using ST = Vertex_SemanticType;
+			using S = VertexSemantic;
+			using ST = VertexSemanticType;
 			using U = Vertex_SemanticUtil;
 
 			auto semanticType = U::getType(e.semantic);
 			auto semanticIndex = U::getIndex(e.semantic);
 
 			switch (semanticType) {
-			case ST::TexCoord: {
+			case ST::TEXCOORD: {
 				if (semanticIndex < EditMesh::kUvCountMax) {
 					Helper::copyVertexData(pData, vc, e, stride, src.uv[semanticIndex].data()); break;
 				}

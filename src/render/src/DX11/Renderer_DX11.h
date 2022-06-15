@@ -12,7 +12,7 @@ namespace sge {
 	class Renderer_DX11 : public Renderer
 	{
 	public:
-		static Renderer_DX11* instance() { return static_cast<Renderer_DX11*>(_current); }
+		static Renderer_DX11* instance() { return static_cast<Renderer_DX11*>(_instance); }
 
 		Renderer_DX11(CreateDesc& desc);
 

@@ -26,7 +26,7 @@ namespace sge
 
 		ComPtr<IDXGISwapChain>			_swapChain;
 		ComPtr<ID3D11RenderTargetView>	_renderTargetView;
-		ComPtr<ID3D11Texture2D>		_depthStencil;
+		ComPtr<ID3D11Texture2D>			_depthStencil;
 		ComPtr<ID3D11DepthStencilView>	_depthStencilView;
 
 		ComPtr<ID3D11Buffer>			_testVertexBuffer;

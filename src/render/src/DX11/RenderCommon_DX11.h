@@ -35,7 +35,8 @@ namespace sge {
 
 		static D3D11_PRIMITIVE_TOPOLOGY	getDxPrimitiveTopology(RenderPrimitiveType t);
 		static DXGI_FORMAT				getDxFormat(RenderDataType v);
-		static const char* getDxSemanticName(Vertex_SemanticType t);
+		static const char*				getDxSemanticName(VertexSemanticType t);
+		static VertexSemanticType		parseDxSemanticName(StrView s);
 
 		static String getStrFromHRESULT(HRESULT hr);
 
@@ -85,15 +86,15 @@ namespace sge {
 	}
 
 	inline
-		const char* DX11Util::getDxSemanticName(Vertex_SemanticType t) {
-		using SRC = Vertex_SemanticType;
+		const char* DX11Util::getDxSemanticName(VertexSemanticType t) {
+		using SRC = VertexSemanticType;
 		switch (t) {
-		case SRC::Pos:			return "POSITION";
-		case SRC::Color:		return "COLOR";
-		case SRC::TexCoord:		return "TEXCOORD";
-		case SRC::Normal:		return "NORMAL";
-		case SRC::Tangent:		return "TANGENT";
-		case SRC::Binormal:		return "BINORMAL";
+		case SRC::POSITION:		return "POSITION";
+		case SRC::COLOR:		return "COLOR";
+		case SRC::TEXCOORD:		return "TEXCOORD";
+		case SRC::NORMAL:		return "NORMAL";
+		case SRC::TANGENT:		return "TANGENT";
+		case SRC::BINORMAL:		return "BINORMAL";
 		default: throw SGE_ERROR("unknown VertexLayout_SemanticType");
 		}
 	}

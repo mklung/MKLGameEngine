@@ -2,7 +2,7 @@
 
 namespace sge {
 
-	VertexLayoutManager* VertexLayoutManager::s_current = nullptr;
+	VertexLayoutManager* VertexLayoutManager::s_instance = nullptr;
 
 	VertexLayoutManager::VertexLayoutManager() {
 		registerLayout<Vertex_Pos>();

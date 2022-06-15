@@ -5,6 +5,8 @@
 namespace sge {
 
 
+
+
 	enum class VertexType : u64 { None };
 
 	struct VertexTypeUtil {
@@ -61,24 +63,37 @@ namespace sge {
 
 
 
-	enum class Vertex_Semantic : u16;
+	enum class VertexSemantic : u16;
 
-	enum class Vertex_SemanticType : u8 {
+	SGE_ENUM_ALL_OPERATOR(VertexSemantic)
+	enum class VertexSemanticType : u8 {
 		None,
-		Pos,
-		Color,
-		TexCoord,
-		Normal,
-		Tangent,
-		Binormal,
+		POSITION,
+		COLOR,
+		TEXCOORD,
+		NORMAL,
+		TANGENT,
+		BINORMAL,
 	};
 
-	SGE_ENUM_ALL_OPERATOR(Vertex_Semantic)
+//#define VertexSemanticType_ENUM_LIST(E) \
+//	E(None)		\
+//	E(POSITION)	\
+//	E(COLOR)	\
+//	E(TEXCOORD)	\
+//	E(NORMAL)	\
+//	E(TANGENT)	\
+//	E(BINORMAL)	\
+////----
+//	SGE_ENUM_STR_UTIL(VertexSemanticType)
+
+
+
 
 	struct Vertex_SemanticUtil 
 	{
-		using Semantic = Vertex_Semantic;
-		using Type = Vertex_SemanticType;
+		using Semantic = VertexSemantic;
+		using Type = VertexSemanticType;
 		using Index = u8;
 
 		static constexpr u16 make(Type type, Index index) {
@@ -89,34 +104,34 @@ namespace sge {
 	};
 
 
-	enum class Vertex_Semantic : u16 {
+	enum class VertexSemantic : u16 {
 		None = 0,
-		Pos = Vertex_SemanticUtil::make(Vertex_SemanticType::Pos, 0),
+		Pos = Vertex_SemanticUtil::make(VertexSemanticType::POSITION, 0),
 
-		Color0 = Vertex_SemanticUtil::make(Vertex_SemanticType::Color, 0),
-		Color1 = Vertex_SemanticUtil::make(Vertex_SemanticType::Color, 1),
-		Color2 = Vertex_SemanticUtil::make(Vertex_SemanticType::Color, 2),
-		Color3 = Vertex_SemanticUtil::make(Vertex_SemanticType::Color, 3),
+		Color0 = Vertex_SemanticUtil::make(VertexSemanticType::COLOR, 0),
+		Color1 = Vertex_SemanticUtil::make(VertexSemanticType::COLOR, 1),
+		Color2 = Vertex_SemanticUtil::make(VertexSemanticType::COLOR, 2),
+		Color3 = Vertex_SemanticUtil::make(VertexSemanticType::COLOR, 3),
 
-		TexCoord0 = Vertex_SemanticUtil::make(Vertex_SemanticType::TexCoord, 0),
-		TexCoord1 = Vertex_SemanticUtil::make(Vertex_SemanticType::TexCoord, 1),
-		TexCoord2 = Vertex_SemanticUtil::make(Vertex_SemanticType::TexCoord, 2),
-		TexCoord3 = Vertex_SemanticUtil::make(Vertex_SemanticType::TexCoord, 3),
-		TexCoord4 = Vertex_SemanticUtil::make(Vertex_SemanticType::TexCoord, 4),
-		TexCoord5 = Vertex_SemanticUtil::make(Vertex_SemanticType::TexCoord, 5),
-		TexCoord6 = Vertex_SemanticUtil::make(Vertex_SemanticType::TexCoord, 6),
-		TexCoord7 = Vertex_SemanticUtil::make(Vertex_SemanticType::TexCoord, 7),
+		TexCoord0 = Vertex_SemanticUtil::make(VertexSemanticType::TEXCOORD, 0),
+		TexCoord1 = Vertex_SemanticUtil::make(VertexSemanticType::TEXCOORD, 1),
+		TexCoord2 = Vertex_SemanticUtil::make(VertexSemanticType::TEXCOORD, 2),
+		TexCoord3 = Vertex_SemanticUtil::make(VertexSemanticType::TEXCOORD, 3),
+		TexCoord4 = Vertex_SemanticUtil::make(VertexSemanticType::TEXCOORD, 4),
+		TexCoord5 = Vertex_SemanticUtil::make(VertexSemanticType::TEXCOORD, 5),
+		TexCoord6 = Vertex_SemanticUtil::make(VertexSemanticType::TEXCOORD, 6),
+		TexCoord7 = Vertex_SemanticUtil::make(VertexSemanticType::TEXCOORD, 7),
 
-		Normal = Vertex_SemanticUtil::make(Vertex_SemanticType::Normal, 0),
-		Tangent = Vertex_SemanticUtil::make(Vertex_SemanticType::Tangent, 0),
-		Binormal = Vertex_SemanticUtil::make(Vertex_SemanticType::Binormal, 0),
+		Normal = Vertex_SemanticUtil::make(VertexSemanticType::NORMAL, 0),
+		Tangent = Vertex_SemanticUtil::make(VertexSemanticType::TANGENT, 0),
+		Binormal = Vertex_SemanticUtil::make(VertexSemanticType::BINORMAL, 0),
 
 	};
 
 	struct VertexLayout : public NonCopyable
 	{
 
-		using Semantic = Vertex_Semantic;
+		using Semantic = VertexSemantic;
 		using DataType = RenderDataType;
 
 		struct Element {
@@ -155,7 +170,7 @@ namespace sge {
 
 
 	struct VertexBase {
-		using Semantic = Vertex_Semantic;
+		using Semantic = VertexSemantic;
 
 		using PosType = void;
 		using ColorType = void;

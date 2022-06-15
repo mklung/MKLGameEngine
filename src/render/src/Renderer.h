@@ -14,7 +14,7 @@ namespace sge
 	class Renderer : public NonCopyable
 	{
 	public:
-		static Renderer* instance() { return _current; }
+		static Renderer* instance() { return s_instance; }
 		Renderer();
 		~Renderer();
 
@@ -49,7 +49,7 @@ namespace sge
 		//virtual SPtr<Material>		onCreateMaterial() = 0;
 
 		//StringMap<Shader*>	_shaders;
-		static Renderer* _current;
+		static Renderer* s_instance;
 
 		bool _vsync : 1;
 	};
