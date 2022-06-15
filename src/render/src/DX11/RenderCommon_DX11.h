@@ -35,15 +35,29 @@ namespace sge {
 
 		static D3D11_PRIMITIVE_TOPOLOGY	getDxPrimitiveTopology(RenderPrimitiveType t);
 		static DXGI_FORMAT				getDxFormat(RenderDataType v);
-		static const char* getDxSemanticName(Vertex_SemanticType t);
 
-		static String getStrFromHRESULT(HRESULT hr);
+		
+		static const char*				getDxSemanticName(VertexSemanticType t);
+		static VertexSemanticType		parseDxSemanticName(StrView s);
+
+		static String					getStrFromHRESULT(HRESULT hr);
+		static const char*				getDxStageProfile(ShaderDescMask s);
+
+		static ByteSpan toSpan(ID3DBlob* blob);
+		static StrView  toStrView(ID3DBlob* blob) { return StrView_make(toSpan(blob)); }
 
 	private:
 		static bool _checkError(HRESULT hr) {
 			return SUCCEEDED(hr);
 		}
 	};
+
+	inline
+		ByteSpan DX11Util::toSpan(ID3DBlob* blob) {
+		if (!blob) return ByteSpan();
+		return ByteSpan(reinterpret_cast<const u8*>(blob->GetBufferPointer()),
+			static_cast<size_t>(blob->GetBufferSize()));
+	}
 
 	inline
 		String DX11Util::getStrFromHRESULT(HRESULT hr) {
@@ -56,6 +70,15 @@ namespace sge {
 
 		auto str = UtfUtil::toString(buf);
 		return str;
+	}
+
+	inline
+		const char* DX11Util::getDxStageProfile(ShaderDescMask s) {
+		switch (s) {
+		case ShaderDescMask::Vertex:	return "vs_5_0";
+		case ShaderDescMask::Pixel:		return "ps_5_0";
+		default: return "";
+		}
 	}
 
 	inline
@@ -84,19 +107,19 @@ namespace sge {
 		}
 	}
 
-	inline
-		const char* DX11Util::getDxSemanticName(Vertex_SemanticType t) {
-		using SRC = Vertex_SemanticType;
-		switch (t) {
-		case SRC::Pos:			return "POSITION";
-		case SRC::Color:		return "COLOR";
-		case SRC::TexCoord:		return "TEXCOORD";
-		case SRC::Normal:		return "NORMAL";
-		case SRC::Tangent:		return "TANGENT";
-		case SRC::Binormal:		return "BINORMAL";
-		default: throw SGE_ERROR("unknown VertexLayout_SemanticType");
-		}
-	}
+	//inline
+	//	const char* DX11Util::getDxSemanticName(VertexSemanticType t) {
+	//	using SRC = VertexSemanticType;
+	//	switch (t) {
+	//	case SRC::POSITION:			return "POSITION";
+	//	case SRC::COLOR:		return "COLOR";
+	//	case SRC::TEXCOORD:		return "TEXCOORD";
+	//	case SRC::NORMAL:		return "NORMAL";
+	//	case SRC::TANGENT:		return "TANGENT";
+	//	case SRC::BINORMAL:		return "BINORMAL";
+	//	default: throw SGE_ERROR("unknown VertexLayout_SemanticType");
+	//	}
+	//}
 
 	inline
 		DXGI_FORMAT DX11Util::getDxFormat(RenderDataType v) {

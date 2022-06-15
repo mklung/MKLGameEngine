@@ -12,7 +12,7 @@ namespace sge {
 	class Renderer_DX11 : public Renderer
 	{
 	public:
-		static Renderer_DX11* instance() { return static_cast<Renderer_DX11*>(_current); }
+		static Renderer_DX11* instance() { return static_cast<Renderer_DX11*>(_instance); }
 
 		Renderer_DX11(CreateDesc& desc);
 
@@ -25,8 +25,11 @@ namespace sge {
 		//ID3D11Debug*			d3dDebug()			{ return _d3dDebug; }
 
 	protected:
-		virtual RenderContext* onCreateContext(RenderContext_CreateDesc& desc) override;
-		virtual RenderGpuBuffer* onCreateGpuBuffer(RenderGpuBuffer_CreateDesc& desc) override;
+		virtual RenderContext*			onCreateContext(RenderContext_CreateDesc& desc) override;
+		virtual SPtr<RenderGpuBuffer>	onCreateGpuBuffer(RenderGpuBuffer_CreateDesc& desc) override;
+
+		//virtual SPtr<Material>			onCreateMaterial() override;
+		//virtual SPtr<Shader>			onCreateShader(StrView filename) override;
 
 		ComPtr<IDXGIFactory1>			_dxgiFactory;
 		ComPtr<IDXGIDevice>				_dxgiDev;

@@ -5,7 +5,7 @@
 namespace sge
 {
 
-	Renderer* Renderer::_current = nullptr;
+	Renderer* Renderer::_instance = nullptr;
 
 
 	Renderer::CreateDesc::CreateDesc()
@@ -31,31 +31,32 @@ namespace sge
 
 	Renderer::Renderer()
 	{
-		SGE_ASSERT(_current == nullptr);
-		_current = this;
+		SGE_ASSERT(_instance == nullptr);
+		_instance = this;
 		_vsync = true;
 	}
 
 	Renderer::~Renderer()
 	{
-		SGE_ASSERT(_current == this);
-		_current = nullptr;
+		SGE_ASSERT(_shaders.size() == 0);
+		SGE_ASSERT(_instance == this);
+		_instance = nullptr;
 	}
 
-	/*SPtr<Shader> Renderer::createShader(StrView filename) {
-		TempString tmpName = filename;
+	//SPtr<Shader> Renderer::createShader(StrView filename) {
+	//	TempString tmpName = filename;
 
-		auto it = _shaders.find(tmpName.c_str());
-		if (it != _shaders.end()) {
-			return it->second;
-		}
+	//	auto it = _shaders.find(tmpName.c_str());
+	//	if (it != _shaders.end()) {
+	//		return it->second;
+	//	}
 
-		auto s = onCreateShader(tmpName);
-		_shaders[tmpName.c_str()] = s.ptr();
-		return s;
-	}
+	//	auto s = onCreateShader(tmpName);
+	//	_shaders[tmpName.c_str()] = s.ptr();
+	//	return s;
+	//}
 
 	void Renderer::onShaderDestory(Shader* shader) {
 		_shaders.erase(shader->filename().c_str());
-	}*/
+	}
 }
