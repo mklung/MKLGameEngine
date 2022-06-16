@@ -23,11 +23,11 @@ namespace sge
 	protected:
 		struct ConstBuffer
 		{
-			using DataType	= RenderDataType;
-			using Info		= ShaderDescData::ConstBufferInfo;
-			using VarInfo	= ShaderDescData::ShaderVariable;
-
 		public:
+			using DataType = RenderDataType;
+			using Info = ShaderDescData::ConstBufferInfo;
+			using VarInfo = ShaderDescData::ShaderVariable;
+
 			Vector<u8>				cpuBuffer;
 			SPtr<RenderGpuBuffer>	gpuBuffer;
 
@@ -112,10 +112,11 @@ namespace sge
 
 	class MaterialPass : public RefCountBase
 	{
-		using M_Pass = MaterialPass;
-		using M_VertexStage = MaterialPass_VertexStage;
-		using M_PixelStage = MaterialPass_PixelStage;
 	public:
+		using Pass = MaterialPass;
+		using VertexStage = MaterialPass_VertexStage;
+		using PixelStage = MaterialPass_PixelStage;
+
 		virtual ~MaterialPass() = default;
 
 		void bind(RenderContext* ctx, const VertexLayout vertLayout) {}
@@ -125,27 +126,29 @@ namespace sge
 
 		MaterialPass(Material* mat, ShaderPass* SahderPass) : _material(mat), _shaderPass(SahderPass) {}
 
-		Material* _material = nullptr;
+		Material*	_material = nullptr;
 		ShaderPass* _shaderPass = nullptr;
 
-		virtual void onBind(RenderContext* ctx, const VertexLayout vertLayout) = 0;
+		virtual void onBind(RenderContext* ctx, const VertexLayout* vertexLayout) = 0;
 
 		template <class V> 
 		void _setParam(StrView name, const V& v)
 		{
-			if (_vertexStage) _vertexStage->_setParam(name, v);
-			if (_pixelStage) _pixelStage->_setParam(name, v);
+			if (_vertexStage)	_vertexStage->_setParam(name, v);
+			if (_pixelStage)	_pixelStage->_setParam(name, v);
 		}
 
-		M_VertexStage*	_vertexStage	= nullptr;
-		M_PixelStage*	_pixelStage		= nullptr;
+		VertexStage*	_vertexStage	= nullptr;
+		PixelStage*		_pixelStage		= nullptr;
 
 	};
 
 	class Material : public RefCountBase
 	{
-		using M_Pass = MaterialPass;
-
+		using Pass			= MaterialPass;
+		using Stage			= MaterialPass_Stage;
+		using VertexStage	= MaterialPass_VertexStage;
+		using PixelStage	= MaterialPass_PixelStage;
 
 	public:
 		virtual ~Material() = default;
@@ -155,7 +158,7 @@ namespace sge
 		void setParam(StrView name, const Tuple4f& v) { _setParam(name, v); }
 		void setParam(StrView name, const Color4f& v) { _setParam(name, v.toTuple()); }
 
-		Span<SPtr<M_Pass>>	passes() { return _passes; }
+		Span<SPtr<Pass>>	passes() { return _passes; }
 
 	protected:
 		template<class V> void _setParam(StrView name, const V& v)
@@ -166,10 +169,10 @@ namespace sge
 			}
 		}
 
-		Vector_<SPtr<M_Pass>, 1> _passes;
+		Vector_<SPtr<Pass>, 1> _passes;
 		SPtr<Shader> _shader;
-		virtual void onSetShader() {};
-		virtual M_Pass* onCreatePass(Material* mat, ShaderPass* shaderPass) = 0;
+		virtual void	onSetShader() {};
+		virtual Pass* onCreatePass(Material* mat, ShaderPass* shaderPass) = 0;
 	};
 
 }
