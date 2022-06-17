@@ -49,7 +49,7 @@ namespace sge
 		
 		u8* dst = reinterpret_cast<u8*>(mapped.pData);
 		memcpy(dst + offset, data.data(), data.size());
-		SGE_LOG("Uploaded to GPU");
+		//SGE_LOG("Uploaded to GPU");
 		ctx->Unmap(_d3dBuf, 0);
 	}
 

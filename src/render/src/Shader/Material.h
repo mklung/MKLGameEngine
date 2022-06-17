@@ -36,6 +36,7 @@ namespace sge
 			{
 				auto* varInfo = cbInfo.findVariable(name);
 				if (!varInfo) return;
+				_setParam(varInfo, v);
 			}
 
 			void create(const Info& info);
@@ -119,7 +120,7 @@ namespace sge
 
 		virtual ~MaterialPass() = default;
 
-		void bind(RenderContext* ctx, const VertexLayout vertLayout) {}
+		void bind(RenderContext* ctx, const VertexLayout* vertexLayout) { onBind(ctx, vertexLayout); }
 
 		friend class Material;
 	protected:

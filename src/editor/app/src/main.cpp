@@ -19,7 +19,8 @@ public:
 			_renderContext = renderer->createContext(renderContextDesc);
 		}
 		auto shader = renderer->createShader("Assets/Shaders/Triangle.hlsl");
-
+		_material = renderer->createMaterial();
+		_material->setShader(shader);
 		//_renderContext->beginRender();
 		
 		EditMesh editMesh;
@@ -58,14 +59,19 @@ public:
 		Base::onDraw();
 		if (!_renderContext) return;
 
+		//_renderContext->setFrameBufferSize(clientRect().size);
+
+		auto time = GetTickCount64() * 0.001f;
+		auto s = abs(sin(time));
+
+		_material->setParam("testColor", Color4f(s, 0, 0, 1));
+
 		_renderContext->setFrameBufferSize(clientRect().size);
-
-
 		_renderContext->beginRender();
 
 		_cmdBuf.reset();
 		_cmdBuf.clearFrameBuffers()->setColor({ 0.0f , 0, 0.2f, 1 });
-		_cmdBuf.drawMesh(SGE_LOC, _renderMesh);
+		_cmdBuf.drawMesh(SGE_LOC, _renderMesh, _material);
 		_cmdBuf.swapBuffers();
 
 		_renderContext->commit(_cmdBuf);
@@ -73,6 +79,8 @@ public:
 		_renderContext->endRender();
 		drawNeeded();
 	}
+
+	SPtr<Material> _material;
 
 	SPtr<RenderContext> _renderContext;
 	RenderCommandBuffer _cmdBuf;

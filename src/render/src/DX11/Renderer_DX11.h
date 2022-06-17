@@ -28,6 +28,7 @@ namespace sge {
 		virtual RenderContext* onCreateContext(RenderContext_CreateDesc& desc) override;
 		virtual RenderGpuBuffer* onCreateGpuBuffer(RenderGpuBuffer_CreateDesc& desc) override;
 
+		virtual SPtr<Material>			onCreateMaterial() override;
 		virtual SPtr<Shader>			onCreateShader(StrView filename) override;
 
 		ComPtr<IDXGIFactory1>			_dxgiFactory;

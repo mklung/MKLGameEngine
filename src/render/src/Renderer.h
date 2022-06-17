@@ -38,7 +38,7 @@ namespace sge
 		RenderContext*		createContext(RenderContext_CreateDesc& desc)		{ return onCreateContext(desc); }
 		RenderGpuBuffer*	createGpuBuffer(RenderGpuBuffer_CreateDesc& desc)	{ return onCreateGpuBuffer(desc); }
 		SPtr<Shader>		createShader(StrView filename);
-		//SPtr<Material>		createMaterial() { return onCreateMaterial(); }
+		SPtr<Material>		createMaterial() { return onCreateMaterial(); }
 
 		void onShaderDestory(Shader* shader);
 
@@ -47,7 +47,7 @@ namespace sge
 		virtual RenderContext*		onCreateContext(RenderContext_CreateDesc& desc) = 0;
 		virtual RenderGpuBuffer*	onCreateGpuBuffer(RenderGpuBuffer_CreateDesc& desc) = 0;
 		virtual SPtr<Shader>		onCreateShader(StrView filename) = 0;
-		//virtual SPtr<Material>		onCreateMaterial() = 0;
+		virtual SPtr<Material>		onCreateMaterial() = 0;
 
 		StringMap<Shader*>	_shaders;
 		static Renderer* s_instance;

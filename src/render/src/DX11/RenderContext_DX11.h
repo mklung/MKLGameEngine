@@ -50,7 +50,7 @@ namespace sge
 		virtual void onEndRender() override;
 
 		void _createRenderTarget();
-		void _setTestShaders();
+		void _setTestShaders(const VertexLayout* vertexLayout);
 
 
 		virtual void onCommit(RenderCommandBuffer& cmdBuf);

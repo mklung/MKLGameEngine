@@ -1,6 +1,8 @@
 #include "RenderContext_DX11.h"
 #include "Renderer_DX11.h"
 #include "RenderGpuBuffer_DX11.h"
+#include "Material_DX11.h"
+
 namespace sge
 {
 
@@ -52,10 +54,7 @@ namespace sge
 
 	void RenderContext_DX11::onCmd_DrawCall(RenderCommand_DrawCall& cmd)
 	{
-			
-		/*
-		
-		*/
+
 		if (!cmd.vertexLayout) { SGE_ASSERT(false); return; }
 		auto* vertexBuffer = static_cast<RenderGpuBuffer_DX11*>(cmd.vertexBuffer.ptr());
 		if (!vertexBuffer) { SGE_ASSERT(false); return; }
@@ -70,16 +69,25 @@ namespace sge
 			if (!indexBuffer) { SGE_ASSERT(false); return; }
 		}
 
-		_setTestShaders();
 
 		auto* ctx = _renderer->d3dDeviceContext();
+
+		if (cmd.materialPass) {
+			cmd.materialPass->bind(this, cmd.vertexLayout);
+		}
+		else {
+			_setTestShaders(cmd.vertexLayout);
+		}
+		//_setTestShaders();
+
+		
 		auto primitive = DX11Util::getDxPrimitiveTopology(cmd.primitive);
 		ctx->IASetPrimitiveTopology(primitive);
 
-		auto* inputLayout = _getTestInputLayout(cmd.vertexLayout);
+		/*auto* inputLayout = _getTestInputLayout(cmd.vertexLayout);
 		if (!inputLayout) { SGE_ASSERT(false); return; }
 
-		ctx->IASetInputLayout(inputLayout);
+		ctx->IASetInputLayout(inputLayout);*/
 
 		UINT stride = static_cast<UINT>(cmd.vertexLayout->stride);
 		UINT offset = 0;
@@ -130,19 +138,10 @@ namespace sge
 
 		auto* dev = _renderer->d3dDevice();
 
-
-		/*D3D11_INPUT_ELEMENT_DESC ied[] =
-		{
-			{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-			{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		};*/
-
-		dev->CreateInputLayout(inputDesc.data(), static_cast<UINT>(inputDesc.size()), _testVertexShaderBytecode->GetBufferPointer(),
+		auto hr = dev->CreateInputLayout(inputDesc.data(), static_cast<UINT>(inputDesc.size()), _testVertexShaderBytecode->GetBufferPointer(),
 								_testVertexShaderBytecode->GetBufferSize(), outLayout.ptrForInit());
 
-
-		//RenderContext_DX11::_createVertex();
-
+		DX11Util::throwIfError(hr);
 
 		_testInputLayouts[src] = outLayout;
 		return outLayout;
@@ -162,8 +161,6 @@ namespace sge
 
 	void RenderContext_DX11::onBeginRender()
 	{
-
-
 
 		ID3D11DeviceContext4* ctx = _renderer->d3dDeviceContext();
 
@@ -230,7 +227,7 @@ namespace sge
 		backBuffer->Release();
 	}
 
-	void RenderContext_DX11::_setTestShaders()
+	void RenderContext_DX11::_setTestShaders(const VertexLayout* vertexLayout)
 	{
 		ID3D11Device1*			dev = _renderer->d3dDevice();
 		ID3D11DeviceContext4*	ctx = _renderer->d3dDeviceContext();
@@ -329,6 +326,10 @@ namespace sge
 
 		ctx->VSSetShader(_testVertexShader, 0, 0);
 		ctx->PSSetShader(_testPixelShader, 0, 0);
+
+		auto* inputLayout = _getTestInputLayout(vertexLayout);
+		if (!inputLayout) { SGE_ASSERT(false); return; }
+		ctx->IASetInputLayout(inputLayout);
 	}
 
 

@@ -22,9 +22,7 @@ Shader "Test 001"
 }
 #endif
 
-float4 a;
-float4 b;
-float4 c;
+float4 testColor;
 
 struct VOut
 {
@@ -38,12 +36,12 @@ VOut vs_main(float4 position : POSITION, float4 color : COLOR)
 
     VOut output;
 	output.position = position;
-	output.color = color * b * c;
+	output.color = color * testColor;
 	return output;
 }
 
 
 float4 ps_main(float4 position : SV_POSITION, float4 color : COLOR) : SV_TARGET
 {
-    return color * a;
+    return color * testColor;
 }
