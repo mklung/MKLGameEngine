@@ -77,16 +77,16 @@ SGE_ENUM_ALL_OPERATOR(VertexSemantic)
 		BINORMAL,
 	};
 
-//#define VertexSemanticType_ENUM_LIST(E) \
-//	E(None)		\
-//	E(POSITION)	\
-//	E(COLOR)	\
-//	E(TEXCOORD)	\
-//	E(NORMAL)	\
-//	E(TANGENT)	\
-//	E(BINORMAL)	\
-////----
-//	SGE_ENUM_STR_UTIL(VertexSemanticType)
+#define VertexSemanticType_ENUM_LIST(E) \
+	E(None)		\
+	E(POSITION)	\
+	E(COLOR)	\
+	E(TEXCOORD)	\
+	E(NORMAL)	\
+	E(TANGENT)	\
+	E(BINORMAL)	\
+//----
+	SGE_ENUM_STR_UTIL(VertexSemanticType)
 
 
 

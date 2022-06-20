@@ -1,6 +1,7 @@
 #pragma once
 
 #include <sge_core/math/Rect2.h>
+#include <sge_core/input/UIEvent.h>
 
 namespace sge {
 
@@ -51,6 +52,9 @@ public:
 	virtual void onActive(bool isActive) {}
 	virtual void onDraw() {}
 
+	virtual void onUINativeMouseEvent(UIMouseEvent& ev);
+	virtual void onUIMouseEvent(UIMouseEvent& ev) {}
+
 protected:
 	virtual void onCreate(CreateDesc& desc) {}
 	virtual void onSetWindowTitle(StrView title) {}
@@ -58,6 +62,9 @@ protected:
 	virtual void onDrawNeeded() {}
 
 	Rect2f	_clientRect{ 0,0,0,0 };
+
+	UIMouseEventButton _pressedMouseButtons = UIMouseEventButton::None;
+	Vec2f _mousePos{ 0,0 };
 };
 
 }
