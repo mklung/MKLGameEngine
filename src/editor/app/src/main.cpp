@@ -97,9 +97,10 @@ public:
 			String path = FilePath::getDir(file);
 			path.append("/../../../../../../Data");
 			SGE_LOG("dir = {}", path);
-			setCurrentDir(path);
+			auto* proj = ProjectSettings::instance();
+			proj->setProjectRoot(path);
 
-			auto dir = getCurrentDir();
+			auto dir = proj->importedPath();
 		}
 		Base::onCreate(desc);
 

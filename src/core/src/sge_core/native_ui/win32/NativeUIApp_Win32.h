@@ -14,9 +14,9 @@ public:
 
 protected:
 
-	virtual String	onGetExecutableFilename() override;
-	virtual String	onGetCurrentDir() override;
-	virtual void	onSetCurrentDir(StrView dir) override;
+	//virtual String	onGetExecutableFilename() override;
+	//virtual String	onGetCurrentDir() override;
+	//virtual void	onSetCurrentDir(StrView dir) override;
 
 	virtual void onCreate(CreateDesc& desc) override;
 	virtual void onRun	() override;
