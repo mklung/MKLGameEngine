@@ -65,8 +65,7 @@ namespace sge {
 
 	enum class VertexSemantic : u16;
 
-SGE_ENUM_ALL_OPERATOR(VertexSemantic)
-
+	SGE_ENUM_ALL_OPERATOR(VertexSemantic)
 	enum class VertexSemanticType : u8 {
 		None,
 		POSITION,
