@@ -1,19 +1,18 @@
 #pragma once
 
-#include <sge_core/base/Error.h>
-#include <sge_core/log/Log.h>
-#include "Math.h"
 #include "Tuple3.h"
+#include "Vec2.h"
+#include "Rect2.h"
 
 namespace sge {
 
 	template<class T> using Vec3_Basic_Data = Tuple3<T>;
-	template<class T, class DATA = Vec3_Basic_Data<T> >
 
+	template<class T, class DATA = Vec3_Basic_Data<T> >
 	struct Vec3_Basic : public DATA {
 	public:
 		using Vec3 = Vec3_Basic;
-		//using Vec2 = sge::Vec2<T>;
+		using Vec2 = Vec2<T>;
 
 		static const size_t kElementCount = 3;
 
@@ -39,6 +38,7 @@ namespace sge {
 		SGE_INLINE Vec3() = default;
 		SGE_INLINE Vec3(const Tuple3<T>& v) { set(v); }
 		SGE_INLINE Vec3(const T& x_, const T& y_, const T& z_) { set(x_, y_, z_); }
+		SGE_INLINE Vec3(const Vec2& v, const T& z_) { set(v.x, v.y, z_); }
 
 		SGE_INLINE void set(const Tuple3<T>& v) { DATA::set(v); }
 		SGE_INLINE void set(const T& x_, const T& y_, const T& z_) { set(Tuple3<T>(x_, y_, z_)); }
@@ -48,9 +48,6 @@ namespace sge {
 
 		SGE_INLINE void setAll(const T& v) { set(v, v, v); }
 		SGE_INLINE bool isAll(const T& v) { return equals(Vec3(v, v, v)); }
-
-		//----
-		SGE_INLINE Vec2 xy() const { return Vec2(x, y); }
 
 		//----
 		SGE_INLINE Vec3 operator+(const Vec3& r) const { return Vec3(x + r.x, y + r.y, z + r.z); }
@@ -89,9 +86,15 @@ namespace sge {
 		SGE_NODISCARD SGE_INLINE T		sqrLength() const { return sqrMagnitude(); }
 
 		SGE_NODISCARD SGE_INLINE T		distance(const Vec3& r) const { return (*this - r).length(); }
-		SGE_NODISCARD SGE_INLINE T		distanceSq(const Vec3& r) const { return (*this - r).sqrLength(); }
+		SGE_NODISCARD SGE_INLINE T		sqrDistance(const Vec3& r) const { return (*this - r).sqrLength(); }
 
 		SGE_NODISCARD Vec3 normalize() const { T m = magnitude(); return Math::equals0(m) ? s_zero() : (*this / m); }
+
+		SGE_INLINE	Vec2	xy() const { return Vec2(x, y); }
+		SGE_INLINE	Vec2	xz() const { return Vec2(x, z); }
+
+		Tuple3<T> toTuple() const { return Tuple3<T>(x, y, z); }
+		operator Tuple3<T>() const { return toTuple(); }
 
 		void onFormat(fmt::format_context& ctx) const {
 			fmt::format_to(ctx.out(), "({}, {}, {})", x, y, z);
@@ -105,23 +108,21 @@ namespace sge {
 	// SGE_FORMATTER_T(class T SGE_COMMA class DATA, Vec3_Basic<T SGE_COMMA DATA>)
 
 	// another work around for comma
-	//SGE_FORMATTER_T(SGE_ARGS(class T, class DATA), Vec3_Basic< SGE_ARGS(T, DATA) >)
+	SGE_FORMATTER_T(SGE_ARGS(class T, class DATA), Vec3_Basic< SGE_ARGS(T, DATA) >)
 
+
+		template<class T, class DATA> SGE_INLINE
+		bool Vec3_Basic<T, DATA>::equals(const Vec3& r, const T& epsilon) const {
+		return Math::equals(x, r.x, epsilon)
+			&& Math::equals(y, r.y, epsilon)
+			&& Math::equals(z, r.z, epsilon);
+	}
 
 	template<class T, class DATA> SGE_INLINE
-		bool Vec3_Basic<T, DATA>::equals(const Vec3& r, const T& epsilon) const 
-		{
-			return Math::equals(x, r.x, epsilon)
-				&& Math::equals(y, r.y, epsilon)
-				&& Math::equals(z, r.z, epsilon);
-		}
-
-	template<class T, class DATA> SGE_INLINE
-		bool Vec3_Basic<T, DATA>::equals0(const T& epsilon) const 
-		{
-			return Math::equals0(x, epsilon)
-				&& Math::equals0(y, epsilon)
-				&& Math::equals0(z, epsilon);
-		}
+		bool Vec3_Basic<T, DATA>::equals0(const T& epsilon) const {
+		return Math::equals0(x, epsilon)
+			&& Math::equals0(y, epsilon)
+			&& Math::equals0(z, epsilon);
+	}
 
 }

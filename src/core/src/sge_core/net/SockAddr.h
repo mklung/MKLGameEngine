@@ -75,7 +75,8 @@ protected:
 	};
 };
 
+SGE_FORMATTER(IPv4)
+SGE_FORMATTER(SockAddr)
+
 } // namespace
 
-SGE_FORMATTER(sge::IPv4)
-SGE_FORMATTER(sge::SockAddr)
