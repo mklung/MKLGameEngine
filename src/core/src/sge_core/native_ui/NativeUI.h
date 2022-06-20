@@ -18,7 +18,7 @@ namespace sge {
 
 namespace sge {
 
-class NativeUIWindow : public NativeUIWindow_Impl {
+class NativeUIWindow : public NativeUIWindow_Win32 {
 };
 
 class NativeUIApp : public NativeUIApp_Impl {
