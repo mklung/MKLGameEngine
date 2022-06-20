@@ -1,7 +1,6 @@
 #pragma once
 
 #include <sge_core/math/Rect2.h>
-#include <sge_core.h>
 
 
 namespace sge

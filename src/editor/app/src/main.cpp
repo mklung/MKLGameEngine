@@ -55,6 +55,28 @@ public:
 
 	}
 
+	virtual void onUIMouseEvent(UIMouseEvent& ev) override {
+		if (ev.isDragging()) {
+			using Button = UIMouseEventButton;
+			switch (ev.pressedButtons) {
+			case Button::Left: {
+				SGE_LOG("Left Clikc");
+				
+			}break;
+
+			case Button::Middle: {
+
+				SGE_LOG("Middle Click");
+
+			}break;
+
+			case Button::Right: {
+				SGE_LOG("Right Click");
+			}break;
+			}
+		}
+	}
+
 	virtual void onDraw() {
 		Base::onDraw();
 		if (!_renderContext) return;
