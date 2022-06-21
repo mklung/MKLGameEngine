@@ -18,10 +18,9 @@ public:
 			renderContextDesc.window = this;
 			_renderContext = renderer->createContext(renderContextDesc);
 		}
-		auto shader = renderer->createShader("Assets/Shaders/Triangle.hlsl");
+		auto shader = renderer->createShader("Assets/Shaders/Standard.shader");
 		_material = renderer->createMaterial();
 		_material->setShader(shader);
-		//_renderContext->beginRender();
 		
 		EditMesh editMesh;
 #if 1
@@ -61,17 +60,20 @@ public:
 			switch (ev.pressedButtons) {
 			case Button::Left: {
 				SGE_LOG("Left Clikc");
-				
+				auto d = ev.deltaPos * 0.01f;
+				_camera.orbit(d.x, d.y);
 			}break;
 
 			case Button::Middle: {
-
 				SGE_LOG("Middle Click");
-
+				auto d = ev.deltaPos * 0.005f;
+				_camera.move(d.x, d.y, 0);
 			}break;
 
 			case Button::Right: {
 				SGE_LOG("Right Click");
+				auto d = ev.deltaPos * -0.005f;
+				_camera.dolly(d.x + d.y);
 			}break;
 			}
 		}
@@ -81,12 +83,33 @@ public:
 		Base::onDraw();
 		if (!_renderContext) return;
 
-		//_renderContext->setFrameBufferSize(clientRect().size);
+		_camera.setViewport(clientRect());
+		{
 
-		auto time = GetTickCount64() * 0.001f;
-		auto s = abs(sin(time));
+			auto model = Mat4f::s_identity();
+			auto view = _camera.viewMatrix();
+			auto proj = _camera.projMatrix();
+			auto mvp = proj * view * model;
 
-		_material->setParam("testColor", Color4f(s, 0, 0, 1));
+			_material->setParam("sge_matrix_model", model);
+			_material->setParam("sge_matrix_view", view);
+			_material->setParam("sge_matrix_proj", proj);
+			_material->setParam("sge_matrix_mvp", mvp);
+
+			_material->setParam("sge_camera_pos", _camera.pos());
+
+			_material->setParam("sge_light_pos", Vec3f(10, 10, 0));
+			_material->setParam("sge_light_dir", Vec3f(-5, -10, -2));
+			_material->setParam("sge_light_power", 4.0f);
+			_material->setParam("sge_light_color", Vec3f(1, 1, 1));
+		}
+
+
+		//auto time = GetTickCount64() * 0.001f;
+		//auto s = abs(sin(time));
+		auto s = 1.0f;
+		_material->setParam("test_float", s * 0.5f);
+		_material->setParam("test_color", Color4f(s, s, s, 1));
 
 		_renderContext->setFrameBufferSize(clientRect().size);
 		_renderContext->beginRender();
@@ -107,6 +130,9 @@ public:
 	SPtr<RenderContext> _renderContext;
 	RenderCommandBuffer _cmdBuf;
 	RenderMesh	_renderMesh;
+	Math::Camera3f _camera;
+
+	//Math	_camera;
 };
 
 class EditorApp : public NativeUIApp {

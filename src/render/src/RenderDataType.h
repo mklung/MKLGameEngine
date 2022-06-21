@@ -22,6 +22,8 @@ namespace sge
 		Float32, Float32x2, Float32x3, Float32x4,
 		Float64, Float64x2, Float64x3, Float64x4,
 
+		Float32_4x4,
+
 		SNorm8,		SNorm8x2,	SNorm8x3,	SNorm8x4,
 		SNorm16,	SNorm16x2,	SNorm16x3,	SNorm16x4,
 		SNorm32,	SNorm32x2,	SNorm32x3,	SNorm32x4,
@@ -63,6 +65,8 @@ namespace sge
 			E(UNorm16)	E(UNorm16x2)	E(UNorm16x3)	E(UNorm16x4)
 			E(UNorm32)	E(UNorm32x2)	E(UNorm32x3)	E(UNorm32x4)
 			E(Bool)
+			
+			E(Float32_4x4)
 #undef E
 		default: return "";
 		}
@@ -95,6 +99,9 @@ namespace sge
 		E(UNorm16)	E(UNorm16x2)	E(UNorm16x3)	E(UNorm16x4)
 		E(UNorm32)	E(UNorm32x2)	E(UNorm32x3)	E(UNorm32x4)
 		E(Bool)
+
+
+		E(Float32_4x4)
 #undef E
 
 			return false;

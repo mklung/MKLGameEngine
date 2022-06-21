@@ -1,0 +1,29 @@
+{
+	"fileName": "Triangle.hlsl",
+	"passes": [
+		{
+			"name": "",
+			"psEntryPt": "ps_main",
+			"vsEntryPt": "vs_main"
+		}
+	],
+	"path": "Assets/Shader/Triangle.hlsl",
+	"props": [
+		{
+			"defaultValue": "(0.5,0.1,1)",
+			"displayName": "Color",
+			"name": "_Color"
+		},
+		{
+			"defaultValue": "(0,0,0,1)",
+			"displayName": "Test2",
+			"name": "_Test2"
+		},
+		{
+			"defaultValue": "0.5",
+			"displayName": "Test",
+			"name": "_Test"
+		}
+	],
+	"shaderName": "Test 001"
+}

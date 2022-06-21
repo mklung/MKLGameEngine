@@ -1,0 +1,28 @@
+{
+	"constBuffers": [
+		{
+			"bindCount": 1,
+			"bindPoint": 0,
+			"dataSize": 16,
+			"name": "$Globals",
+			"variables": [
+				{
+					"dataType": "Float32x4",
+					"name": "testColor",
+					"offset": 0
+				}
+			]
+		}
+	],
+	"inputs": [
+		{
+			"attrId": "SV_POSITION0",
+			"name": ""
+		},
+		{
+			"attrId": "COLOR0",
+			"name": ""
+		}
+	],
+	"profile": "ps_5_0"
+}

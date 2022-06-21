@@ -19,7 +19,7 @@ void main()
 	auto dir = loadShader.getCurrentDir();
 
 	SGE_LOG("dir : {} ", dir);
-	loadShader.loadShaderFile("Assets/Shader/Triangle.hlsl");
+	loadShader.loadShaderFile("Assets/Shader/Standard.shader");
 
 
 	int a;

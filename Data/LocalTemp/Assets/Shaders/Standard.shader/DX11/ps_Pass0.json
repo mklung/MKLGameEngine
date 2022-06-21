@@ -1,0 +1,42 @@
+{
+	"constBuffers": [
+		{
+			"bindCount": 1,
+			"bindPoint": 0,
+			"dataSize": 336,
+			"name": "$Globals",
+			"variables": [
+				{
+					"dataType": "Float32_4x4",
+					"name": "sge_matrix_model",
+					"offset": 0
+				},
+				{
+					"dataType": "Float32_4x4",
+					"name": "sge_matrix_mvp",
+					"offset": 192
+				},
+				{
+					"dataType": "Float32",
+					"name": "test_float",
+					"offset": 316
+				}
+			]
+		}
+	],
+	"inputs": [
+		{
+			"attrId": "POSITION0",
+			"name": ""
+		},
+		{
+			"attrId": "COLOR0",
+			"name": ""
+		},
+		{
+			"attrId": "NORMAL0",
+			"name": ""
+		}
+	],
+	"profile": "vs_5_0"
+}

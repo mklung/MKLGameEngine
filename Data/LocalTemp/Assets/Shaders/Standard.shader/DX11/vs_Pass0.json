@@ -1,0 +1,61 @@
+{
+	"constBuffers": [
+		{
+			"bindCount": 1,
+			"bindPoint": 0,
+			"dataSize": 336,
+			"name": "$Globals",
+			"variables": [
+				{
+					"dataType": "Float32x3",
+					"name": "sge_camera_pos",
+					"offset": 256
+				},
+				{
+					"dataType": "Float32x3",
+					"name": "sge_light_pos",
+					"offset": 272
+				},
+				{
+					"dataType": "Float32x3",
+					"name": "sge_light_dir",
+					"offset": 288
+				},
+				{
+					"dataType": "Float32",
+					"name": "sge_light_power",
+					"offset": 300
+				},
+				{
+					"dataType": "Float32x3",
+					"name": "sge_light_color",
+					"offset": 304
+				},
+				{
+					"dataType": "Float32x4",
+					"name": "test_color",
+					"offset": 320
+				}
+			]
+		}
+	],
+	"inputs": [
+		{
+			"attrId": "SV_POSITION0",
+			"name": ""
+		},
+		{
+			"attrId": "TEXCOORD10",
+			"name": ""
+		},
+		{
+			"attrId": "COLOR0",
+			"name": ""
+		},
+		{
+			"attrId": "NORMAL0",
+			"name": ""
+		}
+	],
+	"profile": "ps_5_0"
+}

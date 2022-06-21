@@ -1,0 +1,29 @@
+{
+	"fileName": "Standard.shader",
+	"passes": [
+		{
+			"name": "",
+			"psEntryPt": "ps_main",
+			"vsEntryPt": "vs_main"
+		}
+	],
+	"path": "Assets/Shader/Standard.shader",
+	"props": [
+		{
+			"defaultValue": "(1,1,1,1)",
+			"displayName": "Color Test",
+			"name": "_Color"
+		},
+		{
+			"defaultValue": "(0,0,0,1)",
+			"displayName": "Test2",
+			"name": "_Test2"
+		},
+		{
+			"defaultValue": "0.5",
+			"displayName": "Test",
+			"name": "_Test"
+		}
+	],
+	"shaderName": "Test 001"
+}
