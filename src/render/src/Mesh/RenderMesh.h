@@ -50,8 +50,8 @@ namespace sge {
 		void setSubMeshCount(size_t newSize);
 
 	private:
-		RenderPrimitiveType _primitive = RenderPrimitiveType::Triangles;
-		const VertexLayout* _vertexLayout = nullptr;
+		RenderPrimitiveType			_primitive = RenderPrimitiveType::Triangles;
+		const VertexLayout*			_vertexLayout = nullptr;
 		Vector_<RenderSubMesh, 1>	_subMeshes;
 	};
 

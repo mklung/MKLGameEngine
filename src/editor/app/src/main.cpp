@@ -9,6 +9,8 @@ class MainWin : public NativeUIWindow {
 public:
 	void onCreate(CreateDesc& desc) {
 
+		SGE_DUMP_VAR(sizeof(Vertex_Pos));
+		SGE_DUMP_VAR(sizeof(Vertex_PosColor));
 
 		Base::onCreate(desc);
 		auto* renderer = Renderer::instance();
@@ -18,6 +20,10 @@ public:
 			renderContextDesc.window = this;
 			_renderContext = renderer->createContext(renderContextDesc);
 		}
+
+		_camera.setPos(0, 5, 5);
+		_camera.setAim(0, 0, 0);
+
 		auto shader = renderer->createShader("Assets/Shaders/Standard.shader");
 		_material = renderer->createMaterial();
 		_material->setShader(shader);
@@ -32,7 +38,7 @@ public:
 
 		// the current shader has no uv or normal
 		editMesh.uv[0].clear();
-		editMesh.normal.clear();
+		//editMesh.normal.clear();
 #else
 		editMesh.pos.emplace_back(0.0f, 0.5f, 0.0f);
 		editMesh.pos.emplace_back(0.5f, -0.5f, 0.0f);
@@ -45,7 +51,7 @@ public:
 #endif
 		_renderMesh.create(editMesh);
 
-		VertexLayoutManager::instance()->getLayout(Vertex_Pos::kType);
+		//VertexLayoutManager::instance()->getLayout(Vertex_Pos::kType);
 
 	}
 
@@ -61,7 +67,7 @@ public:
 			case Button::Left: {
 				SGE_LOG("Left Clikc");
 				auto d = ev.deltaPos * 0.01f;
-				_camera.orbit(d.x, d.y);
+				_camera.orbit(-d.x, -d.y);
 			}break;
 
 			case Button::Middle: {
@@ -105,8 +111,6 @@ public:
 		}
 
 
-		//auto time = GetTickCount64() * 0.001f;
-		//auto s = abs(sin(time));
 		auto s = 1.0f;
 		_material->setParam("test_float", s * 0.5f);
 		_material->setParam("test_color", Color4f(s, s, s, 1));
