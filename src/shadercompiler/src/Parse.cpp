@@ -59,8 +59,8 @@ namespace sge
 			_shaderData.passes.size(), _shaderData.props.size());
 
 		StrView shaderFilename = Fmt("Assets/Shaders/{}", _shaderData.fileName);
-		String outputPath = Fmt("LocalTemp/{}", shaderFilename);
-		SGE_LOG("{}", outputPath);
+		String outputPath = Fmt("LocalTemp/{}/DX11", shaderFilename);
+		SGE_LOG("outputPath : {}", outputPath);
 		Directory::create(outputPath);
 
 		auto jsonFilename = Fmt("{}/info.json", outputPath);

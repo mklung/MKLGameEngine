@@ -16,7 +16,7 @@ namespace sge
 		{
 			create(parent);
 		}
-		_create(parent);
+		_create(path);
 	}
 #if SGE_OS_WINDOWS
 #if 0
@@ -45,6 +45,7 @@ namespace sge
 		TempStringW pathW;
 		UtfUtil::convert(pathW, path);
 		auto ret = ::CreateDirectory(pathW.c_str(), nullptr);
+		
 		if (!ret) throw SGE_ERROR("create directory {}", pathW);
 	}
 

@@ -20,7 +20,11 @@ namespace sge
 
 		UINT flage1 = 0;
 		UINT flage2 = 0;
-		SGE_LOG("{}", shaderData->passes[0].psEntryPt.c_str());
+		//SGE_LOG("{}", shaderData->passes[0].psEntryPt.c_str());
+		//auto directoryPath = Fmt("{}/{}", COMPILE_FILE_PATH, shaderData->fileName.data());
+		//SGE_LOG("directoryPath : {}", directoryPath);
+
+		//Directory::create(directoryPath);
 
 		for (int i = 0; i < passSize; i++)
 		{
