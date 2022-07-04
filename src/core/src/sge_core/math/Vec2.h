@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Vec2.h"
 #include "Vec2_Basic.h"
 #include "Vec2_SSE.h"
 #include "sge_core/sge_core-config.h"

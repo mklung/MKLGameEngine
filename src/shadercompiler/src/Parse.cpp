@@ -128,9 +128,12 @@ namespace sge
 		int _shaderbracket = 0;
 
 		auto& newPass = _shaderData.passes.emplace_back();
+		String tokenValue;
+
 		while (true)
 		{
 			_token = _lexer.nextToken();
+			
 
 			if (_token->CheckToken(TokenType::Operator, "{"))
 			{
@@ -142,29 +145,60 @@ namespace sge
 				if (--_shaderbracket == 0) break;
 			}
 
-
-			if (_token->CheckToken(TokenType::Identifier, "VsFunc"))
+			if(_token->CheckToken(TokenType::Identifier))
 			{
-				_token = _lexer.nextToken();
+
 				if (_token->type == TokenType::None) break;
 
 				else if (_token->type == TokenType::Identifier)
-					newPass.vsEntryPt = _token->value;
+				{
+					int a = 0;
+					if (_token->CheckValue("VsFunc"))
+						newPass.vsEntryPt = _getIdfValue();
+					else if (_token->CheckValue("PsFunc"))
+						newPass.psEntryPt = _getIdfValue();
+					else if (_token->CheckValue("Cull"))
+						newPass.renderState.cull = _getIdfValue();
+					else if (_token->CheckValue("DepthTest"))
+						newPass.renderState.depthTest = _getIdfValue();
+					else if (_token->CheckValue("DepthWrite"))
+						newPass.renderState.depthWrite = _getIdfValue();
+					else if (_token->CheckValue("BlendRGB"))
+					{
+						newPass.renderState.blendRGB.op		= _getIdfValue();
+						newPass.renderState.blendRGB.src	= _getIdfValue();
+						newPass.renderState.blendRGB.dest	= _getIdfValue();
+					}										  
+					else if (_token->CheckValue("BlendAlpha"))
+					{										  
+						newPass.renderState.blendAlpha.op	= _getIdfValue();
+						newPass.renderState.blendAlpha.src	= _getIdfValue();
+						newPass.renderState.blendAlpha.dest = _getIdfValue();
+
+					}
+
+				}
 			}
-
-			if (_token->CheckToken(TokenType::Identifier, "PsFunc"))
-			{
-				_token = _lexer.nextToken();
-				if (_token->type == TokenType::None) break;
-
-				else if (_token->type == TokenType::Identifier)
-					newPass.psEntryPt = _token->value;
-			}
-
 			if (_token->type == TokenType::None) break;
 
 		}
 	}
 
+	String ShaderParse::_getIdfValue()
+	{
+		String value = "";
+		_token = _lexer.nextToken();
+		
+		if (_token->type == TokenType::None)
+		{
+			SGE_LOG_ERROR("Txt End");
+			return value;
+		}
 
+		if (_token->type != TokenType::Identifier)
+			SGE_LOG_ERROR("Wrong Value");
+
+		value = _token->value;
+		return value;
+	}
 }

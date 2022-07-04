@@ -45,6 +45,44 @@ namespace sge
 	}
 
 
+	struct  RenderState
+	{
+	public:
+
+		struct  Blend
+		{
+			String op	= "Add";
+			String src	= "One";
+			String dest = "OneMinusSrcAlpha";
+
+			template<class SE>
+			void onJson(SE& se) {
+				SGE_NAMED_IO(se, op);
+				SGE_NAMED_IO(se, src);
+				SGE_NAMED_IO(se, dest);
+			}
+		};
+
+		String cull = "Off";
+
+		Blend blendRGB;
+		Blend blendAlpha;
+
+		String depthTest = "LEqual";
+		String depthWrite = "Off";
+		
+		template<class SE>
+		void onJson(SE& se) {
+			SGE_NAMED_IO(se, cull);
+
+			SGE_NAMED_IO(se, blendRGB);
+			SGE_NAMED_IO(se, blendAlpha);
+
+			SGE_NAMED_IO(se, depthTest);
+			SGE_NAMED_IO(se, depthWrite);
+		}
+
+	};
 
 	struct ShaderInfo
 	{
@@ -52,15 +90,18 @@ namespace sge
 		struct Pass
 		{
 		public:
+
 			String name;
 			String vsEntryPt;
 			String psEntryPt;
+			RenderState renderState;
 
 			template<class SE>
 			void onJson(SE& se) {
 				SGE_NAMED_IO(se, name);
 				SGE_NAMED_IO(se, vsEntryPt);
-				SGE_NAMED_IO(se, psEntryPt);
+				SGE_NAMED_IO(se, psEntryPt); 
+				SGE_NAMED_IO(se, renderState);
 			}
 		};
 
@@ -115,8 +156,9 @@ namespace sge
 		TokenType type;
 		String value;
 
-		bool CheckToken(TokenType _type, String _expectValue) {return (type == _type && value == _expectValue);}
-		bool CheckToken(TokenType _type) {return (type == _type);}
+		bool CheckToken(TokenType _type, String _expectValue)	{ return (type == _type && value == _expectValue); }
+		bool CheckToken(TokenType _type)						{ return (type == _type); }
+		bool CheckValue(String _expectValue)					{ return value == _expectValue; }
 	};
 
 
@@ -134,7 +176,7 @@ namespace sge
 		public:
 			String			name;
 			String			attrId;
-			RenderDataType dataType = RenderDataType::None;
+			RenderDataType	dataType = RenderDataType::None;
 
 			template<class SE>
 			void onJson(SE& se) {

@@ -51,6 +51,14 @@ public:
 #endif
 		_renderMesh.create(editMesh);
 
+		EditMesh editMesh2;
+		ObjLoader::LoadFile(editMesh2, "Assets/Mesh/Plane.obj");
+		for (size_t i = editMesh2.color.size(); i < editMesh2.pos.size(); i++) {
+			editMesh2.color.emplace_back(255, 255, 255, 255);
+		}
+		editMesh2.uv[0].clear();
+		_renderMesh2.create(editMesh2);
+
 		//VertexLayoutManager::instance()->getLayout(Vertex_Pos::kType);
 
 	}
@@ -121,6 +129,7 @@ public:
 		_cmdBuf.reset();
 		_cmdBuf.clearFrameBuffers()->setColor({ 0.0f , 0, 0.2f, 1 });
 		_cmdBuf.drawMesh(SGE_LOC, _renderMesh, _material);
+		_cmdBuf.drawMesh(SGE_LOC, _renderMesh2, _material);
 		_cmdBuf.swapBuffers();
 
 		_renderContext->commit(_cmdBuf);
@@ -134,6 +143,7 @@ public:
 	SPtr<RenderContext> _renderContext;
 	RenderCommandBuffer _cmdBuf;
 	RenderMesh	_renderMesh;
+	RenderMesh	_renderMesh2;
 	Math::Camera3f _camera;
 
 	//Math	_camera;

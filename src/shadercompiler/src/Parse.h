@@ -24,6 +24,7 @@ namespace sge
 		void _readProperty();
 		void _readPass();
 
+		String _getIdfValue();
 
 		int _numbracket;
 

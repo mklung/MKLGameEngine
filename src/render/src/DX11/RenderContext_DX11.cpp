@@ -303,12 +303,14 @@ namespace sge
 			bool blendEnable = true;
 			if (blendEnable) {
 				rtDesc.BlendEnable = true;
-				rtDesc.BlendOp = D3D11_BLEND_OP_ADD;
-				rtDesc.BlendOpAlpha = D3D11_BLEND_OP_ADD;
-				rtDesc.SrcBlend = D3D11_BLEND_SRC_ALPHA;
-				rtDesc.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-				rtDesc.SrcBlendAlpha = D3D11_BLEND_SRC_ALPHA;
-				rtDesc.DestBlendAlpha = D3D11_BLEND_INV_SRC_ALPHA;
+
+				rtDesc.BlendOp			= D3D11_BLEND_OP_ADD;
+				rtDesc.SrcBlend			= D3D11_BLEND_SRC_ALPHA;
+				rtDesc.DestBlend		= D3D11_BLEND_INV_SRC_ALPHA;
+
+				rtDesc.BlendOpAlpha		= D3D11_BLEND_OP_ADD;
+				rtDesc.SrcBlendAlpha	= D3D11_BLEND_SRC_ALPHA;
+				rtDesc.DestBlendAlpha	= D3D11_BLEND_INV_SRC_ALPHA;
 			}
 			else {
 				rtDesc.BlendEnable = false;
