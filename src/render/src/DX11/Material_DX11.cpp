@@ -10,6 +10,11 @@ namespace sge
 		bindInputLayout(ctx, vertexLayout);
 	}
 
+	void Material_DX11::MyPixelStage::bind(RenderContext_DX11* ctx, const VertexLayout* vertexLayout)
+	{
+		_bindStageHelper(ctx, this);
+	}
+
 	void Material_DX11::MyVertexStage::bindInputLayout(RenderContext_DX11* ctx, const VertexLayout* vertexLayout)
 	{
 		if (!vertexLayout) throw SGE_ERROR("VertexLayer is null");
@@ -64,16 +69,13 @@ namespace sge
 
 	}
 
-	void Material_DX11::MyPixelStage::bind(RenderContext_DX11* ctx, const VertexLayout* vertexLayout)
-	{
-		_bindStageHelper(ctx, this);
-	}
 
 
 	Material_DX11::MyPass::MyPass(Material* material, ShaderPass* shaderPass) 
 		: MaterialPass(material, shaderPass)
 		, _myVertexStage(this, shaderPass->vertexStage())
 		, _myPixelStage(this, shaderPass->pixelStage())
+
 	{
 		_vertexStage	= &_myVertexStage;
 		_pixelStage		= &_myPixelStage;
@@ -84,7 +86,11 @@ namespace sge
 		auto* ctx = static_cast<RenderContext_DX11*>(_ctx);
 		_myVertexStage.bind(ctx, vertexLayout);
 		_myPixelStage.bind(ctx, vertexLayout);
+		//onBindRenderState(ctx);
+
 	}
+
+
 
 
 }

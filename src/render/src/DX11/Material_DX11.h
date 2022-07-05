@@ -57,6 +57,7 @@ namespace sge
 			MyPass(Material* material, ShaderPass* shaderPass);
 
 			virtual void onBind(RenderContext* _ctx, const VertexLayout* vertexLayout) override;
+			//virtual void onBindRenderState(RenderContext* _ctx) override;
 
 			MyVertexStage _myVertexStage;
 			MyPixelStage  _myPixelStage;

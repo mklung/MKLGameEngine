@@ -13,7 +13,7 @@ Shader "Test 001"
 		//Queue		"Transparent"
 		Cull		Off
 
-		BlendRGB 	Sub Zero OneMinusSrcColor
+		BlendRGB 	Add One OneMinusSrcAlpha
 		BlendAlpha	Add One OneMinusSrcAlpha
 
 		DepthTest	Always

@@ -37,6 +37,10 @@ namespace sge {
 		static DXGI_FORMAT				getDxFormat(RenderDataType v);
 		static const char*				getDxSemanticName(VertexSemanticType t);
 		static VertexSemanticType		parseDxSemanticName(StrView s);
+		static D3D11_CULL_MODE			getDxCull(ShaderCull c);
+		static D3D11_BLEND				getDxBlend(BlendFactor b);
+		static D3D11_COMPARISON_FUNC	getDxDepthTest(DepthTest d);
+		static D3D11_BLEND_OP			getDxBlendOP(BlendOP b_op);
 
 		static const char* getDxStageProfile(ShaderDescMask s);
 
@@ -97,7 +101,8 @@ namespace sge {
 	}
 
 	inline
-		const char* DX11Util::getDxSemanticName(VertexSemanticType t) {
+	const char* DX11Util::getDxSemanticName(VertexSemanticType t) 
+	{
 		using SRC = VertexSemanticType;
 		switch (t) {
 		case SRC::POSITION:		return "POSITION";
@@ -107,6 +112,73 @@ namespace sge {
 		case SRC::TANGENT:		return "TANGENT";
 		case SRC::BINORMAL:		return "BINORMAL";
 		default: throw SGE_ERROR("unknown VertexLayout_SemanticType");
+		}
+	}
+
+	inline
+	D3D11_CULL_MODE DX11Util::getDxCull(ShaderCull s)
+	{
+		using SRC = ShaderCull;
+		switch (s)
+		{
+			case SRC::Back:		return D3D11_CULL_BACK;
+			case SRC::Front:	return D3D11_CULL_FRONT;
+			case SRC::Off:		return D3D11_CULL_NONE;
+			default:	throw SGE_ERROR("unknown ShaderCull Type");
+		}
+	}
+	
+	inline
+	D3D11_BLEND DX11Util::getDxBlend(BlendFactor b)
+	{
+		using SRC = BlendFactor;
+		switch(b)
+		{
+			case SRC::One:				return D3D11_BLEND_ONE;
+			case SRC::Zero:				return D3D11_BLEND_ZERO;
+			case SRC::SrcColor:			return D3D11_BLEND_SRC_COLOR;
+			case SRC::SrcAlpha:			return D3D11_BLEND_SRC_ALPHA;
+			case SRC::OneMinusSrcColor: return D3D11_BLEND_INV_SRC_COLOR;
+			case SRC::OneMinusSrcAlpha: return D3D11_BLEND_INV_SRC_ALPHA;
+
+			case SRC::DstColor:			return D3D11_BLEND_DEST_COLOR;
+			case SRC::DstAlpha:			return D3D11_BLEND_DEST_ALPHA;
+			case SRC::OneMinusDstColor: return D3D11_BLEND_INV_DEST_COLOR;
+			case SRC::OneMinusDstAlpha: return D3D11_BLEND_INV_DEST_ALPHA;
+			default:	throw SGE_ERROR("unknown BlendFactor Type");
+		}
+	}
+
+	inline
+	D3D11_COMPARISON_FUNC DX11Util::getDxDepthTest(DepthTest d)
+	{
+		using SRC = DepthTest;
+		switch (d)
+		{
+		case SRC::Less:		return D3D11_COMPARISON_LESS;
+		case SRC::Greater:	return D3D11_COMPARISON_GREATER;
+		case SRC::LEqual:	return D3D11_COMPARISON_LESS_EQUAL;
+		case SRC::GEqual:	return D3D11_COMPARISON_GREATER_EQUAL;
+		case SRC::Equal:	return D3D11_COMPARISON_EQUAL;
+		case SRC::NotEqual:	return D3D11_COMPARISON_NOT_EQUAL;
+		case SRC::Always:	return D3D11_COMPARISON_ALWAYS;
+		default:	throw SGE_ERROR("unknown DepthTest Type");
+		}
+	}
+
+	inline
+	D3D11_BLEND_OP DX11Util::getDxBlendOP(BlendOP b_op)
+	{
+		using SRC = BlendOP;
+		switch (b_op)
+		{
+			case SRC::Add:		return D3D11_BLEND_OP_ADD;
+			case SRC::Sub:		return D3D11_BLEND_OP_SUBTRACT;
+			case SRC::RevSub:	return D3D11_BLEND_OP_REV_SUBTRACT;
+			case SRC::Min:		return D3D11_BLEND_OP_MIN;
+			case SRC::Max:		return D3D11_BLEND_OP_MAX;
+			default:	throw SGE_ERROR("unknown BlendOP Type");
+
 		}
 	}
 

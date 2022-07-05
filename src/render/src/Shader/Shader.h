@@ -25,14 +25,14 @@ namespace sge
 
 		virtual ~ShaderPass() = default;
 
-		ShaderVertexStage* vertexStage() { return _vertexStage; }
-		ShaderPixelStage* pixelStage() { return _pixelStage; }
-
+		ShaderVertexStage*	vertexStage()	{ return _vertexStage; }
+		ShaderPixelStage*	pixelStage()	{ return _pixelStage; }
+		ShaderInfo::Pass*	passInfo()		{ return _info; }
 	protected:
-		Shader* _shader = nullptr;
-		ShaderInfo::Pass* _info = nullptr;
-		ShaderVertexStage* _vertexStage = nullptr;
-		ShaderPixelStage* _pixelStage = nullptr;
+		Shader*				_shader			= nullptr;
+		ShaderInfo::Pass*	_info			= nullptr;
+		ShaderVertexStage*	_vertexStage	= nullptr;
+		ShaderPixelStage*	_pixelStage		= nullptr;
 	};
 
 
@@ -52,5 +52,6 @@ namespace sge
 		String	_filename;
 		ShaderInfo	_info;
 		Vector_<UPtr<ShaderPass>, 1> _passes;
+		virtual void bindRenderState() {};
 	};
 }

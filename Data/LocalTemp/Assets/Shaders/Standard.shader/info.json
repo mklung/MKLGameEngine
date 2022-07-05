@@ -4,6 +4,21 @@
 		{
 			"name": "",
 			"psEntryPt": "ps_main",
+			"renderState": {
+				"blendAlpha": {
+					"dest": "OneMinusSrcAlpha",
+					"op": "Add",
+					"src": "One"
+				},
+				"blendRGB": {
+					"dest": "OneMinusSrcAlpha",
+					"op": "Add",
+					"src": "One"
+				},
+				"cull": "Off",
+				"depthTest": "Always",
+				"depthWrite": "Off"
+			},
 			"vsEntryPt": "vs_main"
 		}
 	],

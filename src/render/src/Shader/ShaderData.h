@@ -16,6 +16,8 @@ namespace sge
 		Pixel = 1 << 1,
 	};
 
+
+
 	enum class ShaderPropType {
 		None,
 		Int,
@@ -25,6 +27,95 @@ namespace sge
 		Vec4f,
 		Color4f,
 	};
+
+	// RenderStateEnum
+#pragma region RenderStateEnum
+
+	enum class BlendOP
+	{
+		Add,
+		Sub,
+		RevSub,
+		Min,
+		Max,
+	};
+	#define BlendOP_ENUM_LIST(E) \
+	E(Add) \
+	E(Sub) \
+	E(RevSub) \
+	E(Min) \
+	E(Max) \
+	//----
+	SGE_ENUM_STR_UTIL(BlendOP)
+
+
+		enum class BlendFactor
+	{
+		One,
+		Zero,
+		SrcColor,
+		SrcAlpha,
+		DstColor,
+		DstAlpha,
+		OneMinusSrcColor,
+		OneMinusSrcAlpha,
+		OneMinusDstColor,
+		OneMinusDstAlpha,
+	};
+
+	#define BlendFactor_ENUM_LIST(E) \
+	E(One) \
+	E(Zero) \
+	E(SrcColor) \
+	E(SrcAlpha) \
+	E(DstColor) \
+	E(DstAlpha) \
+	E(OneMinusSrcColor) \
+	E(OneMinusSrcAlpha) \
+	E(OneMinusDstColor) \
+	E(OneMinusDstAlpha) \
+	//----
+	SGE_ENUM_STR_UTIL(BlendFactor)
+
+
+	enum class ShaderCull
+	{
+		Back,
+		Front,
+		Off,
+	};
+
+	#define ShaderCull_ENUM_LIST(E) \
+	E(Back) \
+	E(Front) \
+	E(Off) \
+	//----
+	SGE_ENUM_STR_UTIL(ShaderCull)
+
+		enum class DepthTest
+	{
+		Less,
+		Greater,
+		LEqual,
+		GEqual,
+		Equal,
+		NotEqual,
+		Always
+	};
+	#define DepthTest_ENUM_LIST(E) \
+	E(Less) \
+	E(Greater) \
+	E(LEqual) \
+	E(GEqual) \
+	E(Equal) \
+	E(NotEqual) \
+	E(Always) \
+	//----
+	SGE_ENUM_STR_UTIL(DepthTest)
+
+#pragma endregion
+
+	
 
 	inline
 		StrView enumStr(ShaderPropType v)
