@@ -71,14 +71,14 @@ namespace sge
 
 
 
-	Material_DX11::MyPass::MyPass(Material* material, ShaderPass* shaderPass) 
-		: MaterialPass(material, shaderPass)
+	Material_DX11::MyPass::MyPass(Material* material, ShaderPass* shaderPass) : MaterialPass(material, shaderPass)
 		, _myVertexStage(this, shaderPass->vertexStage())
 		, _myPixelStage(this, shaderPass->pixelStage())
-
 	{
 		_vertexStage	= &_myVertexStage;
 		_pixelStage		= &_myPixelStage;
+		_myRenderState	= &shaderPass->passInfo()->renderState;
+
 	}
 
 	void Material_DX11::MyPass::onBind(RenderContext* _ctx, const VertexLayout* vertexLayout)
