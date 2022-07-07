@@ -5,6 +5,7 @@
 namespace sge
 {
 	class Shader;
+
 	struct ShaderStage : public NonCopyable
 	{
 		const ShaderDescData* info() const { return &_info; }
@@ -42,9 +43,9 @@ namespace sge
 		Shader(StrView filename);
 		virtual ~Shader();
 
-		const String& filename() const { return _filename; }
+		const String&			filename() const { return _filename; }
 
-		const ShaderInfo* info() const { return &_info; }
+		const ShaderInfo*		info() const { return &_info; }
 
 		Span<UPtr<ShaderPass>>	passes() { return _passes; }
 

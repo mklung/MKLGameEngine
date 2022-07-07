@@ -52,16 +52,16 @@ namespace sge
 			Shader_DX11::MyPixelStage* shaderStage() { return static_cast<Shader_DX11::MyPixelStage*>(_shaderStage); }
 		};
 
+
 		struct MyPass : public MaterialPass 
 		{
 			MyPass(Material* material, ShaderPass* shaderPass);
 
 			virtual void onBind(RenderContext* _ctx, const VertexLayout* vertexLayout) override;
-			//virtual void onBindRenderState(RenderContext* _ctx) override;
+			virtual void onBindRenderState(RenderContext* _ctx) override;
 
 			MyVertexStage	_myVertexStage;
 			MyPixelStage	_myPixelStage;
-			RenderState*	_myRenderState;
 		};
 
 		virtual MaterialPass* onCreatePass(Material* material, ShaderPass* shaderPass) override

@@ -36,12 +36,24 @@ namespace sge
 			Vector<u8> _bytecode;
 		};
 
+		struct MyRenderState
+		{
+			void createState(MyPass* pass, ID3D11Device1* dev);
+			void bind(RenderContext_DX11* ctx);
+		private:
+			RenderState*					_renderState;
+			ComPtr<ID3D11RasterizerState>	_rasterizerState;
+			ComPtr<ID3D11DepthStencilState> _depthStencilState;
+			ComPtr<ID3D11BlendState>		_blendState;
+		};
+
 		struct MyPass : public ShaderPass
 		{
 			MyPass(Shader_DX11* shader, StrView passPath, ShaderInfo::Pass& info, int passIndex);
 		private:
 			MyVertexStage		_myVertexStage;
 			MyPixelStage		_myPixelStage;
+			MyRenderState		_myRenderState;
 		};
 	};
 }

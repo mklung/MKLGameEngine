@@ -77,7 +77,7 @@ namespace sge
 	{
 		_vertexStage	= &_myVertexStage;
 		_pixelStage		= &_myPixelStage;
-		_myRenderState	= &shaderPass->passInfo()->renderState;
+		
 
 	}
 
@@ -86,10 +86,17 @@ namespace sge
 		auto* ctx = static_cast<RenderContext_DX11*>(_ctx);
 		_myVertexStage.bind(ctx, vertexLayout);
 		_myPixelStage.bind(ctx, vertexLayout);
-		//onBindRenderState(ctx);
+		
 
 	}
 
+	void Material_DX11::MyPass::onBindRenderState(RenderContext* ctx)
+	{
+		{
+
+
+		}
+	}
 
 
 

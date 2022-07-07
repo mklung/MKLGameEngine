@@ -131,6 +131,7 @@ namespace sge
 		ShaderPass* _shaderPass = nullptr;
 
 		virtual void onBind(RenderContext* ctx, const VertexLayout* vertexLayout) = 0;
+		virtual void onBindRenderState(RenderContext* _ctx) = 0;
 
 		template <class V> 
 		void _setParam(StrView name, const V& v)
@@ -174,9 +175,9 @@ namespace sge
 		}
 
 		Vector_<SPtr<Pass>, 1> _passes;
-		SPtr<Shader> _shader;
+		SPtr<Shader>	_shader;
 		virtual void	onSetShader() {};
-		virtual Pass* onCreatePass(Material* mat, ShaderPass* shaderPass) = 0;
+		virtual Pass*	onCreatePass(Material* mat, ShaderPass* shaderPass) = 0;
 	};
 
 }

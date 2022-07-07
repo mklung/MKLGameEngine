@@ -49,7 +49,7 @@ namespace sge
 	SGE_ENUM_STR_UTIL(BlendOP)
 
 
-		enum class BlendFactor
+	enum class BlendFactor
 	{
 		One,
 		Zero,
@@ -92,8 +92,9 @@ namespace sge
 	//----
 	SGE_ENUM_STR_UTIL(ShaderCull)
 
-		enum class DepthTest
+	enum class DepthTest
 	{
+		None,
 		Less,
 		Greater,
 		LEqual,
@@ -103,6 +104,7 @@ namespace sge
 		Always
 	};
 	#define DepthTest_ENUM_LIST(E) \
+	E(None) \
 	E(Less) \
 	E(Greater) \
 	E(LEqual) \
