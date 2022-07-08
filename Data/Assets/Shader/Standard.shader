@@ -11,12 +11,12 @@ Shader "Test 001"
 	
 	Pass {
 		//Queue		"Transparent"
-		Cull		Off
+		Cull		Front
 
 		BlendRGB 	Add One OneMinusSrcAlpha
 		BlendAlpha	Add One OneMinusSrcAlpha
 
-		DepthTest	Always
+		DepthTest	LEqual
 		DepthWrite	Off
 		
 		VsFunc		vs_main

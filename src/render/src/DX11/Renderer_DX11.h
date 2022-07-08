@@ -22,7 +22,9 @@ namespace sge {
 
 		ID3D11Device1*			d3dDevice()			{ return _d3dDev; }
 		ID3D11DeviceContext4*	d3dDeviceContext()	{ return _d3dCtx; }
-		//ID3D11Debug*			d3dDebug()			{ return _d3dDebug; }
+
+		void validateContext();
+		ID3D11Debug*			d3dDebug()			{ return _d3dDebug; }
 
 	protected:
 		virtual RenderContext* onCreateContext(RenderContext_CreateDesc& desc) override;
@@ -36,7 +38,7 @@ namespace sge {
 		ComPtr<IDXGIAdapter3>			_dxgiAdapter;
 		ComPtr<ID3D11Device1>			_d3dDev;
 		ComPtr<ID3D11DeviceContext4>	_d3dCtx;
-		//ID3D11Debug*			_d3dDebug;
+		ComPtr<ID3D11Debug>				_d3dDebug;
 
 
 	};

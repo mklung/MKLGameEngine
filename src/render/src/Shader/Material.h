@@ -122,6 +122,8 @@ namespace sge
 
 		void bind(RenderContext* ctx, const VertexLayout* vertexLayout) { onBind(ctx, vertexLayout); }
 
+		const ShaderInfo::Pass* info() { return _shaderPass ? _shaderPass->passInfo() : nullptr; }
+
 		friend class Material;
 	protected:
 
@@ -131,7 +133,7 @@ namespace sge
 		ShaderPass* _shaderPass = nullptr;
 
 		virtual void onBind(RenderContext* ctx, const VertexLayout* vertexLayout) = 0;
-		virtual void onBindRenderState(RenderContext* _ctx) = 0;
+		
 
 		template <class V> 
 		void _setParam(StrView name, const V& v)

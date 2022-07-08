@@ -177,6 +177,8 @@ namespace sge
 		viewport.TopLeftY = 0;
 		viewport.Width = _frameBufferSize.x;
 		viewport.Height = _frameBufferSize.y;
+		viewport.MinDepth = 0;
+		viewport.MaxDepth = 1;
 
 		ctx->RSSetViewports(1, &viewport);
 	}

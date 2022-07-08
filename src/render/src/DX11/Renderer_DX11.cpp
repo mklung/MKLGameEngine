@@ -63,4 +63,12 @@ SPtr<Shader> Renderer_DX11::onCreateShader(StrView filename)
 }
 
 
+void Renderer_DX11::validateContext() 
+{
+	if (!_d3dDebug) return;
+	auto hr = _d3dDebug->ValidateContext(_d3dCtx.ptr());
+	DX11Util::throwIfError(hr);
+}
+
+
 }

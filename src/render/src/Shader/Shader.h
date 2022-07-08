@@ -20,29 +20,24 @@ namespace sge
 		static constexpr ShaderDescMask stageMask() { return ShaderDescMask::Pixel; }
 	};
 
-	struct ShaderRenderState
-	{
-		const RenderState* info() const { return &_info; }
-	protected:
-		RenderState _info;
-	};
+
 
 	struct ShaderPass : public NonCopyable {
 		ShaderPass(Shader* shader, ShaderInfo::Pass& info);
 
 		virtual ~ShaderPass() = default;
 
-		ShaderVertexStage*	vertexStage()	{ return _vertexStage; }
-		ShaderPixelStage*	pixelStage()	{ return _pixelStage; }
-		ShaderInfo::Pass*	passInfo()		{ return _info; }
-		ShaderRenderState*	renderState()	{ return _renderState; }
+		ShaderVertexStage*		vertexStage()	{ return _vertexStage; }
+		ShaderPixelStage*		pixelStage()	{ return _pixelStage; }
+		const ShaderInfo::Pass*	passInfo()		{ return _info; }
+		//ShaderRenderState*		renderState()	{ return _renderState; }
 
 	protected:
 		Shader*				_shader			= nullptr;
 		ShaderInfo::Pass*	_info			= nullptr;
 		ShaderVertexStage*	_vertexStage	= nullptr;
 		ShaderPixelStage*	_pixelStage		= nullptr;
-		ShaderRenderState*	_renderState	= nullptr;
+		//ShaderRenderState*	_renderState	= nullptr;
 	};
 
 

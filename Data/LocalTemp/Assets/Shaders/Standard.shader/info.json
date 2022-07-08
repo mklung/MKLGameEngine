@@ -15,8 +15,8 @@
 					"op": "Add",
 					"src": "One"
 				},
-				"cull": "Off",
-				"depthTest": "Always",
+				"cull": "Front",
+				"depthTest": "LEqual",
 				"depthWrite": "Off"
 			},
 			"vsEntryPt": "vs_main"

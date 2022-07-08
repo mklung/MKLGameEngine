@@ -58,10 +58,14 @@ namespace sge
 			MyPass(Material* material, ShaderPass* shaderPass);
 
 			virtual void onBind(RenderContext* _ctx, const VertexLayout* vertexLayout) override;
-			virtual void onBindRenderState(RenderContext* _ctx) override;
+			void onBindRenderState(RenderContext_DX11* _ctx);
 
 			MyVertexStage	_myVertexStage;
 			MyPixelStage	_myPixelStage;
+
+			ComPtr<ID3D11RasterizerState>		_rasterizerState;
+			ComPtr<ID3D11DepthStencilState>		_depthStencilState;
+			ComPtr<ID3D11BlendState>			_blendState;
 		};
 
 		virtual MaterialPass* onCreatePass(Material* material, ShaderPass* shaderPass) override
