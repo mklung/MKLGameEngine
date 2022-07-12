@@ -111,4 +111,17 @@
 	SGE_FORMATTER_ENUM(T) \
 //----
 
+#define SGE_ENUM_DECLARE__ITEM(ITEM, VALUE) ITEM VALUE,
+
+#define SGE_ENUM_DECLARE(T, BASE_TYPE) \
+	enum class T : BASE_TYPE { \
+		T##_ENUM_LIST(SGE_ENUM_DECLARE__ITEM) \
+	}; \
+//----
+
+#define SGE_ENUM_CLASS(T, BASE_TYPE) \
+	SGE_ENUM_DECLARE(T, BASE_TYPE) \
+	SGE_ENUM_STR_UTIL(T) \
+//----
+
 #define SGE_NAMED_IO(SE, V)	SE.named_io(#V, V)

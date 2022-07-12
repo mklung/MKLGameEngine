@@ -146,7 +146,7 @@ namespace sge
 		{
 			String op	= "Add";
 			String src	= "One";
-			String dest = "OneMinusSrcAlpha";
+			String dest = "Zero";
 
 			template<class SE>
 			void onJson(SE& se) {

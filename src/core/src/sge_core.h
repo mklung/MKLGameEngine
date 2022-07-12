@@ -20,7 +20,7 @@
 #include <sge_core/math/Vec3.h>
 #include <sge_core/math/Vec4.h>
 #include <sge_core/math/Mat4.h>
-#include "sge_core/color/Color.h"
+#include "sge_core/graph/Color.h"
 #include <sge_core/math/Quat4.h>
 #include <sge_core/math/MathGeometry.h>
 #include <sge_core/math/MathCamera3.h>
