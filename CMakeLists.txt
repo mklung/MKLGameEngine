@@ -14,6 +14,7 @@ find_package(GLEW CONFIG REQUIRED)
 find_package(EABase CONFIG REQUIRED)
 find_package(EASTL CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
+find_package(libpng CONFIG REQUIRED)
 
 function(sge_source_group src_path src_files)
 	foreach(FILE ${src_files}) 
@@ -57,7 +58,6 @@ function(sge_add_executable target_name src_path)
 	
 	add_executable(${target_name} ${src_files})	
 	target_precompile_headers(${target_name} INTERFACE src/${target_name}/${target_name}-pch.h)
-
 endfunction()
 
 #-- core ---

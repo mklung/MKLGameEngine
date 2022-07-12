@@ -73,19 +73,19 @@ public:
 			using Button = UIMouseEventButton;
 			switch (ev.pressedButtons) {
 			case Button::Left: {
-				SGE_LOG("Left Clikc");
+				//SGE_LOG("Left Clikc");
 				auto d = ev.deltaPos * 0.01f;
 				_camera.orbit(-d.x, -d.y);
 			}break;
 
 			case Button::Middle: {
-				SGE_LOG("Middle Click");
+				//SGE_LOG("Middle Click");
 				auto d = ev.deltaPos * 0.005f;
 				_camera.move(d.x, d.y, 0);
 			}break;
 
 			case Button::Right: {
-				SGE_LOG("Right Click");
+				//SGE_LOG("Right Click");
 				auto d = ev.deltaPos * -0.005f;
 				_camera.dolly(d.x + d.y);
 			}break;

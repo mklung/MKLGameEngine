@@ -157,6 +157,7 @@ namespace sge
 		};
 
 		String cull = "Off";
+		String wireFrame = "false";
 
 		Blend blendRGB;
 		Blend blendAlpha;
@@ -167,7 +168,7 @@ namespace sge
 		template<class SE>
 		void onJson(SE& se) {
 			SGE_NAMED_IO(se, cull);
-
+			SGE_NAMED_IO(se, wireFrame);
 			SGE_NAMED_IO(se, blendRGB);
 			SGE_NAMED_IO(se, blendAlpha);
 

@@ -162,6 +162,8 @@ namespace sge
 						newPass.psEntryPt = _getIdfValue();
 					else if (_token->CheckValue("Cull"))
 						newPass.renderState.cull = _getIdfValue();
+					else if (_token->CheckValue("WireFrame"))
+						newPass.renderState.wireFrame = _getIdfValue();
 					else if (_token->CheckValue("DepthTest"))
 						newPass.renderState.depthTest = _getIdfValue();
 					else if (_token->CheckValue("DepthWrite"))

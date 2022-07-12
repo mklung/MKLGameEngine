@@ -109,7 +109,7 @@ namespace sge
 			rasterDesc.DepthBiasClamp = 0.0f;
 			rasterDesc.DepthClipEnable = true;
 
-			bool wireframe = true;
+			bool wireframe = _renderState->wireFrame == "false" ? false : true;
 			rasterDesc.FillMode = wireframe ? D3D11_FILL_WIREFRAME : D3D11_FILL_SOLID;
 
 			rasterDesc.FrontCounterClockwise = true;
@@ -136,18 +136,20 @@ namespace sge
 			else
 			{
 				depthStencilDesc.DepthEnable = false;
+				depthStencilDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
 			}
 
-			depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-			depthStencilDesc.StencilEnable = false;
-			depthStencilDesc.StencilReadMask = 0xFF;
-			depthStencilDesc.StencilWriteMask = 0xFF;
+			depthStencilDesc.DepthWriteMask		= D3D11_DEPTH_WRITE_MASK_ALL;
+
+			depthStencilDesc.StencilEnable		= false;
+			depthStencilDesc.StencilReadMask	= 0xFF;
+			depthStencilDesc.StencilWriteMask	= 0xFF;
 
 			hr = dev->CreateDepthStencilState(&depthStencilDesc, _depthStencilState.ptrForInit());
 			DX11Util::throwIfError(hr);
 		}
 
-		if (_blendState)
+		if (!_blendState)
 		{
 			const RenderState::Blend* colorBlend;
 			const RenderState::Blend* alphaBlend;
@@ -159,6 +161,7 @@ namespace sge
 			blendStateDesc.AlphaToCoverageEnable = false;
 			blendStateDesc.IndependentBlendEnable = false;
 			auto& rtDesc = blendStateDesc.RenderTarget[0];
+
 			rtDesc.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
 			BlendOP		blendOP;
@@ -187,10 +190,13 @@ namespace sge
 			
 		}
 
-		Color4f blendColor(1, 1, 1, 1);
+		
 		auto* dc = renderer->d3dDeviceContext();
-		if (!_rasterizerState)	dc->RSSetState(_rasterizerState);
-		if (!_depthStencilState) dc->OMSetDepthStencilState(_depthStencilState, 1);
-		if (!_blendState)		dc->OMSetBlendState(_blendState, blendColor.data, 0xffffffff);
+
+		dc->RSSetState(_rasterizerState);
+		dc->OMSetDepthStencilState(_depthStencilState, 1);
+
+		Color4f blendColor(1, 1, 1, 1);
+		dc->OMSetBlendState(_blendState, blendColor.data, 0xffffffff);
 	}
 }
