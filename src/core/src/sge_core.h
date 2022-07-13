@@ -12,6 +12,10 @@
 
 #include "sge_core/allocator/LinearAllocator.h"
 
+
+#include "sge_core/graph/Color.h"
+#include "sge_core/graph/ColorUtil.h"
+
 #include <sge_core/math/Math.h>
 #include <sge_core/math/Tuple2.h>
 #include <sge_core/math/Tuple3.h>
@@ -20,7 +24,6 @@
 #include <sge_core/math/Vec3.h>
 #include <sge_core/math/Vec4.h>
 #include <sge_core/math/Mat4.h>
-#include "sge_core/graph/Color.h"
 #include <sge_core/math/Quat4.h>
 #include <sge_core/math/MathGeometry.h>
 #include <sge_core/math/MathCamera3.h>

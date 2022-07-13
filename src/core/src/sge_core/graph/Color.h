@@ -5,8 +5,6 @@
 namespace sge
 {
 
-
-
 #define ColorModel_ENUM_LIST(E)\
 	E(None,) \
 	E(R,) \
@@ -54,15 +52,15 @@ SGE_ENUM_CLASS(ColorCompressType, u8);
 
 enum class ColorType : u16;
 
-constexpr ColorType ColorType_make(ColorModel model, ColorElementType elem) {
-	return static_cast<ColorType>(
+constexpr u16 ColorType_make(ColorModel model, ColorElementType elem) {
+	return static_cast<u16>(
 		(static_cast<u32>(model) << 8)
 		| (static_cast<u32>(elem))
 		);
 }
 
-constexpr ColorType ColorType_make(ColorModel model, ColorCompressType compress) {
-	return static_cast<ColorType>(
+constexpr u16 ColorType_make(ColorModel model, ColorCompressType compress) {
+	return static_cast<u16>(
 		(static_cast<u32>(model) << 8)
 		| (static_cast<u32>(compress))
 		);

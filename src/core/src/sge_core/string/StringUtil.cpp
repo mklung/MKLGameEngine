@@ -1,5 +1,6 @@
 #include "StringUtil.h"
 #include "UtfUtil.h"
+#include "sge_core/math/Math.h"
 
 namespace sge {
 
@@ -103,7 +104,7 @@ namespace sge {
 
 	struct StringUtil_ParseHelper {
 		template<class T> SGE_INLINE
-			static bool tryParseInt(StrView view, T& outValue) {
+		static bool tryParseInt(StrView view, T& outValue) {
 			static_assert(std::is_signed<T>::value, "");
 			String_<256> tmp = view;
 			i64 v;
@@ -116,7 +117,7 @@ namespace sge {
 		}
 
 		template<class T> SGE_INLINE
-			static bool tryParseUInt(StrView view, T& outValue) {
+		static bool tryParseUInt(StrView view, T& outValue) {
 			static_assert(std::is_unsigned<T>::value, "");
 			String_<256> tmp = view;
 			u64 v;
@@ -143,6 +144,18 @@ namespace sge {
 		}
 	};
 
+	int StringUtil::ignoreCaseCompare(StrView a, StrView b)
+	{
+		size_t n = Math::min(a.size(), b.size());
+		for (size_t i = 0; i < n; i++)
+		{
+			int c = ignoreCaseCompare(a[i], b[i]);
+			if (c != 0) return c;
+		}
+		if (a.size() < b.size()) return -1;
+		if (a.size() > b.size()) return 1;
+		return 0;
+	}
 
 	bool StringUtil::tryParse(StrView view, i8& outValue) { return StringUtil_ParseHelper::tryParseInt(view, outValue); }
 	bool StringUtil::tryParse(StrView view, i16& outValue) { return StringUtil_ParseHelper::tryParseInt(view, outValue); }
