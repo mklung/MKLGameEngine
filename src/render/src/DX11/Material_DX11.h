@@ -68,9 +68,9 @@ namespace sge
 			ComPtr<ID3D11BlendState>			_blendState;
 		};
 
-		virtual MaterialPass* onCreatePass(Material* material, ShaderPass* shaderPass) override
+		virtual UPtr<MaterialPass> onCreatePass(ShaderPass* shaderPass) override
 		{
-			return new MyPass(material, shaderPass);
+			return UPtr<MaterialPass>(new MyPass(this, shaderPass));
 		}
 
 	};

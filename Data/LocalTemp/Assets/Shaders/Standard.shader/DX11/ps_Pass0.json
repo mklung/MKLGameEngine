@@ -7,36 +7,80 @@
 			"name": "$Globals",
 			"variables": [
 				{
-					"dataType": "Float32_4x4",
-					"name": "sge_matrix_model",
-					"offset": 0
+					"dataType": "Float32x3",
+					"name": "sge_camera_pos",
+					"offset": 256
 				},
 				{
-					"dataType": "Float32_4x4",
-					"name": "sge_matrix_mvp",
-					"offset": 192
+					"dataType": "Float32x3",
+					"name": "sge_light_pos",
+					"offset": 272
+				},
+				{
+					"dataType": "Float32x3",
+					"name": "sge_light_dir",
+					"offset": 288
 				},
 				{
 					"dataType": "Float32",
-					"name": "test_float",
-					"offset": 316
+					"name": "sge_light_power",
+					"offset": 300
+				},
+				{
+					"dataType": "Float32x3",
+					"name": "sge_light_color",
+					"offset": 304
+				},
+				{
+					"dataType": "Float32x4",
+					"name": "test_color",
+					"offset": 320
 				}
 			]
 		}
 	],
 	"inputs": [
 		{
-			"attrId": "POSITION0",
+			"attrId": "SV_POSITION0",
+			"dataType": "Float32x4",
+			"name": ""
+		},
+		{
+			"attrId": "TEXCOORD10",
+			"dataType": "Float32x4",
+			"name": ""
+		},
+		{
+			"attrId": "TEXCOORD0",
+			"dataType": "Float32x2",
 			"name": ""
 		},
 		{
 			"attrId": "COLOR0",
+			"dataType": "Float32x4",
 			"name": ""
 		},
 		{
 			"attrId": "NORMAL0",
+			"dataType": "Float32x3",
 			"name": ""
 		}
 	],
-	"profile": "vs_5_0"
+	"profile": "ps_5_0",
+	"samplers": [
+		{
+			"bindCount": 1,
+			"bindPoint": 0,
+			"dataType": "None",
+			"name": "mainTex_Sampler"
+		}
+	],
+	"textures": [
+		{
+			"bindCount": 1,
+			"bindPoint": 0,
+			"dataType": "Texture2D",
+			"name": "mainTex"
+		}
+	]
 }

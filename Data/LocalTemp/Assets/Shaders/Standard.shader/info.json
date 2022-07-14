@@ -17,7 +17,7 @@
 				},
 				"cull": "Back",
 				"depthTest": "LEqual",
-				"depthWrite": "On",
+				"depthWrite": "Off",
 				"wireFrame": "false"
 			},
 			"vsEntryPt": "vs_main"
@@ -39,6 +39,11 @@
 			"defaultValue": "0.5",
 			"displayName": "Test",
 			"name": "_Test"
+		},
+		{
+			"defaultValue": "",
+			"displayName": "Main Texture",
+			"name": "_MainTex"
 		}
 	],
 	"shaderName": "Test 001"

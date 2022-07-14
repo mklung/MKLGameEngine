@@ -2,7 +2,8 @@
 
 namespace sge
 {
-	ImageIO_png::Reader::~Reader() {
+	ImageIO_png::Reader::~Reader()
+	{
 		if (_info) {
 			png_destroy_info_struct(_png, &_info);
 			_info = nullptr;
@@ -13,7 +14,19 @@ namespace sge
 		}
 	}
 
-	bool ImageIO_png::Reader::error_longjmp_restore_point() 
+	void ImageIO_png::Reader::s_onRead(png_structp png, png_bytep dest, png_size_t len)
+	{
+	}
+
+	void ImageIO_png::Reader::onRead(png_bytep deat, png_size_t len)
+	{
+	}
+
+	void ImageIO_png::Reader::setReadFilter(ColorType outType, int in_type, int in_bit, bool in_palette_has_alpha)
+	{
+	}
+
+	bool ImageIO_png::Reader::error_longjmp_restore_point()
 	{
 		// !!! call this function before any libpng C-function that might longjmp()
 		// to avoid any C++ destructor or exception try/catch block happen in between
@@ -35,7 +48,7 @@ namespace sge
 	{
 		_data = data;
 		_readPtr = data.data();
-
+		
 		SGE_ASSERT(!_png);
 
 		if (data.size() < 8 || png_sig_cmp(data.data(), 0, 8))
@@ -139,7 +152,7 @@ namespace sge
 		}
 
 		img.create(out_color_type, width, height);
-
+		
 		Vector_<png_bytep, 2048> rows;
 		rows.resize(height);
 		for (int y = 0; y < height; y++) {
@@ -155,3 +168,4 @@ namespace sge
 		png_read_image(_png, rows.data());
 	}
 }
+

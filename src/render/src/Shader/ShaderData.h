@@ -178,6 +178,7 @@ namespace sge
 
 	};
 
+
 	struct ShaderInfo
 	{
 
@@ -234,6 +235,8 @@ namespace sge
 		}
 	};
 
+
+
 	enum class TokenType
 	{
 		None,
@@ -264,6 +267,17 @@ namespace sge
 	class  ShaderDescData
 	{
 	public:
+		using DataType = RenderDataType;
+
+		void loadFile(StrView _filename)
+		{
+			filename = _filename;
+			JsonUtil::readFile(_filename, *this);
+		}
+
+		String	filename;
+		String	profile;
+		ShaderDescMask mask = ShaderDescMask::None;
 
 		class  ShaderInputParam
 		{
@@ -276,7 +290,7 @@ namespace sge
 			void onJson(SE& se) {
 				SGE_NAMED_IO(se, name);
 				SGE_NAMED_IO(se, attrId);
-				//SGE_NAMED_IO(se, dataType);
+				SGE_NAMED_IO(se, dataType);
 			}
 		};
 
@@ -326,9 +340,46 @@ namespace sge
 
 		};
 
-		String profile;
 		Vector_<ShaderInputParam, 8> inputs;
 		Vector_<ConstBufferInfo, 8> constBuffers;
+
+		//-------Texture---------
+		class Texture
+		{
+		public:
+			String		name;
+			i16			bindPoint = 0;
+			i16			bindCount = 0;
+			DataType	dataType = DataType::None;
+
+			template<class SE>
+			void onJson(SE& se) {
+				SGE_NAMED_IO(se, name);
+				SGE_NAMED_IO(se, bindPoint);
+				SGE_NAMED_IO(se, bindCount);
+				SGE_NAMED_IO(se, dataType);
+			}
+		};
+		Vector_<Texture, 8>		textures;
+		class Sampler {
+		public:
+			String		name;
+			i16			bindPoint = 0;
+			i16			bindCount = 0;
+			RenderDataType	dataType = RenderDataType::None;
+
+			template<class SE>
+			void onJson(SE& se) {
+				SGE_NAMED_IO(se, name);
+				SGE_NAMED_IO(se, bindPoint);
+				SGE_NAMED_IO(se, bindCount);
+				SGE_NAMED_IO(se, dataType);
+			}
+		};
+		Vector_<Sampler, 8>		samplers;
+
+		//---------Texture---------
+
 
 		void Clear();
 
@@ -337,6 +388,8 @@ namespace sge
 			SGE_NAMED_IO(se, profile);
 			SGE_NAMED_IO(se, inputs);
 			SGE_NAMED_IO(se, constBuffers);
+			SGE_NAMED_IO(se, textures);
+			SGE_NAMED_IO(se, samplers);
 		}
 	};
 

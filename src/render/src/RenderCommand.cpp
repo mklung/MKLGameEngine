@@ -13,11 +13,15 @@ namespace sge {
 	{
 		if (!mat) { SGE_ASSERT(false); return; }
 
-		for (auto&pass : mat->passes())
+		auto passes = mat->passes();
+
+		for (size_t i = 0; i < passes.size(); i++)
 		{
 			auto* cmd = newCommand<RenderCommand_DrawCall>();
 
-			cmd->materialPass	= pass.ptr();	
+			cmd->material		= mat;
+			cmd->materialPassIndex = i;
+
 			cmd->primitive		= subMesh.primitive();
 			cmd->vertexLayout	= subMesh.vertexLayout();
 			cmd->vertexBuffer	= subMesh.vertexBuffer();

@@ -72,8 +72,8 @@ namespace sge
 
 		auto* ctx = _renderer->d3dDeviceContext();
 
-		if (cmd.materialPass) {
-			cmd.materialPass->bind(this, cmd.vertexLayout);
+		if (auto* pass = cmd.getMaterialPass()) {
+			pass->bind(this, cmd.vertexLayout);
 		}
 		else {
 			_setTestShaders(cmd.vertexLayout);

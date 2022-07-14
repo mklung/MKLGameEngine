@@ -52,61 +52,74 @@ SGE_ENUM_CLASS(ColorCompressType, u8);
 
 enum class ColorType : u16;
 
-constexpr u16 ColorType_make(ColorModel model, ColorElementType elem) {
+constexpr ColorType ColorType_make(ColorModel model, ColorElementType elem) {
+	return static_cast<ColorType>(
+		(static_cast<u32>(model) << 8)
+		| (static_cast<u32>(elem))
+		);
+}
+
+constexpr ColorType ColorType_make(ColorModel model, ColorCompressType compress) {
+	return static_cast<ColorType>(
+		(static_cast<u32>(model) << 8)
+		| (static_cast<u32>(compress))
+		);
+}
+
+constexpr u16 ColorType_make_u16(ColorModel model, ColorElementType elem) {
 	return static_cast<u16>(
 		(static_cast<u32>(model) << 8)
 		| (static_cast<u32>(elem))
 		);
 }
 
-constexpr u16 ColorType_make(ColorModel model, ColorCompressType compress) {
+constexpr u16 ColorType_make_u16(ColorModel model, ColorCompressType compress) {
 	return static_cast<u16>(
 		(static_cast<u32>(model) << 8)
 		| (static_cast<u32>(compress))
 		);
 }
 
-
 enum class ColorType : u16
 {
 	None = 0, 
-	Rb = ColorType_make(ColorModel::R, ColorElementType::UNorm8) ,
-	Rs = ColorType_make(ColorModel::R, ColorElementType::UNorm16),
-	Rh = ColorType_make(ColorModel::R, ColorElementType::Float16),
-	Rf = ColorType_make(ColorModel::R, ColorElementType::Float32), 
+	Rb = ColorType_make_u16(ColorModel::R, ColorElementType::UNorm8) ,
+	Rs = ColorType_make_u16(ColorModel::R, ColorElementType::UNorm16),
+	Rh = ColorType_make_u16(ColorModel::R, ColorElementType::Float16),
+	Rf = ColorType_make_u16(ColorModel::R, ColorElementType::Float32),
 	
-	Lb = ColorType_make(ColorModel::L, ColorElementType::UNorm8) ,
-	Ls = ColorType_make(ColorModel::L, ColorElementType::UNorm16),
-	Lh = ColorType_make(ColorModel::L, ColorElementType::Float16), 
-	Lf = ColorType_make(ColorModel::L, ColorElementType::Float32),
+	Lb = ColorType_make_u16(ColorModel::L, ColorElementType::UNorm8) ,
+	Ls = ColorType_make_u16(ColorModel::L, ColorElementType::UNorm16),
+	Lh = ColorType_make_u16(ColorModel::L, ColorElementType::Float16),
+	Lf = ColorType_make_u16(ColorModel::L, ColorElementType::Float32),
 	
-	LAb = ColorType_make(ColorModel::LA, ColorElementType::UNorm8) ,
-	LAs = ColorType_make(ColorModel::LA, ColorElementType::UNorm16), 
-	LAh = ColorType_make(ColorModel::LA, ColorElementType::Float16), 
-	LAf = ColorType_make(ColorModel::LA, ColorElementType::Float32), 
+	LAb = ColorType_make_u16(ColorModel::LA, ColorElementType::UNorm8) ,
+	LAs = ColorType_make_u16(ColorModel::LA, ColorElementType::UNorm16),
+	LAh = ColorType_make_u16(ColorModel::LA, ColorElementType::Float16),
+	LAf = ColorType_make_u16(ColorModel::LA, ColorElementType::Float32),
 	
-	RGb = ColorType_make(ColorModel::RG, ColorElementType::UNorm8) ,
-	RGs = ColorType_make(ColorModel::RG, ColorElementType::UNorm16),
-	RGh = ColorType_make(ColorModel::RG, ColorElementType::Float16),
-	RGf = ColorType_make(ColorModel::RG, ColorElementType::Float32),
+	RGb = ColorType_make_u16(ColorModel::RG, ColorElementType::UNorm8) ,
+	RGs = ColorType_make_u16(ColorModel::RG, ColorElementType::UNorm16),
+	RGh = ColorType_make_u16(ColorModel::RG, ColorElementType::Float16),
+	RGf = ColorType_make_u16(ColorModel::RG, ColorElementType::Float32),
 	
-	RGBb = ColorType_make(ColorModel::RGB, ColorElementType::UNorm8) ,
-	RGBs = ColorType_make(ColorModel::RGB, ColorElementType::UNorm16),
-	RGBh = ColorType_make(ColorModel::RGB, ColorElementType::Float16),
-	RGBf = ColorType_make(ColorModel::RGB, ColorElementType::Float32),
+	RGBb = ColorType_make_u16(ColorModel::RGB, ColorElementType::UNorm8) ,
+	RGBs = ColorType_make_u16(ColorModel::RGB, ColorElementType::UNorm16),
+	RGBh = ColorType_make_u16(ColorModel::RGB, ColorElementType::Float16),
+	RGBf = ColorType_make_u16(ColorModel::RGB, ColorElementType::Float32),
 	
-	RGBAb = ColorType_make(ColorModel::RGBA, ColorElementType::UNorm8) ,
-	RGBAs = ColorType_make(ColorModel::RGBA, ColorElementType::UNorm16),
-	RGBAh = ColorType_make(ColorModel::RGBA, ColorElementType::Float16),
-	RGBAf = ColorType_make(ColorModel::RGBA, ColorElementType::Float32),
+	RGBAb = ColorType_make_u16(ColorModel::RGBA, ColorElementType::UNorm8) ,
+	RGBAs = ColorType_make_u16(ColorModel::RGBA, ColorElementType::UNorm16),
+	RGBAh = ColorType_make_u16(ColorModel::RGBA, ColorElementType::Float16),
+	RGBAf = ColorType_make_u16(ColorModel::RGBA, ColorElementType::Float32),
 
-	BC1  = ColorType_make(ColorModel::BlockCompression, ColorCompressType::BC1),
-	BC2  = ColorType_make(ColorModel::BlockCompression, ColorCompressType::BC2),
-	BC3  = ColorType_make(ColorModel::BlockCompression, ColorCompressType::BC3),
-	BC4  = ColorType_make(ColorModel::BlockCompression, ColorCompressType::BC4),
-	BC5  = ColorType_make(ColorModel::BlockCompression, ColorCompressType::BC5),
-	BC6h = ColorType_make(ColorModel::BlockCompression, ColorCompressType::BC6h),
-	BC7  = ColorType_make(ColorModel::BlockCompression, ColorCompressType::BC7),
+	BC1  = ColorType_make_u16(ColorModel::BlockCompression, ColorCompressType::BC1),
+	BC2  = ColorType_make_u16(ColorModel::BlockCompression, ColorCompressType::BC2),
+	BC3  = ColorType_make_u16(ColorModel::BlockCompression, ColorCompressType::BC3),
+	BC4  = ColorType_make_u16(ColorModel::BlockCompression, ColorCompressType::BC4),
+	BC5  = ColorType_make_u16(ColorModel::BlockCompression, ColorCompressType::BC5),
+	BC6h = ColorType_make_u16(ColorModel::BlockCompression, ColorCompressType::BC6h),
+	BC7  = ColorType_make_u16(ColorModel::BlockCompression, ColorCompressType::BC7),
 };
 
 #define ColorType_ENUM_LIST(E) \

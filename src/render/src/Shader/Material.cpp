@@ -11,8 +11,8 @@ namespace sge
 		_passes.reserve(shader->passes().size());
 		for (auto& shaderpass : shader->passes())
 		{
-			auto* pass = onCreatePass(this, shaderpass.get());
-			_passes.emplace_back(pass);
+			UPtr<Pass> pass = onCreatePass(shaderpass.get());
+			_passes.emplace_back(std::move(pass));
 
 		}
 

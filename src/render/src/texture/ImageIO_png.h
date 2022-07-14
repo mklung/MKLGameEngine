@@ -7,6 +7,7 @@ namespace sge
 {
 	struct  ImageIO_png
 	{
+	public:
 		class Reader
 		{
 		public:
@@ -15,6 +16,7 @@ namespace sge
 
 			static void s_onRead(png_structp png, png_bytep dest, png_size_t len);
 			void onRead(png_bytep deat, png_size_t len);
+
 			void setReadFilter(ColorType outType, int in_type, int in_bit, bool in_palette_has_alpha);
 
 			bool error_longjmp_restore_point();

@@ -1,4 +1,5 @@
 #include "Image.h"
+#include "ImageIO_png.h"
 
 namespace sge
 {
@@ -26,8 +27,8 @@ namespace sge
 	}
 
 	void Image::loadPngMem(ByteSpan data) {
-		//ImageIO_png::Reader r;
-		//r.load(*this, data);
+		ImageIO_png::Reader r;
+		r.load(*this, data);
 	}
 
 	void Image::create(ColorType colorType, int width, int height) {

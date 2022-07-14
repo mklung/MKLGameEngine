@@ -42,10 +42,10 @@ namespace sge
 					0, nullptr, 0,
 					bytecode.ptrForInit(), errorMsg.ptrForInit());
 
-				auto binFileName = Fmt("{}/DX11/vs_Pass{}.bin", shaderData->fileName.data(), PassIndex);
+				auto binFileName = Fmt("{}/DX11/ps_Pass{}.bin", shaderData->fileName.data(), PassIndex);
 				WriteBinFile(bytecode, binFileName.c_str());
 
-				auto jsonFileName = Fmt("{}/DX11/vs_Pass{}.json", shaderData->fileName.data(), PassIndex);
+				auto jsonFileName = Fmt("{}/DX11/ps_Pass{}.json", shaderData->fileName.data(), PassIndex);
 				ShaderReflect(bytecode, profile.c_str(), jsonFileName.c_str());
 			}
 
@@ -59,10 +59,10 @@ namespace sge
 					profile.data(), flage1, flage2, 0, nullptr, 0,
 					bytecode.ptrForInit(), errorMsg.ptrForInit());
 
-				auto binFileName = Fmt("{}/DX11/ps_Pass{}.bin", shaderData->fileName.data(), PassIndex);
+				auto binFileName = Fmt("{}/DX11/vs_Pass{}.bin", shaderData->fileName.data(), PassIndex);
 				WriteBinFile(bytecode, binFileName.c_str());
 				
-				auto jsonFileName  = Fmt("{}/DX11/ps_Pass{}.json", shaderData->fileName.data(), PassIndex);
+				auto jsonFileName  = Fmt("{}/DX11/vs_Pass{}.json", shaderData->fileName.data(), PassIndex);
 				ShaderReflect(bytecode, profile.c_str(), jsonFileName.c_str());
 			}
 		}
@@ -80,25 +80,27 @@ namespace sge
 		//ShaderInputParam> inputParams;
 
 		shaderDescData.profile = profile;
-		
+
 		shaderDescData.inputs.reserve(shaderDesc.InputParameters);
 
+		//--------InputParameters-----------
 		for (int i = 0; i < shaderDesc.InputParameters; i++)
 		{
 			D11_PARAM_DESC desc;
 			auto& sip = shaderDescData.inputs.emplace_back();
 
 			hr = reflection->GetInputParameterDesc(i, &desc);
-			
+
 			sip.dataType = ConvertShaderDataType(&desc);
 			sip.attrId = Fmt("{}{}", desc.SemanticName, desc.SemanticIndex);
 
 			StrView type = enumStr(sip.dataType);
 			SGE_LOG("attrId:{} ValueType:{}", sip.attrId, type);
 		}
+		//--------InputParameters-----------
 
-		
 
+		//--------ConstantBuffers-----------
 		{
 			shaderDescData.constBuffers.reserve(shaderDesc.ConstantBuffers);
 
@@ -117,10 +119,10 @@ namespace sge
 				hr = reflection->GetResourceBindingDescByName(bufferDesc.Name, &bindDesc);
 				DX11Util::throwIfError(hr);
 
-				constbufDesc.name		= bufferDesc.Name;
-				constbufDesc.dataSize	= bufferDesc.Size;
-				constbufDesc.bindPoint	= bindDesc.BindPoint;
-				constbufDesc.bindCount	= bindDesc.BindCount;
+				constbufDesc.name = bufferDesc.Name;
+				constbufDesc.dataSize = bufferDesc.Size;
+				constbufDesc.bindPoint = bindDesc.BindPoint;
+				constbufDesc.bindCount = bindDesc.BindCount;
 
 
 				constbufDesc.variables.reserve(bufferDesc.Variables);
@@ -144,22 +146,22 @@ namespace sge
 					TempString dataType;
 					switch (varType.Type)
 					{
-						case D3D_SVT_BOOL:		dataType.append("Bool");		break;
-						case D3D_SVT_INT:		dataType.append("Int32");		break;
-						case D3D_SVT_UINT:		dataType.append("UInt32");		break;
-						case D3D_SVT_UINT8:		dataType.append("UInt8");		break;
-						case D3D_SVT_FLOAT:		dataType.append("Float32");		break;
-						case D3D_SVT_DOUBLE:	dataType.append("Float64");		break;
-						default: throw SGE_ERROR("unsupported type {}", varType.Type);
+					case D3D_SVT_BOOL:		dataType.append("Bool");		break;
+					case D3D_SVT_INT:		dataType.append("Int32");		break;
+					case D3D_SVT_UINT:		dataType.append("UInt32");		break;
+					case D3D_SVT_UINT8:		dataType.append("UInt8");		break;
+					case D3D_SVT_FLOAT:		dataType.append("Float32");		break;
+					case D3D_SVT_DOUBLE:	dataType.append("Float64");		break;
+					default: throw SGE_ERROR("unsupported type {}", varType.Type);
 					}
 
-					switch (varType.Class) 
+					switch (varType.Class)
 					{
-						case D3D_SVC_SCALAR: break;
-						case D3D_SVC_VECTOR:			FmtTo(dataType, "x{}",		varType.Columns); break;
-						case D3D_SVC_MATRIX_COLUMNS:	FmtTo(dataType, "_{}x{}",	varType.Rows, varType.Columns); break;
-						case D3D_SVC_MATRIX_ROWS:		FmtTo(dataType, "_{}x{}",	varType.Rows, varType.Columns); break;
-						default: throw SGE_ERROR("unsupported Class {}", varType.Class);
+					case D3D_SVC_SCALAR: break;
+					case D3D_SVC_VECTOR:			FmtTo(dataType, "x{}", varType.Columns); break;
+					case D3D_SVC_MATRIX_COLUMNS:	FmtTo(dataType, "_{}x{}", varType.Rows, varType.Columns); break;
+					case D3D_SVC_MATRIX_ROWS:		FmtTo(dataType, "_{}x{}", varType.Rows, varType.Columns); break;
+					default: throw SGE_ERROR("unsupported Class {}", varType.Class);
 					}
 
 					if (!enumTryParse(shaderVar.dataType, dataType)) {
@@ -175,14 +177,74 @@ namespace sge
 
 			}
 		}
+		//--------ConstantBuffers-----------
 
-		//SGE_LOG("{}", shaderDescData.ToJson());
+		//------------Texture---------------
+		{
 
-		auto filePath = Fmt("{}/{}", COMPILE_FILE_PATH, fileName);
-		//File::writeFile(filePath, shaderDescData.ToJson(), false);
-		
-		JsonUtil::writeFile(filePath, shaderDescData, false);
-		SGE_LOG("\n");
+			shaderDescData.textures.reserve(shaderDesc.BoundResources);
+			for (UINT i = 0; i < shaderDesc.BoundResources; i++) 
+			{
+				
+				D3D11_SHADER_INPUT_BIND_DESC resDesc;
+				hr = reflection->GetResourceBindingDesc(i, &resDesc);
+				DX11Util::throwIfError(hr);
+
+				if (resDesc.Type != D3D_SIT_TEXTURE) continue;
+
+				auto& outTex = shaderDescData.textures.emplace_back();
+				outTex.name = resDesc.Name;
+				outTex.bindPoint = static_cast<i16>(resDesc.BindPoint);
+				outTex.bindCount = static_cast<i16>(resDesc.BindCount);
+
+				switch (resDesc.Dimension) 
+				{
+					case D3D_SRV_DIMENSION_TEXTURE1D:		outTex.dataType = RenderDataType::Texture1D;   break;
+					case D3D_SRV_DIMENSION_TEXTURE2D:		outTex.dataType = RenderDataType::Texture2D;   break;
+					case D3D_SRV_DIMENSION_TEXTURE3D:		outTex.dataType = RenderDataType::Texture3D;   break;
+					case D3D_SRV_DIMENSION_TEXTURECUBE:		outTex.dataType = RenderDataType::TextureCube; break;
+						//----
+					case D3D_SRV_DIMENSION_TEXTURE1DARRAY:	outTex.dataType = RenderDataType::Texture1DArray;   break;
+					case D3D_SRV_DIMENSION_TEXTURE2DARRAY:	outTex.dataType = RenderDataType::Texture2DArray;   break;
+					case D3D_SRV_DIMENSION_TEXTURECUBEARRAY:outTex.dataType = RenderDataType::TextureCubeArray; break;
+						//----
+					default: throw SGE_ERROR("unsupported texture dimension {}", resDesc.Dimension);
+				}
+				
+			}
+			//------------Texture---------------
+
+			//--------------Sampler-------------
+			{
+				shaderDescData.samplers.reserve(shaderDesc.BoundResources);
+				for (UINT i = 0; i < shaderDesc.BoundResources; i++)
+				{
+					D3D11_SHADER_INPUT_BIND_DESC resDesc;
+					hr = reflection->GetResourceBindingDesc(i, &resDesc);
+					DX11Util::throwIfError(hr);
+
+					if (resDesc.Type != D3D_SIT_SAMPLER) continue;
+
+					auto& outSampler = shaderDescData.samplers.emplace_back();
+					outSampler.name = resDesc.Name;
+					outSampler.bindPoint = static_cast<i16>(resDesc.BindPoint);
+					outSampler.bindCount = static_cast<i16>(resDesc.BindCount);
+				}
+			}
+			//--------------Sampler-------------
+			// 
+
+			//SGE_LOG("{}", shaderDescData.ToJson());
+
+			auto filePath = Fmt("{}/{}", COMPILE_FILE_PATH, fileName);
+			//File::writeFile(filePath, shaderDescData.ToJson(), false);
+
+			JsonUtil::writeFile(filePath, shaderDescData, false);
+			SGE_LOG("\n");
+		}
+		//------------Texture---------------
+
+
 	}
 
 	void ShaderCompiler::WriteBinFile(ComPtr<ID3DBlob>& bytecode, String fileName)
