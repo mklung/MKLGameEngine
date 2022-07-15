@@ -24,8 +24,8 @@ namespace sge
 			png_structp _png{ nullptr };
 			png_infop	_info{ nullptr };
 
-			ByteSpan _data;
-			const u8* _readPtr = nullptr;
+			ByteSpan	_data;
+			const u8*	_readPtr = nullptr;
 		};
 	};
 }

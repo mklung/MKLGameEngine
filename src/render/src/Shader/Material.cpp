@@ -22,14 +22,24 @@ namespace sge
 	MaterialPass_Stage::MaterialPass_Stage(MaterialPass* pass, ShaderStage* shaderStage) : _pass(pass), _shaderStage(shaderStage)
 	{
 		auto* info = shaderStage->info();
-		auto cbCount = info->constBuffers.size();
-
-		_constBufs.resize(cbCount);
-		
-		for (size_t i = 0; i < cbCount; i++)
 		{
-			auto& cb = _constBufs[i];
-			cb.create(info->constBuffers[i]);
+			auto cbCount = info->constBuffers.size();
+			_constBufs.resize(cbCount);
+
+			for (size_t i = 0; i < cbCount; i++) {
+				auto& cb = _constBufs[i];
+				cb.create(info->constBuffers[i]);
+			}
+		}
+
+		{
+			auto texCount = info->textures.size();
+			_texParams.resize(texCount);
+
+			for (size_t i = 0; i < texCount; i++) {
+				auto& t = _texParams[i];
+				t.create(info->textures[i]);
+			}
 		}
 	}
 
@@ -62,6 +72,21 @@ namespace sge
 	void MaterialPass_Stage::ConstBuffer::errorType()
 	{
 		throw SGE_ERROR("ConstBuffer setParam type mismatch");
+	}
+
+
+	Texture* MaterialPass_Stage::TexParam::getUpdatedTexture()
+	{
+		if (!_tex) {
+			auto* renderer = Renderer::instance();
+			switch (_info->dataType) {
+			case DataType::Texture2D: return renderer->stockTextures.error; break;
+			default: throw SGE_ERROR("unsupported texture type");
+			}
+		}
+
+		// TODO update texture
+		return _tex;
 	}
 
 

@@ -26,7 +26,7 @@ namespace sge {
 
 	friend class RenderMesh;
 	protected:
-		RenderMesh*	_mesh = nullptr;
+		RenderMesh*		_mesh = nullptr;
 		RenderDataType _indexType = RenderDataType::None;
 
 		SPtr<RenderGpuBuffer>	_vertexBuffer;

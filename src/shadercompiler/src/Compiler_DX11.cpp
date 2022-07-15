@@ -92,10 +92,14 @@ namespace sge
 			hr = reflection->GetInputParameterDesc(i, &desc);
 
 			sip.dataType = ConvertShaderDataType(&desc);
-			sip.attrId = Fmt("{}{}", desc.SemanticName, desc.SemanticIndex);
+			
+			VertexSemanticType semanticType;
+			semanticType = DX11Util::parseDxSemanticName(StrView_c_str(desc.SemanticName));
+
+			sip.semantic = Vertex_SemanticUtil::_make(semanticType, static_cast<u8>(desc.SemanticIndex)); //Fmt("{}{}", desc.SemanticName, desc.SemanticIndex);
 
 			StrView type = enumStr(sip.dataType);
-			SGE_LOG("attrId:{} ValueType:{}", sip.attrId, type);
+			SGE_LOG("attrId:{} ValueType:{}", sip.semantic, type);
 		}
 		//--------InputParameters-----------
 

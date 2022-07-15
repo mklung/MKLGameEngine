@@ -283,13 +283,13 @@ namespace sge
 		{
 		public:
 			String			name;
-			String			attrId;
+			VertexSemantic	semantic = VertexSemantic::None;
 			RenderDataType	dataType = RenderDataType::None;
 
 			template<class SE>
 			void onJson(SE& se) {
 				SGE_NAMED_IO(se, name);
-				SGE_NAMED_IO(se, attrId);
+				SGE_NAMED_IO(se, semantic);
 				SGE_NAMED_IO(se, dataType);
 			}
 		};

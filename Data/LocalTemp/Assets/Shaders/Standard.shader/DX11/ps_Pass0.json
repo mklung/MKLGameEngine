@@ -41,29 +41,29 @@
 	],
 	"inputs": [
 		{
-			"attrId": "SV_POSITION0",
 			"dataType": "Float32x4",
-			"name": ""
+			"name": "",
+			"semantic": "Pos"
 		},
 		{
-			"attrId": "TEXCOORD10",
 			"dataType": "Float32x4",
-			"name": ""
+			"name": "",
+			"semantic": "TexCoord10"
 		},
 		{
-			"attrId": "TEXCOORD0",
 			"dataType": "Float32x2",
-			"name": ""
+			"name": "",
+			"semantic": "TexCoord0"
 		},
 		{
-			"attrId": "COLOR0",
 			"dataType": "Float32x4",
-			"name": ""
+			"name": "",
+			"semantic": "Color0"
 		},
 		{
-			"attrId": "NORMAL0",
 			"dataType": "Float32x3",
-			"name": ""
+			"name": "",
+			"semantic": "Normal"
 		}
 	],
 	"profile": "ps_5_0",

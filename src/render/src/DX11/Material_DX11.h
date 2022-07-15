@@ -30,7 +30,19 @@ namespace sge
 				dc->VSSetConstantBuffers(bindPoint, 1, &d3dBuf);
 			}
 
+			void _dxSetShaderResource(ID3D11DeviceContext4* dc, UINT bindPoint, ID3D11ShaderResourceView* rv) {
+				dc->VSSetShaderResources(bindPoint, 1, &rv);
+			}
+
+			void _dxSetSampler(ID3D11DeviceContext4* dc, UINT bindPoint, ID3D11SamplerState* ss) {
+				dc->VSSetSamplers(bindPoint, 1, &ss);
+			}
+
+
 			Span<ConstBuffer> constBuffers() { return _constBufs; }
+			Span<TexParam>		texParams() { return _texParams; }
+
+
 			Shader_DX11::MyVertexStage* shaderStage() { return static_cast<Shader_DX11::MyVertexStage*>(_shaderStage); }
 
 			VectorMap<const VertexLayout*, ComPtr<ID3D11InputLayout>> _inputLayoutsMap;
@@ -48,7 +60,17 @@ namespace sge
 				dc->PSSetConstantBuffers(bindPoint, 1, &d3dBuf);
 			}
 
+			void _dxSetShaderResource(ID3D11DeviceContext4* dc, UINT bindPoint, ID3D11ShaderResourceView* rv) {
+				dc->PSSetShaderResources(bindPoint, 1, &rv);
+			}
+
+			void _dxSetSampler(ID3D11DeviceContext4* dc, UINT bindPoint, ID3D11SamplerState* ss) {
+				dc->PSSetSamplers(bindPoint, 1, &ss);
+			}
+
 			Span<ConstBuffer> constBuffers() { return _constBufs; }
+			Span<TexParam>		texParams() { return _texParams; }
+
 			Shader_DX11::MyPixelStage* shaderStage() { return static_cast<Shader_DX11::MyPixelStage*>(_shaderStage); }
 		};
 
@@ -75,30 +97,6 @@ namespace sge
 
 	};
 
-	template<class STAGE>
-	inline void Material_DX11::_bindStageHelper(RenderContext_DX11* ctx, STAGE* stage)
-	{
-		auto* shaderStage = stage->shaderStage();
-		if (!shaderStage) return;
-		shaderStage->bind(ctx);
 
-		auto* dc = ctx->renderer()->d3dDeviceContext();
-
-		for (auto& cb : stage->constBuffers()) 
-		{
-			cb.uploadToGpu();
-
-			auto* cbInfo = cb.info();
-			UINT bindPoint = cbInfo->bindPoint;
-
-			auto* gpuBuffer = static_cast<RenderGpuBuffer_DX11*>(cb.gpuBuffer.ptr());
-			if (!gpuBuffer) throw SGE_ERROR("cosnt buffer is null");
-
-			auto* d3dBuf = gpuBuffer->d3dBuf();
-			if (!d3dBuf) throw SGE_ERROR("d3dbuffer is null");
-
-			stage->_dxSetConstBuffer(dc, bindPoint, d3dBuf);
-		}
-	}
 
 }

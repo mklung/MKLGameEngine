@@ -26,24 +26,24 @@
 	],
 	"inputs": [
 		{
-			"attrId": "POSITION0",
 			"dataType": "Float32x4",
-			"name": ""
+			"name": "",
+			"semantic": "Pos"
 		},
 		{
-			"attrId": "COLOR0",
 			"dataType": "Float32x4",
-			"name": ""
+			"name": "",
+			"semantic": "Color0"
 		},
 		{
-			"attrId": "TEXCOORD0",
 			"dataType": "Float32x2",
-			"name": ""
+			"name": "",
+			"semantic": "TexCoord0"
 		},
 		{
-			"attrId": "NORMAL0",
 			"dataType": "Float32x3",
-			"name": ""
+			"name": "",
+			"semantic": "Normal"
 		}
 	],
 	"profile": "vs_5_0",

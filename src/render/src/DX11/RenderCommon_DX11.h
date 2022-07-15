@@ -76,8 +76,8 @@ namespace sge {
 	const char* DX11Util::getDxStageProfile(ShaderDescMask s)
 	{
 		switch (s) {
-		case ShaderDescMask::Vertex:	return "ps_Pass0";
-		case ShaderDescMask::Pixel:		return "vs_Pass0";
+		case ShaderDescMask::Vertex:	return "vs_Pass0";
+		case ShaderDescMask::Pixel:		return "ps_Pass0";
 		default: return "";
 		}
 	}

@@ -96,6 +96,10 @@ SGE_ENUM_ALL_OPERATOR(VertexSemantic)
 		using Type = VertexSemanticType;
 		using Index = u8;
 
+		static constexpr Semantic _make(Type type, Index index) {
+			return static_cast<Semantic>((enumInt(type) << 8) | index);
+		};
+
 		static constexpr u16 make(Type type, Index index) {
 			return static_cast<u16>((enumInt(type) << 8) | index);
 		};
@@ -245,9 +249,19 @@ SGE_ENUM_ALL_OPERATOR(VertexSemantic)
 				_addElement(semantic, attr, 0);
 			}
 		}
+
+		const Element* find(Semantic semantic) const 
+		{
+			for (auto& e : elements) 
+			{
+				if (e.semantic == semantic) return &e;
+			}
+			return nullptr;
+		}
 	private:
 		template<class VERTEX, class ATTR>
-		void _addElement(Semantic semantic, ATTR VERTEX::* attr, size_t index) {
+		void _addElement(Semantic semantic, ATTR VERTEX::* attr, size_t index) 
+		{
 			auto& o = elements.push_back();
 			o.semantic = semantic;
 			using A = std::remove_extent<ATTR>::type;

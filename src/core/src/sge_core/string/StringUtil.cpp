@@ -147,13 +147,16 @@ namespace sge {
 	int StringUtil::ignoreCaseCompare(StrView a, StrView b)
 	{
 		size_t n = Math::min(a.size(), b.size());
+		
 		for (size_t i = 0; i < n; i++)
 		{
 			int c = ignoreCaseCompare(a[i], b[i]);
 			if (c != 0) return c;
 		}
+
 		if (a.size() < b.size()) return -1;
 		if (a.size() > b.size()) return 1;
+
 		return 0;
 	}
 

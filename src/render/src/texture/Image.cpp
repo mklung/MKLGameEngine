@@ -11,8 +11,9 @@ namespace sge
 
 	void Image::loadFile(StrView filename)
 	{
-		auto ext = FilePath::extension(filename);
-		if (0 == StringUtil::ignoreCaseCompare(ext, "png"))
+		StrView ext = FilePath::extension(filename);
+		SGE_LOG(ext.data());
+		if (0 == StringUtil::ignoreCaseCompare(ext.data(), "png"))
 		{
 			return loadPngFile(filename);
 		}

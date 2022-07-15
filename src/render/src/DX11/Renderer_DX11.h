@@ -23,13 +23,15 @@ namespace sge {
 		ID3D11Device1*			d3dDevice()			{ return _d3dDev; }
 		ID3D11DeviceContext4*	d3dDeviceContext()	{ return _d3dCtx; }
 
-		void validateContext();
 		ID3D11Debug*			d3dDebug()			{ return _d3dDebug; }
+		
+		void validateContext();
 
 	protected:
-		virtual RenderContext* onCreateContext(RenderContext_CreateDesc& desc) override;
-		virtual RenderGpuBuffer* onCreateGpuBuffer(RenderGpuBuffer_CreateDesc& desc) override;
+		virtual RenderContext*			onCreateContext(RenderContext_CreateDesc& desc) override;
+		virtual RenderGpuBuffer*		onCreateGpuBuffer(RenderGpuBuffer_CreateDesc& desc) override;
 
+		virtual SPtr<Texture2D>			onCreateTexture2D(Texture2D_CreateDesc& desc) override;
 		virtual SPtr<Material>			onCreateMaterial() override;
 		virtual SPtr<Shader>			onCreateShader(StrView filename) override;
 

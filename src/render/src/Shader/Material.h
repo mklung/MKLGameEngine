@@ -99,7 +99,7 @@ namespace sge
 
 			void create(const TexInfo& info) { _info = &info; }
 
-			Texture* getUpdateTexture();
+			Texture* getUpdatedTexture();
 
 			StrView name() const { return _info->name; }
 			int bindPoint() const { return _info->bindPoint; }
@@ -122,7 +122,9 @@ namespace sge
 		template<class V>
 		void _setTexParam(StrView name, V* texture) {
 			if (!texture) { SGE_ASSERT(false); return; }
-			for (auto& p : _texParams) {
+
+			for (auto& p : _texParams) 
+			{
 				if (0 == p.name().compare(name)) {
 					p.setTexParam(texture);
 					break;

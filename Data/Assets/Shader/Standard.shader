@@ -7,7 +7,7 @@ Shader "Test 001"
 		_Test2 ("Test2", Vec4f) = (0, 0, 0, 1);
 		_Test ("Test", Float) = 0.5;
 		
-		_MainTex("Main Texture", Texture2D);
+		mainTex("Main Texture", Texture2D);
 	}
 	
 	Pass {
