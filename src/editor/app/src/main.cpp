@@ -27,24 +27,21 @@ public:
 		{
 			Texture2D_CreateDesc texDesc;
 			auto& image = texDesc.imageToUpload;
-
-#if 0
+#if 1
 			image.loadFile("Assets/Textures/uvChecker.png");
-
 			texDesc.size = image.size();
 			texDesc.colorType = image.colorType();
 #else
 			int w = 256;
 			int h = 256;
-
 			texDesc.size.set(w, h);
 			texDesc.colorType = ColorType::RGBAb;
-
 			image.create(Color4b::kColorType, w, h);
-
-			for (int y = 0; y < w; y++) {
+			for (int y = 0; y < w; y++) 
+			{
 				auto span = image.row<Color4b>(y);
-				for (int x = 0; x < h; x++) {
+				for (int x = 0; x < h; x++) 
+				{
 					span[x] = Color4b(static_cast<u8>(x),
 						static_cast<u8>(y),
 						0,
@@ -52,20 +49,20 @@ public:
 				}
 			}
 #endif
-			
+
 			_testTexture = renderer->createTexture2D(texDesc);
-		}
+			int a = 0;
+	}
+
+
 
 		auto shader = renderer->createShader("Assets/Shaders/Standard.shader");
 		_material = renderer->createMaterial();
 		_material->setShader(shader);
-		
+
 		_material->setParam("mainTex", _testTexture);
 
-
 		EditMesh editMesh;
-		EditMesh editMesh2;
-
 #if 1
 		ObjLoader::LoadFile(editMesh, "Assets/Mesh/test.obj");
 
@@ -73,13 +70,8 @@ public:
 			editMesh.color.emplace_back(255, 255, 255, 255);
 		}
 
-		ObjLoader::LoadFile(editMesh2, "Assets/Mesh/Plane.obj");
-		for (size_t i = editMesh2.color.size(); i < editMesh2.pos.size(); i++) {
-			editMesh2.color.emplace_back(255, 255, 255, 255);
-		}
-		
-
 		// the current shader has no uv or normal
+		//editMesh.uv[0].clear();
 		//editMesh.normal.clear();
 #else
 		editMesh.pos.emplace_back(0.0f, 0.5f, 0.0f);
@@ -91,9 +83,16 @@ public:
 		editMesh.color.emplace_back(0, 0, 0, 1);
 		editMesh.color.emplace_back(0, 0, 255, 255);
 #endif
-
 		_renderMesh.create(editMesh);
+
+		EditMesh editMesh2;
+		ObjLoader::LoadFile(editMesh2, "Assets/Mesh/Plane.obj");
+		for (size_t i = editMesh2.color.size(); i < editMesh2.pos.size(); i++) {
+			editMesh2.color.emplace_back(255, 255, 255, 255);
+		}
+		//editMesh2.uv[0].clear();
 		_renderMesh2.create(editMesh2);
+
 		//VertexLayoutManager::instance()->getLayout(Vertex_Pos::kType);
 
 	}
@@ -155,8 +154,8 @@ public:
 
 
 		auto s = 1.0f;
-		_material->setParam("_Test", s * 0.5f);
-		_material->setParam("_Color", Color4f(s, s, s, 1));
+		_material->setParam("test_float", s * 0.5f);
+		_material->setParam("test_color", Color4f(s, s, s, 1));
 
 		_renderContext->setFrameBufferSize(clientRect().size);
 		_renderContext->beginRender();
@@ -178,10 +177,8 @@ public:
 
 	SPtr<RenderContext> _renderContext;
 	RenderCommandBuffer _cmdBuf;
-
 	RenderMesh	_renderMesh;
 	RenderMesh	_renderMesh2;
-
 	Math::Camera3f _camera;
 
 	//Math	_camera;
