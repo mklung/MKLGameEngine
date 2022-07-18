@@ -12,24 +12,28 @@ namespace sge
 
 		auto* win = static_cast<NativeUIWindow_Win32*>(desc.window);
 
-		ID3D11Device1* dev = _renderer->d3dDevice();
-		IDXGIFactory1* dxgiFactory = _renderer->dxgiFactory();
+		ID3D11Device1* dev			= _renderer->d3dDevice();
+		IDXGIFactory1* dxgiFactory	= _renderer->dxgiFactory();
 
 
-		DXGI_SWAP_CHAIN_DESC scd;
-		ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
 		{
-			
+			DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
+			swapChainDesc.BufferDesc.Width = 8;
+			swapChainDesc.BufferDesc.Height = 8;
+			swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+			swapChainDesc.BufferDesc.RefreshRate.Numerator = 60;
+			swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
+			swapChainDesc.SampleDesc.Count = 1;
+			swapChainDesc.SampleDesc.Quality = 0;
+			swapChainDesc.BufferCount = 1;
+			swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+			swapChainDesc.OutputWindow = win->_hwnd;
+			swapChainDesc.Windowed = TRUE;
+			swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+			swapChainDesc.Flags = 0;
 
-			scd.BufferCount = 1;
-			scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-			scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-			scd.OutputWindow = win->_hwnd;
-			scd.SampleDesc.Count = 1;
-			scd.Windowed = TRUE;
-
-			dxgiFactory->CreateSwapChain(dev, &scd, _swapChain.ptrForInit());
-
+			auto hr = dxgiFactory->CreateSwapChain(dev, &swapChainDesc, _swapChain.ptrForInit());
+			DX11Util::throwIfError(hr);
 		}
 	}
 
@@ -149,8 +153,9 @@ namespace sge
 
 	void RenderContext_DX11::onSetFrameBufferSize(Vec2f newSize)
 	{
+		_renderTargetView.reset(nullptr); // release buffer and render target view before resize
+		_depthStencilView.reset(nullptr);
 
-		_renderTargetView.reset(nullptr);
 		_swapChain->ResizeBuffers(0
 			, static_cast<UINT>(Math::max(0.0f, newSize.x))
 			, static_cast<UINT>(Math::max(0.0f, newSize.y))
@@ -168,9 +173,8 @@ namespace sge
 			_createRenderTarget();
 		}
 
-		ID3D11RenderTargetView* rt = { _renderTargetView };
-		//	ctx->OMSetRenderTargets(1, rt, _depthStencilView);
-		ctx->OMSetRenderTargets(1, &rt, nullptr);
+		ID3D11RenderTargetView* rt[] = { _renderTargetView };
+		ctx->OMSetRenderTargets(1, rt, _depthStencilView);
 
 		D3D11_VIEWPORT viewport = {};
 		viewport.TopLeftX = 0;
@@ -192,14 +196,16 @@ namespace sge
 	void RenderContext_DX11::_createRenderTarget()
 	{
 		auto* renderer = Renderer_DX11::instance();
-		if (renderer == NULL)
-			return;
 		auto* dev = renderer->d3dDevice();
 
-		ID3D11Texture2D* backBuffer;
-		_swapChain->GetBuffer(0, IID_PPV_ARGS(&backBuffer));
+		HRESULT hr;
 
-		dev->CreateRenderTargetView(backBuffer, nullptr, _renderTargetView.ptrForInit());
+		ComPtr<ID3D11Texture2D> backBuffer;
+		hr = _swapChain->GetBuffer(0, IID_PPV_ARGS(backBuffer.ptrForInit()));
+		DX11Util::throwIfError(hr);
+
+		hr = dev->CreateRenderTargetView(backBuffer, nullptr, _renderTargetView.ptrForInit());
+		DX11Util::throwIfError(hr);
 		
 
 		D3D11_TEXTURE2D_DESC backBufferDesc;
@@ -218,21 +224,26 @@ namespace sge
 		descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 		descDepth.CPUAccessFlags = 0;
 		descDepth.MiscFlags = 0;
-		dev->CreateTexture2D(&descDepth, nullptr, _depthStencil.ptrForInit());
+		hr = dev->CreateTexture2D(&descDepth, nullptr, _depthStencil.ptrForInit());
+		DX11Util::throwIfError(hr);
 
 		// Create the depth stencil view
 		D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
 		descDSV.Format = descDepth.Format;
 		descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 		descDSV.Texture2D.MipSlice = 0;
-		dev->CreateDepthStencilView(_depthStencil, &descDSV, _depthStencilView.ptrForInit());
-		backBuffer->Release();
+
+		hr = dev->CreateDepthStencilView(_depthStencil, &descDSV, _depthStencilView.ptrForInit());
+		DX11Util::throwIfError(hr);
+		//backBuffer->Release();
 	}
 
 	void RenderContext_DX11::_setTestShaders(const VertexLayout* vertexLayout)
 	{
 		ID3D11Device1*			dev = _renderer->d3dDevice();
 		ID3D11DeviceContext4*	ctx = _renderer->d3dDeviceContext();
+
+		HRESULT hr;
 
 		if (!_testVertexShader)
 		{
@@ -271,28 +282,33 @@ namespace sge
 			rasterDesc.ScissorEnable = false;
 			rasterDesc.SlopeScaledDepthBias = 0.0f;
 
-			dev->CreateRasterizerState(&rasterDesc, _testRasterizerState.ptrForInit());
-			
+			hr = dev->CreateRasterizerState(&rasterDesc, _testRasterizerState.ptrForInit());
+			DX11Util::throwIfError(hr);
+
 		}
 
 		if (!_testDepthStencilState) {
 			D3D11_DEPTH_STENCIL_DESC depthStencilDesc = {};
-			bool depthTest = false;
+
+			bool depthTest = true;
 			if (depthTest) {
 				depthStencilDesc.DepthEnable = true;
 				depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+				depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 			}
 			else {
 				depthStencilDesc.DepthEnable = false;
+				depthStencilDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
+				depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
 			}
 
-			depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+			//depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 			depthStencilDesc.StencilEnable = false;
 			depthStencilDesc.StencilReadMask = 0xFF;
 			depthStencilDesc.StencilWriteMask = 0xFF;
 
-			dev->CreateDepthStencilState(&depthStencilDesc, _testDepthStencilState.ptrForInit());
-			
+			hr = dev->CreateDepthStencilState(&depthStencilDesc, _testDepthStencilState.ptrForInit());
+			DX11Util::throwIfError(hr);
 		}
 
 		if (!_testBlendState) {
@@ -318,8 +334,8 @@ namespace sge
 				rtDesc.BlendEnable = false;
 			}
 
-			dev->CreateBlendState(&blendStateDesc, _testBlendState.ptrForInit());
-			
+			hr = dev->CreateBlendState(&blendStateDesc, _testBlendState.ptrForInit());
+			DX11Util::throwIfError(hr);
 		}
 
 		ctx->RSSetState(_testRasterizerState);
