@@ -1,6 +1,7 @@
 
 #include <sge_editor.h>
 #include "Mesh/OBJ/ObjLoader.h"
+#include "Mesh/OBJ/Terrain.h"
 
 namespace sge {
 
@@ -27,7 +28,7 @@ public:
 		{
 			Texture2D_CreateDesc texDesc;
 			auto& image = texDesc.imageToUpload;
-#if 1
+#if 0
 			image.loadFile("Assets/Textures/uvChecker.png");
 			texDesc.size = image.size();
 			texDesc.colorType = image.colorType();
@@ -48,6 +49,7 @@ public:
 						255);
 				}
 			}
+			
 #endif
 
 			_testTexture = renderer->createTexture2D(texDesc);
@@ -57,43 +59,58 @@ public:
 
 
 		auto shader = renderer->createShader("Assets/Shaders/Standard.shader");
+		
 		_material = renderer->createMaterial();
 		_material->setShader(shader);
 
-		_material->setParam("mainTex", _testTexture);
+		//_material->setParam("mainTex", _testTexture);
 
-		EditMesh editMesh;
-#if 1
-		ObjLoader::LoadFile(editMesh, "Assets/Mesh/test.obj");
+		{
+			EditMesh editMesh;
+			ObjLoader::LoadFile(editMesh, "Assets/Mesh/test.obj");
 
-		for (size_t i = editMesh.color.size(); i < editMesh.pos.size(); i++) {
-			editMesh.color.emplace_back(255, 255, 255, 255);
+			for (size_t i = editMesh.color.size(); i < editMesh.pos.size(); i++) {
+				editMesh.color.emplace_back(255, 255, 255, 255);
+			}
+			_renderMesh.create(editMesh);
 		}
 
-		// the current shader has no uv or normal
-		//editMesh.uv[0].clear();
-		//editMesh.normal.clear();
-#else
-		editMesh.pos.emplace_back(0.0f, 0.5f, 0.0f);
-		editMesh.pos.emplace_back(0.5f, -0.5f, 0.0f);
-		editMesh.pos.emplace_back(-0.5f, -0.5f, 0.0f);
 
-		editMesh.color.emplace_back(255, 0, 0, 1);
-		editMesh.color.emplace_back(0, 255, 0, 1);
-		editMesh.color.emplace_back(0, 0, 0, 1);
-		editMesh.color.emplace_back(0, 0, 255, 255);
-#endif
-		_renderMesh.create(editMesh);
-
-		EditMesh editMesh2;
-		ObjLoader::LoadFile(editMesh2, "Assets/Mesh/Plane.obj");
-		for (size_t i = editMesh2.color.size(); i < editMesh2.pos.size(); i++) {
-			editMesh2.color.emplace_back(255, 255, 255, 255);
+		{
+			EditMesh editMesh2;
+			ObjLoader::LoadFile(editMesh2, "Assets/Mesh/Plane.obj");
+			for (size_t i = editMesh2.color.size(); i < editMesh2.pos.size(); i++) {
+				editMesh2.color.emplace_back(255, 255, 255, 255);
+			}
+			_renderMesh2.create(editMesh2);
 		}
-		//editMesh2.uv[0].clear();
-		_renderMesh2.create(editMesh2);
 
-		//VertexLayoutManager::instance()->getLayout(Vertex_Pos::kType);
+
+		//EditMesh _terrainEM;
+
+		//int xSize = 1;
+		//int zSize = 1;
+
+
+		//_terrainEM.pos.emplace_back(-0.388876, -0.388876, 0);
+		//_terrainEM.pos.emplace_back(0.388876, 0.388876, 0);
+		//_terrainEM.pos.emplace_back(0.388876, -0.388876, 0);
+
+		//_terrainEM.color.emplace_back(255, 255, 255, 255);
+		//_terrainEM.color.emplace_back(255, 255, 255, 255);
+		//_terrainEM.color.emplace_back(255, 255, 255, 255);
+
+		//_terrainEM.uv[0].emplace_back(1, 0);
+		//_terrainEM.uv[0].emplace_back(0, 1);
+		//_terrainEM.uv[0].emplace_back(0, 0);
+
+		//_terrainEM.normal.emplace_back(0.0f, 0.0f, 1.0f);
+		//_terrainEM.normal.emplace_back(0.0f, 0.0f, 1.0f);
+		//_terrainEM.normal.emplace_back(0.0f, 0.0f, 1.0f);
+		//t = new Terrain(1, 1);
+		_testTerrain.CreateEditMesh(2, 2);
+		int test = 0;
+		_terrain.create(*_testTerrain.getTerrainMesh());
 
 	}
 
@@ -162,8 +179,10 @@ public:
 
 		_cmdBuf.reset();
 		_cmdBuf.clearFrameBuffers()->setColor({ 0.0f , 0, 0.2f, 1 });
-		_cmdBuf.drawMesh(SGE_LOC, _renderMesh, _material);
-		_cmdBuf.drawMesh(SGE_LOC, _renderMesh2, _material);
+		//_cmdBuf.drawMesh(SGE_LOC, _renderMesh, _material);
+		//_cmdBuf.drawMesh(SGE_LOC, _renderMesh2, _material);
+		_cmdBuf.drawMesh(SGE_LOC, _terrain, _material);
+
 		_cmdBuf.swapBuffers();
 
 		_renderContext->commit(_cmdBuf);
@@ -179,6 +198,9 @@ public:
 	RenderCommandBuffer _cmdBuf;
 	RenderMesh	_renderMesh;
 	RenderMesh	_renderMesh2;
+	RenderMesh  _terrain;
+	Terrain		_testTerrain;
+
 	Math::Camera3f _camera;
 
 	//Math	_camera;
