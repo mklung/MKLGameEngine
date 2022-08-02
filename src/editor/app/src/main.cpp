@@ -108,7 +108,7 @@ public:
 		//_terrainEM.normal.emplace_back(0.0f, 0.0f, 1.0f);
 		//_terrainEM.normal.emplace_back(0.0f, 0.0f, 1.0f);
 		//t = new Terrain(1, 1);
-		_testTerrain.CreateEditMesh(4, 4);
+		_testTerrain.CreateEditMesh(8, 8);
 		_terrain.create(*_testTerrain.getTerrainMesh());
 
 	}

@@ -53,6 +53,15 @@ namespace sge
 	void Terrain::Patch::create(Terrain* terrain, const Vec2i& pos)
 	{
 		auto* t = _triangles.begin();
+		float testLOD = pos.x + pos.y;
+
+		if (testLOD < 4)
+			LOD = 0;
+		else if (testLOD < 8)
+			LOD = 1;
+		else
+			LOD = 2;
+
 		for (int i = 0; i < 4; i++)
 		{
 			t->create(terrain, pos, LOD, i);
@@ -64,7 +73,6 @@ namespace sge
 	void Terrain::GridTriangle::create(Terrain* terrain, const Vec2i& pos, int patchLOD, int index)
 	{
 		_patchLOD = patchLOD;
-		//triangleIndex.resize(3);
 		_terrain = terrain;
 		int patchSize = _terrain->patchsize;
 		int terrainSize = _terrain->GridXSize;
@@ -78,19 +86,21 @@ namespace sge
 
 		int center = x + terrainSize * 2 + 4;
 
+		
+
 		switch (index)
 		{
 		case 0:
-			subdivision(v0, center, v1, 0);
+			subdivision(v0, center, v1, _patchLOD);
 			break;
 		case 1:
-			subdivision(v1, center, v2, 0);
+			subdivision(v1, center, v2, _patchLOD);
 			break;
 		case 2:
-			subdivision(v2, center, v3, 0);
+			subdivision(v2, center, v3, _patchLOD);
 			break;
 		case 3:
-			subdivision(v3, center, v0, 0);
+			subdivision(v3, center, v0, _patchLOD);
 			break;
 		default:
 			break;
@@ -103,7 +113,7 @@ namespace sge
 	{
 
 		int remainLOD = _terrain->MaxLOD - _sdCount;
-		int a = 0;
+
 		if (remainLOD == 0)
 		{
 			triangleIndex.emplace_back(_v0);

@@ -19,7 +19,7 @@ SGE_ENUM_ALL_OPERATOR(PatchDirection)
 	{
 	public:
 		const int patchsize = 4;
-		const int MaxLOD = 2;
+		const int MaxLOD = 3;
 
 		void CreateEditMesh(int length, int width);
 		EditMesh* getTerrainMesh() { return &_terrainMesh; }
@@ -42,7 +42,7 @@ SGE_ENUM_ALL_OPERATOR(PatchDirection)
 		public:
 			int LOD = 0;
 			void create(Terrain* terrain, const Vec2i& pos);
-
+			
 		private:
 			Terrain*					_terrain = nullptr;
 			Vec2i						_pos{ 0, 0 };
@@ -56,6 +56,7 @@ SGE_ENUM_ALL_OPERATOR(PatchDirection)
 		int				GridXSize = 0;
 		int				GridZSize = 0;
 		EditMesh		_terrainMesh;
+		Vec3f			_cameraPos{ 0,0,0 };
 		Vector<Vec3f>	_vertex;
 		Vector<Patch>	_patches;
 	};
