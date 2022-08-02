@@ -55,47 +55,72 @@ namespace sge
 		auto* t = _triangles.begin();
 		for (int i = 0; i < 4; i++)
 		{
-			t->create(terrain, pos, i);
+			t->create(terrain, pos, LOD, i);
 			t++;
 		}
 		SGE_LOG("Create Patch {}, {}", pos.x, pos.y);
 
 	}
-	void Terrain::GridTriangle::create(Terrain* terrain, const Vec2i& pos, int index)
+	void Terrain::GridTriangle::create(Terrain* terrain, const Vec2i& pos, int patchLOD, int index)
 	{
-		triangleIndex.resize(3);
-		int patchSize = terrain->patchsize;
-		int terrainSize = terrain->GridXSize;
+		_patchLOD = patchLOD;
+		//triangleIndex.resize(3);
+		_terrain = terrain;
+		int patchSize = _terrain->patchsize;
+		int terrainSize = _terrain->GridXSize;
 
 		int x = patchSize * pos.x + (terrainSize * 4 + 4) * pos.y;
+
+		int v0 = x;
+		int v1 = x + 4;
+		int v2 = x + terrainSize * 4 + 8;
+		int v3 = x + terrainSize * 4 + 4;
+
+		int center = x + terrainSize * 2 + 4;
 
 		switch (index)
 		{
 		case 0:
-			triangleIndex.emplace_back(x);
-			triangleIndex.emplace_back(x + terrainSize * 2 + 4);
-			triangleIndex.emplace_back(x + 4);
+			subdivision(v0, center, v1, 0);
 			break;
 		case 1:
-			triangleIndex.emplace_back(x + 4);
-			triangleIndex.emplace_back(x + terrainSize * 2 + 4);
-			triangleIndex.emplace_back(x + terrainSize * 4 + 8);
+			subdivision(v1, center, v2, 0);
 			break;
 		case 2:
-			triangleIndex.emplace_back(x + terrainSize * 4 + 8);
-			triangleIndex.emplace_back(x + terrainSize * 2 + 4);
-			triangleIndex.emplace_back(x + terrainSize * 4 + 4);
+			subdivision(v2, center, v3, 0);
 			break;
 		case 3:
-			triangleIndex.emplace_back(x + terrainSize * 4 + 4);
-			triangleIndex.emplace_back(x + terrainSize * 2 + 4);
-			triangleIndex.emplace_back(x);
+			subdivision(v3, center, v0, 0);
 			break;
 		default:
 			break;
 		}
 
 		terrain->emplaceVertex(triangleIndex);
+
+	}
+	void Terrain::GridTriangle::subdivision(int _v0, int _v1, int _v2, int _sdCount)
+	{
+
+		int remainLOD = _terrain->MaxLOD - _sdCount;
+		int a = 0;
+		if (remainLOD == 0)
+		{
+			triangleIndex.emplace_back(_v0);
+			triangleIndex.emplace_back(_v1);
+			triangleIndex.emplace_back(_v2);
+			return;
+		}
+		else
+		{
+			int v0 = _v0;
+			int v1 = _v1;
+			int v2 = _v2;
+			int center = (_v0 + _v2) / 2;
+			subdivision(v1, center, v0, _sdCount + 1);
+			subdivision(v2, center, v1, _sdCount + 1);
+
+		}
 
 	}
 }

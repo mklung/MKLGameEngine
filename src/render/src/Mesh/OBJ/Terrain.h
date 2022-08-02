@@ -19,6 +19,7 @@ SGE_ENUM_ALL_OPERATOR(PatchDirection)
 	{
 	public:
 		const int patchsize = 4;
+		const int MaxLOD = 2;
 
 		void CreateEditMesh(int length, int width);
 		EditMesh* getTerrainMesh() { return &_terrainMesh; }
@@ -26,11 +27,14 @@ SGE_ENUM_ALL_OPERATOR(PatchDirection)
 		class GridTriangle
 		{
 		public:
-			void create(Terrain* terrain, const Vec2i& pos, int index);
+			void create(Terrain* terrain, const Vec2i& pos, int _LOD, int index);
+			void subdivision(int _v0, int _center, int _v1, int _lodremain);
 
 		private:
+			int				_patchLOD;
 			int				_lod;
 			Vector<int>		triangleIndex;
+			Terrain*		_terrain = nullptr;
 		};
 
 		class Patch
@@ -44,7 +48,6 @@ SGE_ENUM_ALL_OPERATOR(PatchDirection)
 			Vec2i						_pos{ 0, 0 };
 			Vector_<GridTriangle, 4>	_triangles;
 		};
-
 
 	const	Vector<Vec3f>&	terrainVertex() const { return _vertex; }
 			void			emplaceVertex(const Vector<int> &vertexIndex);
