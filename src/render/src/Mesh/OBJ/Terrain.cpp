@@ -91,16 +91,44 @@ namespace sge
 		switch (index)
 		{
 		case 0:
-			subdivision(v0, center, v1, _patchLOD);
+			if (_patchLOD == 2)
+			{
+				triangleIndex.emplace_back(v0);
+				triangleIndex.emplace_back(center);
+				triangleIndex.emplace_back(v1);
+			}
+			else
+				subdivision(v0, center, v1, _patchLOD);
 			break;
 		case 1:
-			subdivision(v1, center, v2, _patchLOD);
+			if (_patchLOD == 2)
+			{
+				triangleIndex.emplace_back(v1);
+				triangleIndex.emplace_back(center);
+				triangleIndex.emplace_back(v2);
+			}
+			else
+				subdivision(v1, center, v2, _patchLOD);
 			break;
 		case 2:
-			subdivision(v2, center, v3, _patchLOD);
+			if (_patchLOD == 2)
+			{
+				triangleIndex.emplace_back(v2);
+				triangleIndex.emplace_back(center);
+				triangleIndex.emplace_back(v3);
+			}
+			else
+				subdivision(v2, center, v3, _patchLOD);
 			break;
 		case 3:
-			subdivision(v3, center, v0, _patchLOD);
+			if (_patchLOD == 2)
+			{
+				triangleIndex.emplace_back(v3);
+				triangleIndex.emplace_back(center);
+				triangleIndex.emplace_back(v0);
+			}
+			else
+				subdivision(v3, center, v0, _patchLOD);
 			break;
 		default:
 			break;
