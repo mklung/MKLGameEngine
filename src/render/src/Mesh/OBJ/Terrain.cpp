@@ -7,6 +7,7 @@ namespace sge
 	{
 		int xSize = _width;
 		int zSize = _length;
+		int totalSize = xSize * zSize;
 		GridXSize = xSize * patchsize;
 		GridZSize = zSize * patchsize;
 		for (int z = 0; z <= GridZSize; z++)
@@ -22,7 +23,7 @@ namespace sge
 		int vert = 0;
 		int tris = 0;
 
-		_patches.resize(xSize * zSize);
+		_patches.resize(totalSize);
 		auto* p = _patches.begin();
 
 		for (int z = 0; z < zSize; z++)
@@ -35,6 +36,55 @@ namespace sge
 				vert += 4;
 			}
 			vert = (GridXSize + 1) * (4 * (z + 1));
+		}
+
+
+		p = _patches.begin();
+		auto* dir_p = _patches.begin();
+
+		for (int i = 0; i < totalSize; i++)
+		{
+			int curX = i;
+			int x = curX % xSize - 1;
+		
+			if (x >= 0)
+			{
+				dir_p = p - 1;
+				if (p->LOD > dir_p->LOD)
+				{
+					p->subdivision(3);
+				}
+
+			}
+			x = curX % xSize + 1;
+			if (x < xSize)
+			{
+				dir_p = p + 1;
+				if (p->LOD > dir_p->LOD)
+				{
+					p->subdivision(1);
+				}
+			}
+			int y = curX + xSize;
+			if (y < totalSize)
+			{
+				dir_p = p + xSize;
+				if (p->LOD > dir_p->LOD)
+				{
+					
+					p->subdivision(2);
+				}
+			}
+			y = curX - xSize;
+			if (y >= 0)
+			{
+				dir_p = p - xSize;
+				if (p->LOD > dir_p->LOD)
+				{
+					p->subdivision(0);
+				}
+			}
+			p++;
 		}
 	}
 	void Terrain::emplaceVertex(const Vector<int> &vertexIndex)
@@ -50,8 +100,10 @@ namespace sge
 		}
 		
 	}
+
 	void Terrain::Patch::create(Terrain* terrain, const Vec2i& pos)
 	{
+		
 		auto* t = _triangles.begin();
 		float testLOD = pos.x + pos.y;
 
@@ -68,8 +120,16 @@ namespace sge
 			t++;
 		}
 		SGE_LOG("Create Patch {}, {}", pos.x, pos.y);
-
 	}
+
+	void Terrain::Patch::subdivision(int dir)
+	{
+		auto* t = _triangles.begin();
+		t += dir;
+		t->subdivision();
+	}
+
+
 	void Terrain::GridTriangle::create(Terrain* terrain, const Vec2i& pos, int patchLOD, int index)
 	{
 		_patchLOD = patchLOD;
@@ -86,8 +146,6 @@ namespace sge
 
 		int center = x + terrainSize * 2 + 4;
 
-		
-
 		switch (index)
 		{
 		case 0:
@@ -96,6 +154,7 @@ namespace sge
 				triangleIndex.emplace_back(v0);
 				triangleIndex.emplace_back(center);
 				triangleIndex.emplace_back(v1);
+				_subTriangle.emplace_back(Vec3i{ v0 ,center, v1 });
 			}
 			else
 				subdivision(v0, center, v1, _patchLOD);
@@ -111,25 +170,13 @@ namespace sge
 			}
 			else
 				subdivision(v1, center, v2, _patchLOD);
-
-		case 1:
-			subdivision(v1, center, v2, _patchLOD);
-
-			if (_patchLOD == 2)
-			{
-				triangleIndex.emplace_back(v1);
-				triangleIndex.emplace_back(center);
-				triangleIndex.emplace_back(v2);
-			}
-			else
-				subdivision(v1, center, v2, _patchLOD);
-			break;
 		case 2:
 			if (_patchLOD == 2)
 			{
 				triangleIndex.emplace_back(v2);
 				triangleIndex.emplace_back(center);
 				triangleIndex.emplace_back(v3);
+				_subTriangle.emplace_back(Vec3i{ v2 ,center, v3 });
 			}
 			else
 				subdivision(v2, center, v3, _patchLOD);
@@ -140,6 +187,7 @@ namespace sge
 				triangleIndex.emplace_back(v3);
 				triangleIndex.emplace_back(center);
 				triangleIndex.emplace_back(v0);
+				_subTriangle.emplace_back(Vec3i{ v3 ,center, v0 });
 			}
 			else
 				subdivision(v3, center, v0, _patchLOD);
@@ -174,5 +222,33 @@ namespace sge
 
 		}
 
+	}
+	void Terrain::GridTriangle::subdivision(int _v0, int _v1, int _v2)
+	{
+
+		int v0 = _v0;
+		int v1 = _v1;
+		int v2 = _v2;
+		int center = (_v0 + _v2) / 2;
+
+
+		triangleIndex.emplace_back(v1);
+		triangleIndex.emplace_back(center);
+		triangleIndex.emplace_back(v0);
+
+		triangleIndex.emplace_back(v2);
+		triangleIndex.emplace_back(center);
+		triangleIndex.emplace_back(v1);
+
+		_terrain->emplaceVertex(triangleIndex);
+	}
+	void Terrain::GridTriangle::subdivision()
+	{
+		auto v = _subTriangle.begin();
+		for (int i = 0; i < _subTriangle.size(); i++)
+		{
+			subdivision(v->x, v->y, v->z);
+			v++;
+		}
 	}
 }

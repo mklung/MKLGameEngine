@@ -29,11 +29,13 @@ SGE_ENUM_ALL_OPERATOR(PatchDirection)
 		public:
 			void create(Terrain* terrain, const Vec2i& pos, int _LOD, int index);
 			void subdivision(int _v0, int _center, int _v1, int _lodremain);
-
+			void subdivision(int _v0, int _center, int _v1);
+			void subdivision();
 		private:
 			int				_patchLOD;
 			int				_lod;
 			Vector<int>		triangleIndex;
+			Vector<Vec3i>	_subTriangle;
 			Terrain*		_terrain = nullptr;
 		};
 
@@ -41,8 +43,9 @@ SGE_ENUM_ALL_OPERATOR(PatchDirection)
 		{
 		public:
 			int LOD = 0;
-			void create(Terrain* terrain, const Vec2i& pos);
-			
+			void	create(Terrain* terrain, const Vec2i& pos);
+			void	subdivision(int dir);
+			const	Vector_<GridTriangle, 4>& triangles() const { return _triangles; }
 		private:
 			Terrain*					_terrain = nullptr;
 			Vec2i						_pos{ 0, 0 };

@@ -14,7 +14,7 @@ namespace sge {
 #else
 	template<class T> using Vec3 = Vec3_Basic<T>;
 #endif
-
+	using Vec3i = Vec3<int>;
 	using Vec3f = Vec3<float>;
 	using Vec3d = Vec3<double>;
 
