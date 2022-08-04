@@ -100,7 +100,21 @@ namespace sge
 			else
 				subdivision(v0, center, v1, _patchLOD);
 			break;
+
+		case 1:		
+			if (_patchLOD == 2)
+			{
+				triangleIndex.emplace_back(v1);
+				triangleIndex.emplace_back(center);
+				triangleIndex.emplace_back(v2);
+				_subTriangle.emplace_back(Vec3i{ v1 ,center, v2 });
+			}
+			else
+				subdivision(v1, center, v2, _patchLOD);
+
 		case 1:
+			subdivision(v1, center, v2, _patchLOD);
+
 			if (_patchLOD == 2)
 			{
 				triangleIndex.emplace_back(v1);
